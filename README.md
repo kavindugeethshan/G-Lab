@@ -1,32 +1,50 @@
 # G-Lab
+
 A modern full-stack web application for managing and purchasing computer parts online.
 
 ## Features
-- User Registration & Login
-- Browse Computer Parts
-- Search Products
-- Shopping Cart
-- Secure Checkout
-- Admin Dashboard
-- Product Management
+
+* User Registration \& Login
+* Browse Computer Parts
+* Search Products
+* Shopping Cart
+* Secure Checkout
+* Admin Dashboard
+* Product Management
 
 ## Tech Stack
 
 Frontend
-- HTML
-- CSS
-- JavaScript
-- React
+
+* HTML
+* CSS
+* JavaScript
+* React
 
 Backend
-- Node.js
-- Express.js
+
+* Node.js
+* Express.js
 
 Database
-- MongoDB
+
+* MongoDB
 
 Version Control
-- Git & GitHub
+
+* Git \& GitHub
+
+
+## Instalation
+
+
+
+* npm init -y
+* npm install
+* npm start
+* npm install express
+* npm install nodemon 
+
 
 
 ## Author
@@ -34,3 +52,4 @@ Version Control
 Kavindu Geethshan
 Bachelor of Information Technology (BIT)
 University of Colombo School of Computing
+
