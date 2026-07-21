@@ -36,7 +36,7 @@ Version Control
 
 
 
-## Instalation
+## Installation
 
 
 
@@ -45,7 +45,7 @@ Version Control
 * npm start
 * npm install express
 * npm install nodemon
-* npm install mongoose 
+* npm install mongoose
 
 
 
