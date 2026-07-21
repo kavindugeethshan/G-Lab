@@ -35,6 +35,7 @@ Version Control
 * Git \& GitHub
 
 
+
 ## Instalation
 
 
@@ -43,7 +44,8 @@ Version Control
 * npm install
 * npm start
 * npm install express
-* npm install nodemon 
+* npm install nodemon
+* npm install mongoose 
 
 
 
