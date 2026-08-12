@@ -16,6 +16,9 @@ import Student from "./models/Student.js";     // student model import
 import studentRouter from "./routers/studentRouter.js";  // student router import 
 app.use("/students", studentRouter);
 
+import userRouter from "./routers/userRouter.js";  // user router import
+app.use("/users", userRouter);
+
 app.listen(3001, () => {
   console.log("Server is running on port 3001");
 });
