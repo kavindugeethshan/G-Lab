@@ -92,3 +92,20 @@ export const createProduct = async (req, res) => {
     });
   }
 };
+
+//-----------------------------------------------------------------------------------------
+    //Getall product function
+    export const getallProducts = async (req, res) => {
+      try {
+        const product = await Product.find();
+        res.status(200).json({
+          message: "Products retrieved successfully",
+          products: product,
+        });
+      } catch (error) {
+        res.status(500).json({
+          message: error.message,
+        });
+      }
+    };
+
