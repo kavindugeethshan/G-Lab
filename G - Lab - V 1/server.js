@@ -13,6 +13,9 @@ mongoose.connect(mongoDBURI).then(() => {
 import userRouter from "./routers/userRouter.js"; // user router import
 app.use("/users", userRouter);
 
+import productRouter from "./routers/productRouter.js"; // product router import
+app.use("/products", productRouter);
+
 app.listen(3001, () => {
   console.log("Server is running on port 3001");
 });
