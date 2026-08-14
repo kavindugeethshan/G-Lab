@@ -132,3 +132,46 @@ export const getProductById = async (req, res) => {
     });
   }
 };
+
+//-----------------------------------------------------------------------------------------
+//updateProduct
+export const updateProduct = async (req, res) => {
+  try {
+    // Get the product ID from the URL
+    const { id } = req.params;
+
+    // Get updated product data from request body
+    const updateData = req.body;
+
+    // Find the product by ID and update it
+    const updatedProduct = await Product.findByIdAndUpdate(
+      id,
+      updateData,
+      {
+         // Return the updated product after the update
+    returnDocument: "after",
+
+    // Run Mongoose schema validation during update
+    runValidators: true,
+      }
+    );
+
+    // Check whether the product exists
+    if (!updatedProduct) {
+      return res.status(404).json({
+        message: "Product not found",
+      });
+    }
+
+    // Send successful response
+    res.status(200).json({
+      message: "Product updated successfully",
+      product: updatedProduct,
+    });
+  } catch (error) {
+    // Handle server/database errors
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
