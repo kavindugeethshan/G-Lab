@@ -1,5 +1,5 @@
 import express from "express";
-import { createProduct,getallProducts} from "../Controllers/productController.js";
+import { createProduct,getallProducts,getProductById} from "../Controllers/productController.js";
 import { authMiddleware } from "../middleware/authMiddleware.js";   
 import { adminMiddleware } from "../middleware/adminMiddleware.js";
 
@@ -7,6 +7,7 @@ import { adminMiddleware } from "../middleware/adminMiddleware.js";
 const productRouter = express.Router();
 //public route
 productRouter.get("/", getallProducts);
+productRouter.get("/:id", getProductById);
 
 //// Authentication middleware - User must have a valid JWT token
 productRouter.use(authMiddleware);
