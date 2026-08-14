@@ -1,5 +1,5 @@
 import express from "express";
-import { createProduct,getallProducts,getProductById,updateProduct,deleteProduct} from "../Controllers/productController.js";
+import { createProduct,getallProducts,getProductById,updateProduct} from "../Controllers/productController.js";
 import { authMiddleware } from "../middleware/authMiddleware.js";   
 import { adminMiddleware } from "../middleware/adminMiddleware.js";
 
@@ -17,7 +17,6 @@ productRouter.use(adminMiddleware);
 // private route
 productRouter.post("/create", createProduct);
 productRouter.put("/update/:id", updateProduct);
-productRouter.delete("/delete/:id",authMiddleware,adminMiddleware,deleteProduct);
 
 
 export default productRouter;
