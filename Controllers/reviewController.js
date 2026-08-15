@@ -1,4 +1,4 @@
-import  Review from "../models/Reviewmodel.js";
+import Review from "../models/Reviewmodel.js";
 import Product from "../models/Productmodel.js";
 
 // Create a new product review
@@ -83,10 +83,54 @@ export const createReview = async (req, res) => {
       comment: comment.trim(),
     });
 
+    // Update product rating information
+    const allReviews = await Review.find({
+      product: productId,
+    });
+
+    const totalRating = allReviews.reduce(
+      (sum, review) => sum + review.rating,
+      0,
+    );
+
+    const ratingAverage = totalRating / allReviews.length;
+
+    await Product.findByIdAndUpdate(productId, {
+      ratingAverage: Number(ratingAverage.toFixed(1)),
+      ratingCount: allReviews.length,
+    });
+
     // Send successful response
     res.status(201).json({
       message: "Review created successfully",
       review,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+
+// Get product rating
+export const getProductRating = async (req, res) => {
+  try {
+    const { productId } = req.params;
+
+    const product = await Product.findById(productId).select(
+      "ratingAverage ratingCount"
+    );
+
+    if (!product) {
+      return res.status(404).json({
+        message: "Product not found",
+      });
+    }
+
+    res.status(200).json({
+      productId,
+      ratingAverage: product.ratingAverage || 0,
+      ratingCount: product.ratingCount || 0,
     });
   } catch (error) {
     res.status(500).json({

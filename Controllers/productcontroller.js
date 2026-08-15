@@ -13,12 +13,6 @@ export const createProduct = async (req, res) => {
         message: "Product name is required",
       });
     }
-    // Validate product name
-    if (!name || typeof name !== "string") {
-      return res.status(400).json({
-        message: "Product name is required",
-      });
-    }
 
     // Validate product description
     if (!description || typeof description !== "string") {
