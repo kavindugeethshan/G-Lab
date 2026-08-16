@@ -70,6 +70,7 @@ export const createReview = async (req, res) => {
     });
 
     if (existingReview) {
+      console.log(`[Review] User ${userId} has already reviewed product ${productId}`);
       return res.status(400).json({
         message: "You have already reviewed this product",
       });
@@ -99,6 +100,19 @@ export const createReview = async (req, res) => {
       ratingAverage: Number(ratingAverage.toFixed(1)),
       ratingCount: allReviews.length,
     });
+
+    // Emit real-time Socket.IO event if connected
+    const io = req.app.get("io");
+    console.log(`[Socket.IO] io instance available: ${!!io}`);
+    if (io) {
+      console.log(`[Socket.IO] Emitting reviewCreated event for product ${productId}`);
+      io.emit("reviewCreated", {
+        productId,
+        review,
+        ratingAverage: Number(ratingAverage.toFixed(1)),
+        ratingCount: allReviews.length,
+      });
+    }
 
     // Send successful response
     res.status(201).json({
