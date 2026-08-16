@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>G Lab - Authentication</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --accent-color: #3b82f6;
+            --accent-hover: #2563eb;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+            --error-color: #ef4444;
+            --success-color: #10b981;
+        }
+
+        html {
+            overflow-y: scroll;
+            scroll-behavior: smooth;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        .login-box {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 40px;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+        }
+
+        .brand-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .brand-header h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--accent-color);
+            letter-spacing: -0.5px;
+        }
+
+        .brand-header h2 {
+            font-size: 1.1rem;
+            font-weight: 400;
+            color: var(--text-muted);
+            margin-top: 5px;
+        }
+
+        .tab-buttons {
+            display: flex;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 25px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 10px;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .tab-btn.active {
+            color: var(--accent-color);
+            border-bottom-color: var(--accent-color);
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group.hidden {
+            display: none;
+        }
+
+        label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            background-color: #0f172a;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            color: var(--text-main);
+            font-size: 0.95rem;
+            transition: border-color 0.2s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+        }
+
+        button.btn-submit {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background-color 0.2s;
+        }
+
+        button.btn-submit:hover {
+            background-color: var(--accent-hover);
+        }
+
+        #message {
+            margin-top: 20px;
+            padding: 10px 14px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            text-align: center;
+            display: none;
+        }
+
+        #message.error {
+            display: block;
+            background-color: rgba(239, 68, 68, 0.15);
+            color: var(--error-color);
+            border: 1px solid var(--error-color);
+        }
+
+        #message.success {
+            display: block;
+            background-color: rgba(16, 185, 129, 0.15);
+            color: var(--success-color);
+            border: 1px solid var(--success-color);
+        }
+
+        #message.info {
+            display: block;
+            background-color: rgba(59, 130, 246, 0.15);
+            color: var(--accent-color);
+            border: 1px solid var(--accent-color);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-box">
+        <div class="brand-header">
+            <h1>G Lab</h1>
+            <h2 id="formSubtitle">Sign in to your account</h2>
+        </div>
+
+        <div class="tab-buttons">
+            <button type="button" class="tab-btn active" id="loginTabBtn" onclick="switchMode('login')">Login</button>
+            <button type="button" class="tab-btn" id="registerTabBtn" onclick="switchMode('register')">Register</button>
+        </div>
+
+        <form id="authForm">
+            <div class="form-group hidden" id="firstnameGroup">
+                <label for="firstname">First Name</label>
+                <input type="text" id="firstname" placeholder="Enter your first name">
+            </div>
+
+            <div class="form-group hidden" id="lastnameGroup">
+                <label for="lastname">Last Name</label>
+                <input type="text" id="lastname" placeholder="Enter your last name">
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" placeholder="Enter your email" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" placeholder="Enter your password" required>
+            </div>
+
+            <button type="submit" class="btn-submit" id="submitBtn">Login</button>
+        </form>
+
+        <div id="message"></div>
+    </div>
+
+    <script>
+        const BASE_URL = "http://localhost:3001";
+        let currentMode = "login";
+
+        function switchMode(mode) {
+            currentMode = mode;
+            const loginTabBtn = document.getElementById("loginTabBtn");
+            const registerTabBtn = document.getElementById("registerTabBtn");
+            const firstnameGroup = document.getElementById("firstnameGroup");
+            const lastnameGroup = document.getElementById("lastnameGroup");
+            const submitBtn = document.getElementById("submitBtn");
+            const formSubtitle = document.getElementById("formSubtitle");
+            const message = document.getElementById("message");
+
+            message.style.display = "none";
+
+            if (mode === "register") {
+                loginTabBtn.classList.remove("active");
+                registerTabBtn.classList.add("active");
+                firstnameGroup.classList.remove("hidden");
+                lastnameGroup.classList.remove("hidden");
+                submitBtn.textContent = "Create Account";
+                formSubtitle.textContent = "Create a new G Lab account";
+            } else {
+                registerTabBtn.classList.remove("active");
+                loginTabBtn.classList.add("active");
+                firstnameGroup.classList.add("hidden");
+                lastnameGroup.classList.add("hidden");
+                submitBtn.textContent = "Login";
+                formSubtitle.textContent = "Sign in to your account";
+            }
+        }
+
+        function showMessage(text, type) {
+            const message = document.getElementById("message");
+            message.textContent = text;
+            message.className = type;
+        }
+
+        document.getElementById("authForm").addEventListener("submit", async function (event) {
+            event.preventDefault();
+
+            const email = document.getElementById("email").value.trim();
+            const password = document.getElementById("password").value;
+
+            if (!email || !password) {
+                showMessage("Please fill in all required fields.", "error");
+                return;
+            }
+
+            if (currentMode === "login") {
+                showMessage("Logging in...", "info");
+                try {
+                    const response = await fetch(`${BASE_URL}/users/login`, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ email, password })
+                    });
+
+                    const data = await response.json();
+
+                    if (!response.ok) {
+                        showMessage(data.message || "Login failed. Check credentials.", "error");
+                        return;
+                    }
+
+                    // Extract token safely
+                    const token = data.token || data.accessToken || (data.data && data.data.token) || "";
+                    if (token) {
+                        localStorage.setItem("token", token);
+                    }
+
+                    // Extract user object safely
+                    const userObj = data.user || data.userData || (data.data && data.data.user) || data.data || {
+                        email: email,
+                        firstname: email.split("@")[0]
+                    };
+
+                    localStorage.setItem("user", JSON.stringify(userObj));
+
+                    showMessage("Login successful! Redirecting...", "success");
+
+                    setTimeout(() => {
+                        window.location.href = "home.html";
+                    }, 500);
+
+                } catch (error) {
+                    console.error("Login error:", error);
+                    showMessage("Cannot connect to the server (http://localhost:3001).", "error");
+                }
+            } else {
+                // Register mode
+                const firstname = document.getElementById("firstname").value.trim();
+                const lastname = document.getElementById("lastname").value.trim();
+
+                showMessage("Creating account...", "info");
+                try {
+                    const response = await fetch(`${BASE_URL}/users/create`, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ email, firstname, lastname, password })
+                    });
+
+                    const data = await response.json();
+
+                    if (!response.ok) {
+                        showMessage(data.message || "Registration failed.", "error");
+                        return;
+                    }
+
+                    showMessage("Account created successfully! Please login.", "success");
+                    setTimeout(() => {
+                        switchMode("login");
+                    }, 1200);
+
+                } catch (error) {
+                    console.error("Registration error:", error);
+                    showMessage("Cannot connect to the server (http://localhost:3001).", "error");
+                }
+            }
+        });
+    </script>
+</body>
+</html>

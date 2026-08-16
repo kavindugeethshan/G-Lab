@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>G Lab - Computer Products</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --card-hover: #334155;
+            --accent-color: #3b82f6;
+            --accent-hover: #2563eb;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+            --error-color: #ef4444;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+        }
+
+        html {
+            overflow-y: scroll;
+            scroll-behavior: smooth;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+            padding-bottom: 40px;
+            overflow-x: hidden;
+        }
+
+        header {
+            background-color: rgba(30, 41, 59, 0.95);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border-bottom: 1px solid var(--border-color);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            will-change: transform;
+        }
+
+        .logo-title h1 {
+            font-size: 1.6rem;
+            color: var(--accent-color);
+            font-weight: 700;
+        }
+
+        .logo-title span {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-greeting {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-right: 10px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background-color: var(--accent-color);
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: var(--accent-hover);
+        }
+
+        .btn-outline {
+            background: none;
+            border-color: var(--border-color);
+            color: var(--text-main);
+        }
+        .btn-outline:hover {
+            background-color: var(--card-hover);
+        }
+
+        .btn-danger {
+            background-color: rgba(239, 68, 68, 0.15);
+            color: var(--error-color);
+            border-color: var(--error-color);
+        }
+        .btn-danger:hover {
+            background-color: var(--error-color);
+            color: white;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .section-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 24px;
+            margin-bottom: 25px;
+        }
+
+        .section-card h3 {
+            font-size: 1.2rem;
+            color: var(--accent-color);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .grid-inputs {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 18px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        input, select {
+            padding: 10px;
+            background-color: #0f172a;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            color: var(--text-main);
+            font-size: 0.9rem;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--accent-color);
+        }
+
+        .button-row {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        #message {
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            font-size: 0.95rem;
+            display: none;
+        }
+        #message.error {
+            display: block;
+            background-color: rgba(239, 68, 68, 0.15);
+            color: var(--error-color);
+            border: 1px solid var(--error-color);
+        }
+        #message.success {
+            display: block;
+            background-color: rgba(16, 185, 129, 0.15);
+            color: var(--success-color);
+            border: 1px solid var(--success-color);
+        }
+        #message.loading {
+            display: block;
+            background-color: rgba(59, 130, 246, 0.15);
+            color: var(--accent-color);
+            border: 1px solid var(--accent-color);
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .product-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+            will-change: transform;
+            backface-visibility: hidden;
+        }
+
+        .product-card:hover {
+            transform: translateY(-3px);
+            border-color: var(--accent-color);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .product-img {
+            width: 100%;
+            height: 180px;
+            object-fit: contain;
+            background-color: #0f172a;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            padding: 10px;
+        }
+
+        .product-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 8px;
+        }
+
+        .product-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            background-color: #334155;
+            color: var(--text-muted);
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-right: 6px;
+            margin-bottom: 10px;
+        }
+
+        .product-desc {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .product-price {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--success-color);
+            margin-bottom: 8px;
+        }
+
+        .product-meta {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 15px;
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .card-actions .btn {
+            flex: 1;
+            padding: 6px 10px;
+            font-size: 0.8rem;
+            text-align: center;
+        }
+
+        .admin-fieldset {
+            border: none;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="logo-title">
+        <h1>G Lab</h1>
+        <span>Computer Parts & Accessories</span>
+    </div>
+    <div class="nav-actions">
+        <span class="user-greeting" id="userGreeting"></span>
+        <button type="button" class="btn btn-outline" onclick="goToProfile()">Profile</button>
+        <button type="button" class="btn btn-danger" onclick="logout()">Logout</button>
+    </div>
+</header>
+
+<div class="container">
+
+    <!-- Status Message -->
+    <div id="message"></div>
+
+    <!-- Filter Products -->
+    <div class="section-card">
+        <h3>🔍 Search & Filter Products</h3>
+        <div class="grid-inputs">
+            <div class="form-group">
+                <label for="searchKeyword">Keyword Search</label>
+                <input type="text" id="searchKeyword" placeholder="e.g. gaming, ryzen">
+            </div>
+
+            <div class="form-group">
+                <label for="category">Category</label>
+                <select id="category">
+                    <option value="">All Categories</option>
+                    <option value="CPU">CPU</option>
+                    <option value="GPU">GPU</option>
+                    <option value="RAM">RAM</option>
+                    <option value="Motherboard">Motherboard</option>
+                    <option value="Storage">Storage</option>
+                    <option value="PSU">PSU</option>
+                    <option value="Case">Case</option>
+                    <option value="phone">Phone</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="brand">Brand</label>
+                <select id="brand">
+                    <option value="">All Brands</option>
+                    <option value="Intel">Intel</option>
+                    <option value="AMD">AMD</option>
+                    <option value="AMD 5">AMD 5</option>
+                    <option value="NVIDIA">NVIDIA</option>
+                    <option value="ASUS">ASUS</option>
+                    <option value="MSI">MSI</option>
+                    <option value="Gigabyte">Gigabyte</option>
+                    <option value="Corsair">Corsair</option>
+                    <option value="Kingston">Kingston</option>
+                    <option value="Samsung">Samsung</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="minPrice">Minimum Price (Rs.)</label>
+                <input type="number" id="minPrice" min="0" placeholder="Min price">
+            </div>
+
+            <div class="form-group">
+                <label for="maxPrice">Maximum Price (Rs.)</label>
+                <input type="number" id="maxPrice" min="0" placeholder="Max price">
+            </div>
+        </div>
+
+        <div class="button-row">
+            <button type="button" class="btn btn-primary" onclick="filterProducts()">Apply Filters</button>
+            <button type="button" class="btn btn-outline" onclick="loadProducts()">Reset / Show All</button>
+        </div>
+    </div>
+
+    <!-- Search Product by ID -->
+    <div class="section-card">
+        <h3>🆔 Find Product By ID</h3>
+        <div class="grid-inputs" style="grid-template-columns: 1fr auto;">
+            <div class="form-group">
+                <input type="text" id="productId" placeholder="Enter Product ID (e.g. 64a1b2c3...)">
+            </div>
+            <button type="button" class="btn btn-primary" style="height: 42px; margin-top: auto;" onclick="getProductById()">Search by ID</button>
+        </div>
+    </div>
+
+    <!-- Create Product (Admin) -->
+    <div class="section-card">
+        <h3>➕ Add New Product (Admin)</h3>
+        <fieldset class="admin-fieldset">
+            <div class="grid-inputs">
+                <div class="form-group">
+                    <label for="newName">Product Name*</label>
+                    <input type="text" id="newName" placeholder="e.g. AMD Ryzen 5 5600">
+                </div>
+                <div class="form-group">
+                    <label for="newCategory">Category*</label>
+                    <input type="text" id="newCategory" placeholder="e.g. CPU">
+                </div>
+                <div class="form-group">
+                    <label for="newBrand">Brand</label>
+                    <input type="text" id="newBrand" placeholder="e.g. AMD">
+                </div>
+                <div class="form-group">
+                    <label for="newPrice">Price (Rs.)*</label>
+                    <input type="number" id="newPrice" placeholder="e.g. 35000">
+                </div>
+                <div class="form-group">
+                    <label for="newStock">Stock Quantity</label>
+                    <input type="number" id="newStock" placeholder="e.g. 10">
+                </div>
+                <div class="form-group">
+                    <label for="newImage">Image Name / URL</label>
+                    <input type="text" id="newImage" placeholder="e.g. ryzen5-5600.jpg">
+                </div>
+            </div>
+            <div class="form-group" style="margin-bottom: 15px;">
+                <label for="newDescription">Description</label>
+                <input type="text" id="newDescription" placeholder="Enter product description...">
+            </div>
+            <button type="button" class="btn btn-primary" onclick="createProduct()">Create Product</button>
+        </fieldset>
+    </div>
+
+    <h2>Available Products</h2>
+    <br>
+    <div id="productList" class="products-grid">
+        <p>Loading products...</p>
+    </div>
+
+</div>
+
+<script>
+
+const API_URL = "http://localhost:3001";
+const token = localStorage.getItem("token");
+
+if (!token) {
+    window.location.href = "First login page.html";
+}
+
+// Display user info in header
+try {
+    const rawUser = localStorage.getItem("user");
+    if (rawUser) {
+        const u = JSON.parse(rawUser);
+        const name = u.firstname ? `${u.firstname} ${u.lastname || ''}` : (u.name || u.email || 'User');
+        document.getElementById("userGreeting").textContent = `Logged in as: ${name}`;
+    }
+} catch (e) {
+    console.error("User parse error", e);
+}
+
+function getHeaders() {
+    return {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+    };
+}
+
+function setMessage(text, type) {
+    const el = document.getElementById("message");
+    if (!text) {
+        el.style.display = "none";
+        return;
+    }
+    el.textContent = text;
+    el.className = type || "";
+    console.log(`[status:${type || "info"}]`, text);
+}
+
+// Extract product list safely regardless of backend wrapping shape
+function extractProductList(data) {
+    if (!data) return [];
+    if (Array.isArray(data)) return data;
+    if (data.products && Array.isArray(data.products)) return data.products;
+    if (data.data && Array.isArray(data.data)) return data.data;
+    if (data.items && Array.isArray(data.items)) return data.items;
+    
+    // Single product objects
+    if (data.product && typeof data.product === "object") return [data.product];
+    if (data.data && typeof data.data === "object" && !Array.isArray(data.data)) return [data.data];
+    if (typeof data === "object" && (data._id || data.id || data.name)) return [data];
+    
+    return [];
+}
+
+// Normalize product properties so none are undefined
+function normalizeProduct(p) {
+    if (!p || typeof p !== "object") return null;
+    return {
+        _id: p._id || p.id || p.productId || "",
+        name: p.name || p.title || p.productName || "Unnamed Product",
+        description: p.description || p.desc || "No description available",
+        category: p.category || p.cat || "N/A",
+        brand: p.brand || "N/A",
+        price: p.price !== undefined && p.price !== null ? p.price : "N/A",
+        stock: p.stock !== undefined && p.stock !== null ? p.stock : "N/A",
+        Image: p.Image || p.image || p.imageUrl || p.img || ""
+    };
+}
+
+// ------------------------------------------------
+// GET ALL PRODUCTS
+// GET /products
+// ------------------------------------------------
+async function loadProducts() {
+    setMessage("Loading products...", "loading");
+    try {
+        const response = await fetch(`${API_URL}/products`, {
+            method: "GET",
+            headers: getHeaders()
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.message || `Request failed (${response.status})`);
+        }
+
+        const rawList = extractProductList(data);
+        const products = rawList.map(normalizeProduct).filter(Boolean);
+
+        setMessage(`Loaded ${products.length} product(s).`, "success");
+        displayProducts(products);
+
+    } catch (error) {
+        console.error("loadProducts error:", error);
+        setMessage(`Failed to load products: ${error.message}`, "error");
+        document.getElementById("productList").innerHTML = `<p style="color: var(--error-color);">Error loading products: ${error.message}</p>`;
+    }
+}
+
+// ------------------------------------------------
+// FILTER / SEARCH PRODUCTS
+// GET /products?search=...&category=...&brand=...&minPrice=...&maxPrice=...
+// ------------------------------------------------
+async function filterProducts() {
+    const search = document.getElementById("searchKeyword").value.trim();
+    const category = document.getElementById("category").value;
+    const brand = document.getElementById("brand").value;
+    const minPrice = document.getElementById("minPrice").value;
+    const maxPrice = document.getElementById("maxPrice").value;
+
+    const params = new URLSearchParams();
+    if (search) params.append("search", search);
+    if (category) params.append("category", category);
+    if (brand) params.append("brand", brand);
+    if (minPrice) params.append("minPrice", minPrice);
+    if (maxPrice) params.append("maxPrice", maxPrice);
+
+    let url = `${API_URL}/products`;
+    if (params.toString()) url += `?${params.toString()}`;
+
+    setMessage("Filtering products...", "loading");
+
+    try {
+        const response = await fetch(url, {
+            method: "GET",
+            headers: getHeaders()
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.message || `Filter failed (${response.status})`);
+        }
+
+        const rawList = extractProductList(data);
+        const products = rawList.map(normalizeProduct).filter(Boolean);
+
+        setMessage(`Found ${products.length} matching product(s).`, "success");
+        displayProducts(products);
+
+    } catch (error) {
+        console.error("filterProducts error:", error);
+        setMessage(`Filter failed: ${error.message}`, "error");
+        document.getElementById("productList").innerHTML = `<p style="color: var(--error-color);">${error.message}</p>`;
+    }
+}
+
+// ------------------------------------------------
+// GET PRODUCT BY ID
+// GET /products/:id
+// ------------------------------------------------
+async function getProductById() {
+    const productId = document.getElementById("productId").value.trim();
+
+    if (!productId) {
+        setMessage("Please enter a valid Product ID.", "error");
+        return;
+    }
+
+    setMessage("Searching product by ID...", "loading");
+
+    try {
+        const response = await fetch(`${API_URL}/products/${productId}`, {
+            method: "GET",
+            headers: getHeaders()
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.message || "Product not found");
+        }
+
+        const rawList = extractProductList(data);
+        const products = rawList.map(normalizeProduct).filter(Boolean);
+
+        if (products.length === 0) {
+            setMessage("No product found for the given ID.", "error");
+            document.getElementById("productList").innerHTML = "<p>No product matches that ID.</p>";
+            return;
+        }
+
+        setMessage(`Product found: ${products[0].name}`, "success");
+        displayProducts(products);
+
+    } catch (error) {
+        console.error("getProductById error:", error);
+        setMessage(`Search failed: ${error.message}`, "error");
+        document.getElementById("productList").innerHTML = `<p style="color: var(--error-color);">${error.message}</p>`;
+    }
+}
+
+// ------------------------------------------------
+// CREATE PRODUCT (admin)
+// POST /products/create
+// ------------------------------------------------
+async function createProduct() {
+    const body = {
+        name: document.getElementById("newName").value.trim(),
+        description: document.getElementById("newDescription").value.trim(),
+        category: document.getElementById("newCategory").value.trim(),
+        brand: document.getElementById("newBrand").value.trim(),
+        price: Number(document.getElementById("newPrice").value),
+        stock: Number(document.getElementById("newStock").value),
+        Image: document.getElementById("newImage").value.trim()
+    };
+
+    if (!body.name || !body.category || !body.price) {
+        setMessage("Name, category, and price are required fields.", "error");
+        return;
+    }
+
+    setMessage("Creating product...", "loading");
+
+    try {
+        const response = await fetch(`${API_URL}/products/create`, {
+            method: "POST",
+            headers: getHeaders(),
+            body: JSON.stringify(body)
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.message || `Create failed (${response.status})`);
+        }
+
+        setMessage("Product created successfully!", "success");
+        loadProducts();
+
+    } catch (error) {
+        console.error("createProduct error:", error);
+        setMessage(`Create failed: ${error.message}`, "error");
+    }
+}
+
+// ------------------------------------------------
+// UPDATE PRODUCT (admin)
+// PUT /products/update/:id
+// ------------------------------------------------
+async function updateProduct(productId) {
+    if (!productId) {
+        setMessage("Invalid Product ID for update.", "error");
+        return;
+    }
+
+    const newPrice = prompt("Enter new price (leave empty to skip):");
+    const newStock = prompt("Enter new stock quantity (leave empty to skip):");
+
+    const body = {};
+    if (newPrice !== null && newPrice.trim() !== "") body.price = Number(newPrice);
+    if (newStock !== null && newStock.trim() !== "") body.stock = Number(newStock);
+
+    if (Object.keys(body).length === 0) {
+        setMessage("Update cancelled. No new values entered.", "error");
+        return;
+    }
+
+    setMessage("Updating product...", "loading");
+
+    try {
+        const response = await fetch(`${API_URL}/products/update/${productId}`, {
+            method: "PUT",
+            headers: getHeaders(),
+            body: JSON.stringify(body)
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.message || `Update failed (${response.status})`);
+        }
+
+        setMessage("Product updated successfully!", "success");
+        loadProducts();
+
+    } catch (error) {
+        console.error("updateProduct error:", error);
+        setMessage(`Update failed: ${error.message}`, "error");
+    }
+}
+
+// ------------------------------------------------
+// DELETE PRODUCT (admin)
+// DELETE /products/delete/:id
+// ------------------------------------------------
+async function deleteProduct(productId) {
+    if (!productId) {
+        setMessage("Invalid Product ID for deletion.", "error");
+        return;
+    }
+
+    if (!confirm("Are you sure you want to delete this product?")) return;
+
+    setMessage("Deleting product...", "loading");
+
+    try {
+        const response = await fetch(`${API_URL}/products/delete/${productId}`, {
+            method: "DELETE",
+            headers: getHeaders()
+        });
+
+        let data = {};
+        const text = await response.text();
+        if (text) {
+            try { data = JSON.parse(text); } catch (_) {}
+        }
+
+        if (!response.ok) {
+            throw new Error(data.message || `Delete failed (${response.status})`);
+        }
+
+        setMessage("Product deleted successfully!", "success");
+        loadProducts();
+
+    } catch (error) {
+        console.error("deleteProduct error:", error);
+        setMessage(`Delete failed: ${error.message}`, "error");
+    }
+}
+
+// ------------------------------------------------
+// GET PRODUCT RATING
+// GET /products/:id/rating
+// ------------------------------------------------
+async function getProductRating(productId) {
+    if (!productId) return "N/A";
+    try {
+        const response = await fetch(`${API_URL}/products/${productId}/rating`);
+        const data = await response.json();
+
+        if (!response.ok) return "No ratings";
+        if (typeof data === "number") return `${data} ★`;
+        if (data.rating !== undefined) return `${data.rating} ★`;
+        if (data.averageRating !== undefined) return `${data.averageRating} ★`;
+        if (data.avgRating !== undefined) return `${data.avgRating} ★`;
+        return "No ratings";
+
+    } catch (error) {
+        return "No ratings";
+    }
+}
+
+// ------------------------------------------------
+// DISPLAY PRODUCTS (Instant synchronous render, no layout shifts)
+// ------------------------------------------------
+function displayProducts(products) {
+    const productList = document.getElementById("productList");
+    productList.innerHTML = "";
+
+    if (!Array.isArray(products) || products.length === 0) {
+        productList.innerHTML = "<p style='grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 40px;'>No products found matching your criteria.</p>";
+        return;
+    }
+
+    const fragment = document.createDocumentFragment();
+
+    products.forEach(product => {
+        const productDiv = document.createElement("div");
+        productDiv.className = "product-card";
+
+        const imageSrc = product.Image ? product.Image : 'https://via.placeholder.com/200x150?text=No+Image';
+        const pId = product._id || '';
+
+        productDiv.innerHTML = `
+            <div>
+                <img class="product-img" src="${imageSrc}" alt="${product.name}" onerror="this.onerror=null; this.src='https://via.placeholder.com/200x150?text=No+Image'">
+                <div>
+                    <span class="product-badge">${product.category}</span>
+                    <span class="product-badge">${product.brand}</span>
+                </div>
+                <h3 class="product-title">${product.name}</h3>
+                <p class="product-desc">${product.description}</p>
+                <div class="product-price">Rs. ${product.price}</div>
+                <div class="product-meta">
+                    <div>Stock: <strong>${product.stock}</strong></div>
+                    <div>Rating: <strong id="rating-${pId}">...</strong></div>
+                    <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px;">ID: ${pId || 'N/A'}</div>
+                </div>
+            </div>
+            <div class="card-actions">
+                <button type="button" class="btn btn-outline" onclick="viewProduct('${pId}')">View</button>
+                <button type="button" class="btn btn-primary" onclick="updateProduct('${pId}')">Update</button>
+                <button type="button" class="btn btn-danger" onclick="deleteProduct('${pId}')">Delete</button>
+            </div>
+        `;
+
+        fragment.appendChild(productDiv);
+    });
+
+    productList.appendChild(fragment);
+
+    // Fetch ratings in background asynchronously in parallel without blocking DOM rendering
+    products.forEach(async (product) => {
+        const pId = product._id || '';
+        if (!pId) return;
+        const rating = await getProductRating(pId);
+        const ratingEl = document.getElementById(`rating-${pId}`);
+        if (ratingEl) {
+            ratingEl.textContent = rating;
+        }
+    });
+}
+
+function viewProduct(productId) {
+    if (!productId) return;
+    window.location.href = `product.html?id=${productId}`;
+}
+
+function goToProfile() {
+    window.location.href = "profile.html";
+}
+
+function logout() {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    window.location.href = "First login page.html";
+}
+
+window.addEventListener("DOMContentLoaded", function () {
+    loadProducts();
+});
+
+</script>
+
+</body>
+</html>

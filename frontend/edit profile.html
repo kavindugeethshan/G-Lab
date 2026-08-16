@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>G Lab — Edit Profile</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <style>
+    :root {
+      --bg-color: #0f172a;
+      --card-bg: #1e293b;
+      --accent-color: #3b82f6;
+      --accent-hover: #2563eb;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --border-color: #334155;
+      --error-color: #ef4444;
+      --success-color: #10b981;
+    }
+
+    html {
+      overflow-y: scroll;
+      scroll-behavior: smooth;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      overflow-x: hidden;
+    }
+
+    .edit-card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 35px;
+      width: 100%;
+      max-width: 480px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+    }
+
+    .edit-card h2 {
+      font-size: 1.5rem;
+      color: var(--accent-color);
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    label {
+      display: block;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      font-weight: 500;
+      margin-bottom: 6px;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 10px 12px;
+      background-color: #0f172a;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      color: var(--text-main);
+      font-size: 0.95rem;
+    }
+
+    input:focus, textarea:focus {
+      outline: none;
+      border-color: var(--accent-color);
+    }
+
+    .preview-avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--accent-color);
+      margin-bottom: 10px;
+      display: block;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 25px;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 12px;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid transparent;
+      text-align: center;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background-color: var(--accent-color);
+      color: white;
+    }
+    .btn-primary:hover {
+      background-color: var(--accent-hover);
+    }
+
+    .btn-outline {
+      background: none;
+      border-color: var(--border-color);
+      color: var(--text-main);
+    }
+    .btn-outline:hover {
+      background-color: #334155;
+    }
+
+    #msg {
+      margin-top: 15px;
+      padding: 10px;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      text-align: center;
+      display: none;
+    }
+    #msg.success {
+      display: block;
+      background-color: rgba(16, 185, 129, 0.15);
+      color: var(--success-color);
+      border: 1px solid var(--success-color);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="edit-card">
+    <h2>Edit Profile</h2>
+
+    <form id="editProfileForm">
+      <div class="form-group">
+        <label for="firstname">First Name</label>
+        <input type="text" id="firstname" name="firstname" placeholder="First Name">
+      </div>
+
+      <div class="form-group">
+        <label for="lastname">Last Name</label>
+        <input type="text" id="lastname" name="lastname" placeholder="Last Name">
+      </div>
+
+      <div class="form-group">
+        <label for="Email">Email Address</label>
+        <input type="email" id="Email" name="Email" placeholder="email@example.com" required>
+      </div>
+
+      <div class="form-group">
+        <label for="Mobile">Mobile Number</label>
+        <input type="text" id="Mobile" name="Mobile" placeholder="0705566015">
+      </div>
+
+      <div class="form-group">
+        <label for="Bio">Bio</label>
+        <input type="text" id="Bio" name="Bio" placeholder="Tell us about yourself">
+      </div>
+
+      <div class="form-group">
+        <label for="avatar">Profile Picture URL</label>
+        <input type="text" id="avatar" name="avatar" placeholder="https://example.com/image.jpg">
+      </div>
+
+      <div id="msg"></div>
+
+      <div class="action-buttons">
+        <button type="button" class="btn btn-outline" onclick="window.location.href='profile.html'">Cancel</button>
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    const token = localStorage.getItem("token");
+    if (!token) {
+      window.location.href = "First login page.html";
+    }
+
+    let currentUser = {};
+
+    function loadProfileForEdit() {
+      try {
+        const rawUser = localStorage.getItem("user");
+        if (rawUser) {
+          currentUser = JSON.parse(rawUser);
+
+          document.getElementById("firstname").value = currentUser.firstname || "";
+          document.getElementById("lastname").value = currentUser.lastname || "";
+          document.getElementById("Email").value = currentUser.email || "";
+          document.getElementById("Mobile").value = currentUser.phone || currentUser.mobile || currentUser['Mobile-Number'] || "";
+          document.getElementById("Bio").value = currentUser.bio || "";
+          document.getElementById("avatar").value = currentUser.avatar || currentUser.profilePic || currentUser.image || "";
+        }
+      } catch (err) {
+        console.error("Error loading user edit:", err);
+      }
+    }
+
+    document.getElementById("editProfileForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      currentUser.firstname = document.getElementById("firstname").value.trim();
+      currentUser.lastname = document.getElementById("lastname").value.trim();
+      currentUser.email = document.getElementById("Email").value.trim();
+      currentUser.phone = document.getElementById("Mobile").value.trim();
+      currentUser.mobile = currentUser.phone;
+      currentUser.bio = document.getElementById("Bio").value.trim();
+      currentUser.avatar = document.getElementById("avatar").value.trim();
+
+      localStorage.setItem("user", JSON.stringify(currentUser));
+
+      const msg = document.getElementById("msg");
+      msg.textContent = "Profile updated successfully! Redirecting...";
+      msg.className = "success";
+
+      setTimeout(() => {
+        window.location.href = "profile.html";
+      }, 800);
+    });
+
+    window.addEventListener("DOMContentLoaded", loadProfileForEdit);
+  </script>
+</body>
+</html>

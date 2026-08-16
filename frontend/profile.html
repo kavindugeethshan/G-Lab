@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>G Lab — My Profile</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <style>
+    :root {
+      --bg-color: #0f172a;
+      --card-bg: #1e293b;
+      --accent-color: #3b82f6;
+      --accent-hover: #2563eb;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --border-color: #334155;
+      --error-color: #ef4444;
+    }
+
+    html {
+      overflow-y: scroll;
+      scroll-behavior: smooth;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      overflow-x: hidden;
+    }
+
+    .profile-card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 35px;
+      width: 100%;
+      max-width: 480px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+    }
+
+    .profile-header {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    .avatar {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid var(--accent-color);
+      margin-bottom: 12px;
+      background-color: #0f172a;
+    }
+
+    .profile-header h2 {
+      font-size: 1.5rem;
+      color: var(--text-main);
+    }
+
+    .profile-header span {
+      display: inline-block;
+      margin-top: 4px;
+      padding: 3px 10px;
+      background-color: #334155;
+      color: var(--accent-color);
+      border-radius: 12px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .info-group {
+      margin-bottom: 16px;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 10px;
+    }
+
+    .info-group:last-of-type {
+      border-bottom: none;
+    }
+
+    .info-label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+
+    .info-value {
+      font-size: 1rem;
+      color: var(--text-main);
+      font-weight: 500;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 25px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 10px 14px;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid transparent;
+      text-align: center;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background-color: var(--accent-color);
+      color: white;
+    }
+    .btn-primary:hover {
+      background-color: var(--accent-hover);
+    }
+
+    .btn-outline {
+      background: none;
+      border-color: var(--border-color);
+      color: var(--text-main);
+    }
+    .btn-outline:hover {
+      background-color: #334155;
+    }
+
+    .btn-danger {
+      background-color: rgba(239, 68, 68, 0.15);
+      color: var(--error-color);
+      border-color: var(--error-color);
+    }
+    .btn-danger:hover {
+      background-color: var(--error-color);
+      color: white;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="profile-card">
+    <div class="profile-header">
+      <img id="profilePic" class="avatar" src="https://via.placeholder.com/100?text=User" alt="Profile Picture">
+      <h2 id="userName">User Profile</h2>
+      <span id="userRole">Customer</span>
+    </div>
+
+    <div class="info-group">
+      <div class="info-label">Email Address</div>
+      <div class="info-value" id="userEmail">-</div>
+    </div>
+
+    <div class="info-group">
+      <div class="info-label">Mobile Number</div>
+      <div class="info-value" id="userPhone">Not provided</div>
+    </div>
+
+    <div class="info-group">
+      <div class="info-label">Bio</div>
+      <div class="info-value" id="userBio">No bio added yet</div>
+    </div>
+
+    <div class="action-buttons">
+      <button type="button" class="btn btn-outline" onclick="window.location.href='home.html'">Products</button>
+      <button type="button" class="btn btn-primary" onclick="window.location.href='edit profile.html'">Edit Profile</button>
+      <button type="button" class="btn btn-danger" onclick="logout()">Log Out</button>
+    </div>
+  </div>
+
+  <script>
+    const token = localStorage.getItem("token");
+    if (!token) {
+      window.location.href = "First login page.html";
+    }
+
+    function loadUserProfile() {
+      try {
+        const rawUser = localStorage.getItem("user");
+        if (rawUser) {
+          const user = JSON.parse(rawUser);
+          
+          const fullName = user.firstname ? `${user.firstname} ${user.lastname || ''}`.trim() : (user.name || user.email || 'User Profile');
+          document.getElementById("userName").textContent = fullName;
+          document.getElementById("userEmail").textContent = user.email || "Not specified";
+          document.getElementById("userPhone").textContent = user.phone || user.mobile || user['Mobile-Number'] || "Not provided";
+          document.getElementById("userBio").textContent = user.bio || "No bio added yet";
+          document.getElementById("userRole").textContent = user.role || "Member";
+
+          if (user.avatar || user.profilePic || user.image) {
+            document.getElementById("profilePic").src = user.avatar || user.profilePic || user.image;
+          }
+        }
+      } catch (err) {
+        console.error("Error loading profile:", err);
+      }
+    }
+
+    function logout() {
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      window.location.href = "First login page.html";
+    }
+
+    window.addEventListener("DOMContentLoaded", loadUserProfile);
+  </script>
+</body>
+</html>
