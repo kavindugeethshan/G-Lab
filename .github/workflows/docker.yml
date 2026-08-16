@@ -7,8 +7,8 @@ on:
 
 jobs:
   docker:
-    name: Build and Push Docker Image
-    runs-on: ubuntu-latest
+    name: Build, Push and Deploy
+    runs-on: self-hosted
 
     permissions:
       contents: read
@@ -33,3 +33,14 @@ jobs:
       - name: Push Docker image
         run: |
           docker push ghcr.io/${{ github.repository_owner }}/g-lab-backend:latest
+
+      - name: Deploy container
+        run: |
+          docker stop g-lab-backend || true
+          docker rm g-lab-backend || true
+
+          docker run -d \
+            --name g-lab-backend \
+            -p 3001:3001 \
+            --env-file /home/prabavi/.env \
+            ghcr.io/${{ github.repository_owner }}/g-lab-backend:latest
