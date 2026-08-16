@@ -3,6 +3,8 @@ import { Server } from "socket.io";
 import http from "http";
 import mongoose from "mongoose";
 import cors from "cors";
+import dotenv from "dotenv";
+dotenv.config();
 
 import userRouter from "./routers/userRouter.js";
 import productRouter from "./routers/productRouter.js";
@@ -33,9 +35,7 @@ io.on("connection", (socket) => {
 });
 
 // MongoDB connection
-const mongoDBURI =
-  "mongodb://admin:admin@ac-o01kguj-shard-00-00.rndjqi8.mongodb.net:27017,ac-o01kguj-shard-00-01.rndjqi8.mongodb.net:27017,ac-o01kguj-shard-00-02.rndjqi8.mongodb.net:27017/?ssl=true&replicaSet=atlas-pvbvb0-shard-0&authSource=admin&appName=Cluster-GLab";
-
+const mongoDBURI =process.env.MONGO_URI;
 mongoose.connect(mongoDBURI).then(() => {
   console.log("Connected to MongoDB successfully ");
 });
@@ -49,6 +49,7 @@ app.use("/", reviewRouter);
 
 
 
-server.listen(3001, () => {
-  console.log("Server is running on port 3001");
+const PORT = process.env.PORT || 3001;
+server.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });
