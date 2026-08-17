@@ -39,12 +39,6 @@ jobs:
             -t ghcr.io/${{ github.repository_owner }}/g-lab-backend:latest \
             .
 
-      - name: Build frontend Docker image
-        working-directory: ${{ github.workspace }}
-        run: |
-           docker build \
-             -t ghcr.io/${{ github.repository_owner }}/g-lab-frontend:latest \
-            ./frontend
 
       - name: Push backend Docker image
         run: |
