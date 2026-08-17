@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>G Lab - Computer Products</title>
     <style>
         :root {
-            --bg-color: #0f172a;
+            --bg-color: #ffffff;
             --card-bg: #1e293b;
             --card-hover: #334155;
             --accent-color: #3b82f6;
@@ -92,6 +93,7 @@
             background-color: var(--accent-color);
             color: white;
         }
+
         .btn-primary:hover {
             background-color: var(--accent-hover);
         }
@@ -101,6 +103,7 @@
             border-color: var(--border-color);
             color: var(--text-main);
         }
+
         .btn-outline:hover {
             background-color: var(--card-hover);
         }
@@ -110,6 +113,7 @@
             color: var(--error-color);
             border-color: var(--error-color);
         }
+
         .btn-danger:hover {
             background-color: var(--error-color);
             color: white;
@@ -157,7 +161,8 @@
             font-weight: 500;
         }
 
-        input, select {
+        input,
+        select {
             padding: 10px;
             background-color: #0f172a;
             border: 1px solid var(--border-color);
@@ -166,7 +171,8 @@
             font-size: 0.9rem;
         }
 
-        input:focus, select:focus {
+        input:focus,
+        select:focus {
             outline: none;
             border-color: var(--accent-color);
         }
@@ -184,18 +190,21 @@
             font-size: 0.95rem;
             display: none;
         }
+
         #message.error {
             display: block;
             background-color: rgba(239, 68, 68, 0.15);
             color: var(--error-color);
             border: 1px solid var(--error-color);
         }
+
         #message.success {
             display: block;
             background-color: rgba(16, 185, 129, 0.15);
             color: var(--success-color);
             border: 1px solid var(--success-color);
         }
+
         #message.loading {
             display: block;
             background-color: rgba(59, 130, 246, 0.15);
@@ -299,507 +308,509 @@
         }
     </style>
 </head>
+
 <body>
 
-<header>
-    <div class="logo-title">
-        <h1>G Lab</h1>
-        <span>Computer Parts & Accessories</span>
-    </div>
-    <div class="nav-actions">
-        <span class="user-greeting" id="userGreeting"></span>
-        <button type="button" class="btn btn-outline" onclick="goToProfile()">Profile</button>
-        <button type="button" class="btn btn-danger" onclick="logout()">Logout</button>
-    </div>
-</header>
-
-<div class="container">
-
-    <!-- Status Message -->
-    <div id="message"></div>
-
-    <!-- Filter Products -->
-    <div class="section-card">
-        <h3>🔍 Search & Filter Products</h3>
-        <div class="grid-inputs">
-            <div class="form-group">
-                <label for="searchKeyword">Keyword Search</label>
-                <input type="text" id="searchKeyword" placeholder="e.g. gaming, ryzen">
-            </div>
-
-            <div class="form-group">
-                <label for="category">Category</label>
-                <select id="category">
-                    <option value="">All Categories</option>
-                    <option value="CPU">CPU</option>
-                    <option value="GPU">GPU</option>
-                    <option value="RAM">RAM</option>
-                    <option value="Motherboard">Motherboard</option>
-                    <option value="Storage">Storage</option>
-                    <option value="PSU">PSU</option>
-                    <option value="Case">Case</option>
-                    <option value="phone">Phone</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label for="brand">Brand</label>
-                <select id="brand">
-                    <option value="">All Brands</option>
-                    <option value="Intel">Intel</option>
-                    <option value="AMD">AMD</option>
-                    <option value="AMD 5">AMD 5</option>
-                    <option value="NVIDIA">NVIDIA</option>
-                    <option value="ASUS">ASUS</option>
-                    <option value="MSI">MSI</option>
-                    <option value="Gigabyte">Gigabyte</option>
-                    <option value="Corsair">Corsair</option>
-                    <option value="Kingston">Kingston</option>
-                    <option value="Samsung">Samsung</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label for="minPrice">Minimum Price (Rs.)</label>
-                <input type="number" id="minPrice" min="0" placeholder="Min price">
-            </div>
-
-            <div class="form-group">
-                <label for="maxPrice">Maximum Price (Rs.)</label>
-                <input type="number" id="maxPrice" min="0" placeholder="Max price">
-            </div>
+    <header>
+        <div class="logo-title">
+            <h1>G Lab</h1>
+            <span>Computer Parts & Accessories</span>
         </div>
-
-        <div class="button-row">
-            <button type="button" class="btn btn-primary" onclick="filterProducts()">Apply Filters</button>
-            <button type="button" class="btn btn-outline" onclick="loadProducts()">Reset / Show All</button>
+        <div class="nav-actions">
+            <span class="user-greeting" id="userGreeting"></span>
+            <button type="button" class="btn btn-outline" onclick="goToProfile()">Profile</button>
+            <button type="button" class="btn btn-danger" onclick="logout()">Logout</button>
         </div>
-    </div>
+    </header>
 
-    <!-- Search Product by ID -->
-    <div class="section-card">
-        <h3>🆔 Find Product By ID</h3>
-        <div class="grid-inputs" style="grid-template-columns: 1fr auto;">
-            <div class="form-group">
-                <input type="text" id="productId" placeholder="Enter Product ID (e.g. 64a1b2c3...)">
-            </div>
-            <button type="button" class="btn btn-primary" style="height: 42px; margin-top: auto;" onclick="getProductById()">Search by ID</button>
-        </div>
-    </div>
+    <div class="container">
 
-    <!-- Create Product (Admin) -->
-    <div class="section-card">
-        <h3>➕ Add New Product (Admin)</h3>
-        <fieldset class="admin-fieldset">
+        <!-- Status Message -->
+        <div id="message"></div>
+
+        <!-- Filter Products -->
+        <div class="section-card">
+            <h3>🔍 Search & Filter Products</h3>
             <div class="grid-inputs">
                 <div class="form-group">
-                    <label for="newName">Product Name*</label>
-                    <input type="text" id="newName" placeholder="e.g. AMD Ryzen 5 5600">
+                    <label for="searchKeyword">Keyword Search</label>
+                    <input type="text" id="searchKeyword" placeholder="e.g. gaming, ryzen">
                 </div>
+
                 <div class="form-group">
-                    <label for="newCategory">Category*</label>
-                    <input type="text" id="newCategory" placeholder="e.g. CPU">
+                    <label for="category">Category</label>
+                    <select id="category">
+                        <option value="">All Categories</option>
+                        <option value="CPU">CPU</option>
+                        <option value="GPU">GPU</option>
+                        <option value="RAM">RAM</option>
+                        <option value="Motherboard">Motherboard</option>
+                        <option value="Storage">Storage</option>
+                        <option value="PSU">PSU</option>
+                        <option value="Case">Case</option>
+                        <option value="phone">Phone</option>
+                    </select>
                 </div>
+
                 <div class="form-group">
-                    <label for="newBrand">Brand</label>
-                    <input type="text" id="newBrand" placeholder="e.g. AMD">
+                    <label for="brand">Brand</label>
+                    <select id="brand">
+                        <option value="">All Brands</option>
+                        <option value="Intel">Intel</option>
+                        <option value="AMD">AMD</option>
+                        <option value="AMD 5">AMD 5</option>
+                        <option value="NVIDIA">NVIDIA</option>
+                        <option value="ASUS">ASUS</option>
+                        <option value="MSI">MSI</option>
+                        <option value="Gigabyte">Gigabyte</option>
+                        <option value="Corsair">Corsair</option>
+                        <option value="Kingston">Kingston</option>
+                        <option value="Samsung">Samsung</option>
+                    </select>
                 </div>
+
                 <div class="form-group">
-                    <label for="newPrice">Price (Rs.)*</label>
-                    <input type="number" id="newPrice" placeholder="e.g. 35000">
+                    <label for="minPrice">Minimum Price (Rs.)</label>
+                    <input type="number" id="minPrice" min="0" placeholder="Min price">
                 </div>
+
                 <div class="form-group">
-                    <label for="newStock">Stock Quantity</label>
-                    <input type="number" id="newStock" placeholder="e.g. 10">
-                </div>
-                <div class="form-group">
-                    <label for="newImage">Image Name / URL</label>
-                    <input type="text" id="newImage" placeholder="e.g. ryzen5-5600.jpg">
+                    <label for="maxPrice">Maximum Price (Rs.)</label>
+                    <input type="number" id="maxPrice" min="0" placeholder="Max price">
                 </div>
             </div>
-            <div class="form-group" style="margin-bottom: 15px;">
-                <label for="newDescription">Description</label>
-                <input type="text" id="newDescription" placeholder="Enter product description...">
+
+            <div class="button-row">
+                <button type="button" class="btn btn-primary" onclick="filterProducts()">Apply Filters</button>
+                <button type="button" class="btn btn-outline" onclick="loadProducts()">Reset / Show All</button>
             </div>
-            <button type="button" class="btn btn-primary" onclick="createProduct()">Create Product</button>
-        </fieldset>
+        </div>
+
+        <!-- Search Product by ID -->
+        <div class="section-card">
+            <h3>🆔 Find Product By ID</h3>
+            <div class="grid-inputs" style="grid-template-columns: 1fr auto;">
+                <div class="form-group">
+                    <input type="text" id="productId" placeholder="Enter Product ID (e.g. 64a1b2c3...)">
+                </div>
+                <button type="button" class="btn btn-primary" style="height: 42px; margin-top: auto;"
+                    onclick="getProductById()">Search by ID</button>
+            </div>
+        </div>
+
+        <!-- Create Product (Admin) -->
+        <div class="section-card">
+            <h3>➕ Add New Product (Admin)</h3>
+            <fieldset class="admin-fieldset">
+                <div class="grid-inputs">
+                    <div class="form-group">
+                        <label for="newName">Product Name*</label>
+                        <input type="text" id="newName" placeholder="e.g. AMD Ryzen 5 5600">
+                    </div>
+                    <div class="form-group">
+                        <label for="newCategory">Category*</label>
+                        <input type="text" id="newCategory" placeholder="e.g. CPU">
+                    </div>
+                    <div class="form-group">
+                        <label for="newBrand">Brand</label>
+                        <input type="text" id="newBrand" placeholder="e.g. AMD">
+                    </div>
+                    <div class="form-group">
+                        <label for="newPrice">Price (Rs.)*</label>
+                        <input type="number" id="newPrice" placeholder="e.g. 35000">
+                    </div>
+                    <div class="form-group">
+                        <label for="newStock">Stock Quantity</label>
+                        <input type="number" id="newStock" placeholder="e.g. 10">
+                    </div>
+                    <div class="form-group">
+                        <label for="newImage">Image Name / URL</label>
+                        <input type="text" id="newImage" placeholder="e.g. ryzen5-5600.jpg">
+                    </div>
+                </div>
+                <div class="form-group" style="margin-bottom: 15px;">
+                    <label for="newDescription">Description</label>
+                    <input type="text" id="newDescription" placeholder="Enter product description...">
+                </div>
+                <button type="button" class="btn btn-primary" onclick="createProduct()">Create Product</button>
+            </fieldset>
+        </div>
+
+        <h2>Available Products</h2>
+        <br>
+        <div id="productList" class="products-grid">
+            <p>Loading products...</p>
+        </div>
+
     </div>
 
-    <h2>Available Products</h2>
-    <br>
-    <div id="productList" class="products-grid">
-        <p>Loading products...</p>
-    </div>
+    <script>
 
-</div>
+        const API_URL = "http://192.168.1.43:3001";
+        const token = localStorage.getItem("token");
 
-<script>
-
-const API_URL = "http://192.168.1.43:3001";
-const token = localStorage.getItem("token");
-
-if (!token) {
-    window.location.href = "First login page.html";
-}
-
-// Display user info in header
-try {
-    const rawUser = localStorage.getItem("user");
-    if (rawUser) {
-        const u = JSON.parse(rawUser);
-        const name = u.firstname ? `${u.firstname} ${u.lastname || ''}` : (u.name || u.email || 'User');
-        document.getElementById("userGreeting").textContent = `Logged in as: ${name}`;
-    }
-} catch (e) {
-    console.error("User parse error", e);
-}
-
-function getHeaders() {
-    return {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`
-    };
-}
-
-function setMessage(text, type) {
-    const el = document.getElementById("message");
-    if (!text) {
-        el.style.display = "none";
-        return;
-    }
-    el.textContent = text;
-    el.className = type || "";
-    console.log(`[status:${type || "info"}]`, text);
-}
-
-// Extract product list safely regardless of backend wrapping shape
-function extractProductList(data) {
-    if (!data) return [];
-    if (Array.isArray(data)) return data;
-    if (data.products && Array.isArray(data.products)) return data.products;
-    if (data.data && Array.isArray(data.data)) return data.data;
-    if (data.items && Array.isArray(data.items)) return data.items;
-    
-    // Single product objects
-    if (data.product && typeof data.product === "object") return [data.product];
-    if (data.data && typeof data.data === "object" && !Array.isArray(data.data)) return [data.data];
-    if (typeof data === "object" && (data._id || data.id || data.name)) return [data];
-    
-    return [];
-}
-
-// Normalize product properties so none are undefined
-function normalizeProduct(p) {
-    if (!p || typeof p !== "object") return null;
-    return {
-        _id: p._id || p.id || p.productId || "",
-        name: p.name || p.title || p.productName || "Unnamed Product",
-        description: p.description || p.desc || "No description available",
-        category: p.category || p.cat || "N/A",
-        brand: p.brand || "N/A",
-        price: p.price !== undefined && p.price !== null ? p.price : "N/A",
-        stock: p.stock !== undefined && p.stock !== null ? p.stock : "N/A",
-        Image: p.Image || p.image || p.imageUrl || p.img || ""
-    };
-}
-
-// ------------------------------------------------
-// GET ALL PRODUCTS
-// GET /products
-// ------------------------------------------------
-async function loadProducts() {
-    setMessage("Loading products...", "loading");
-    try {
-        const response = await fetch(`${API_URL}/products`, {
-            method: "GET",
-            headers: getHeaders()
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-            throw new Error(data.message || `Request failed (${response.status})`);
+        if (!token) {
+            window.location.href = "First login page.html";
         }
 
-        const rawList = extractProductList(data);
-        const products = rawList.map(normalizeProduct).filter(Boolean);
-
-        setMessage(`Loaded ${products.length} product(s).`, "success");
-        displayProducts(products);
-
-    } catch (error) {
-        console.error("loadProducts error:", error);
-        setMessage(`Failed to load products: ${error.message}`, "error");
-        document.getElementById("productList").innerHTML = `<p style="color: var(--error-color);">Error loading products: ${error.message}</p>`;
-    }
-}
-
-// ------------------------------------------------
-// FILTER / SEARCH PRODUCTS
-// GET /products?search=...&category=...&brand=...&minPrice=...&maxPrice=...
-// ------------------------------------------------
-async function filterProducts() {
-    const search = document.getElementById("searchKeyword").value.trim();
-    const category = document.getElementById("category").value;
-    const brand = document.getElementById("brand").value;
-    const minPrice = document.getElementById("minPrice").value;
-    const maxPrice = document.getElementById("maxPrice").value;
-
-    const params = new URLSearchParams();
-    if (search) params.append("search", search);
-    if (category) params.append("category", category);
-    if (brand) params.append("brand", brand);
-    if (minPrice) params.append("minPrice", minPrice);
-    if (maxPrice) params.append("maxPrice", maxPrice);
-
-    let url = `${API_URL}/products`;
-    if (params.toString()) url += `?${params.toString()}`;
-
-    setMessage("Filtering products...", "loading");
-
-    try {
-        const response = await fetch(url, {
-            method: "GET",
-            headers: getHeaders()
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-            throw new Error(data.message || `Filter failed (${response.status})`);
+        // Display user info in header
+        try {
+            const rawUser = localStorage.getItem("user");
+            if (rawUser) {
+                const u = JSON.parse(rawUser);
+                const name = u.firstname ? `${u.firstname} ${u.lastname || ''}` : (u.name || u.email || 'User');
+                document.getElementById("userGreeting").textContent = `Logged in as: ${name}`;
+            }
+        } catch (e) {
+            console.error("User parse error", e);
         }
 
-        const rawList = extractProductList(data);
-        const products = rawList.map(normalizeProduct).filter(Boolean);
-
-        setMessage(`Found ${products.length} matching product(s).`, "success");
-        displayProducts(products);
-
-    } catch (error) {
-        console.error("filterProducts error:", error);
-        setMessage(`Filter failed: ${error.message}`, "error");
-        document.getElementById("productList").innerHTML = `<p style="color: var(--error-color);">${error.message}</p>`;
-    }
-}
-
-// ------------------------------------------------
-// GET PRODUCT BY ID
-// GET /products/:id
-// ------------------------------------------------
-async function getProductById() {
-    const productId = document.getElementById("productId").value.trim();
-
-    if (!productId) {
-        setMessage("Please enter a valid Product ID.", "error");
-        return;
-    }
-
-    setMessage("Searching product by ID...", "loading");
-
-    try {
-        const response = await fetch(`${API_URL}/products/${productId}`, {
-            method: "GET",
-            headers: getHeaders()
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-            throw new Error(data.message || "Product not found");
+        function getHeaders() {
+            return {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            };
         }
 
-        const rawList = extractProductList(data);
-        const products = rawList.map(normalizeProduct).filter(Boolean);
-
-        if (products.length === 0) {
-            setMessage("No product found for the given ID.", "error");
-            document.getElementById("productList").innerHTML = "<p>No product matches that ID.</p>";
-            return;
+        function setMessage(text, type) {
+            const el = document.getElementById("message");
+            if (!text) {
+                el.style.display = "none";
+                return;
+            }
+            el.textContent = text;
+            el.className = type || "";
+            console.log(`[status:${type || "info"}]`, text);
         }
 
-        setMessage(`Product found: ${products[0].name}`, "success");
-        displayProducts(products);
+        // Extract product list safely regardless of backend wrapping shape
+        function extractProductList(data) {
+            if (!data) return [];
+            if (Array.isArray(data)) return data;
+            if (data.products && Array.isArray(data.products)) return data.products;
+            if (data.data && Array.isArray(data.data)) return data.data;
+            if (data.items && Array.isArray(data.items)) return data.items;
 
-    } catch (error) {
-        console.error("getProductById error:", error);
-        setMessage(`Search failed: ${error.message}`, "error");
-        document.getElementById("productList").innerHTML = `<p style="color: var(--error-color);">${error.message}</p>`;
-    }
-}
+            // Single product objects
+            if (data.product && typeof data.product === "object") return [data.product];
+            if (data.data && typeof data.data === "object" && !Array.isArray(data.data)) return [data.data];
+            if (typeof data === "object" && (data._id || data.id || data.name)) return [data];
 
-// ------------------------------------------------
-// CREATE PRODUCT (admin)
-// POST /products/create
-// ------------------------------------------------
-async function createProduct() {
-    const body = {
-        name: document.getElementById("newName").value.trim(),
-        description: document.getElementById("newDescription").value.trim(),
-        category: document.getElementById("newCategory").value.trim(),
-        brand: document.getElementById("newBrand").value.trim(),
-        price: Number(document.getElementById("newPrice").value),
-        stock: Number(document.getElementById("newStock").value),
-        Image: document.getElementById("newImage").value.trim()
-    };
-
-    if (!body.name || !body.category || !body.price) {
-        setMessage("Name, category, and price are required fields.", "error");
-        return;
-    }
-
-    setMessage("Creating product...", "loading");
-
-    try {
-        const response = await fetch(`${API_URL}/products/create`, {
-            method: "POST",
-            headers: getHeaders(),
-            body: JSON.stringify(body)
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-            throw new Error(data.message || `Create failed (${response.status})`);
+            return [];
         }
 
-        setMessage("Product created successfully!", "success");
-        loadProducts();
-
-    } catch (error) {
-        console.error("createProduct error:", error);
-        setMessage(`Create failed: ${error.message}`, "error");
-    }
-}
-
-// ------------------------------------------------
-// UPDATE PRODUCT (admin)
-// PUT /products/update/:id
-// ------------------------------------------------
-async function updateProduct(productId) {
-    if (!productId) {
-        setMessage("Invalid Product ID for update.", "error");
-        return;
-    }
-
-    const newPrice = prompt("Enter new price (leave empty to skip):");
-    const newStock = prompt("Enter new stock quantity (leave empty to skip):");
-
-    const body = {};
-    if (newPrice !== null && newPrice.trim() !== "") body.price = Number(newPrice);
-    if (newStock !== null && newStock.trim() !== "") body.stock = Number(newStock);
-
-    if (Object.keys(body).length === 0) {
-        setMessage("Update cancelled. No new values entered.", "error");
-        return;
-    }
-
-    setMessage("Updating product...", "loading");
-
-    try {
-        const response = await fetch(`${API_URL}/products/update/${productId}`, {
-            method: "PUT",
-            headers: getHeaders(),
-            body: JSON.stringify(body)
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-            throw new Error(data.message || `Update failed (${response.status})`);
+        // Normalize product properties so none are undefined
+        function normalizeProduct(p) {
+            if (!p || typeof p !== "object") return null;
+            return {
+                _id: p._id || p.id || p.productId || "",
+                name: p.name || p.title || p.productName || "Unnamed Product",
+                description: p.description || p.desc || "No description available",
+                category: p.category || p.cat || "N/A",
+                brand: p.brand || "N/A",
+                price: p.price !== undefined && p.price !== null ? p.price : "N/A",
+                stock: p.stock !== undefined && p.stock !== null ? p.stock : "N/A",
+                Image: p.Image || p.image || p.imageUrl || p.img || ""
+            };
         }
 
-        setMessage("Product updated successfully!", "success");
-        loadProducts();
+        // ------------------------------------------------
+        // GET ALL PRODUCTS
+        // GET /products
+        // ------------------------------------------------
+        async function loadProducts() {
+            setMessage("Loading products...", "loading");
+            try {
+                const response = await fetch(`${API_URL}/products`, {
+                    method: "GET",
+                    headers: getHeaders()
+                });
 
-    } catch (error) {
-        console.error("updateProduct error:", error);
-        setMessage(`Update failed: ${error.message}`, "error");
-    }
-}
+                const data = await response.json();
 
-// ------------------------------------------------
-// DELETE PRODUCT (admin)
-// DELETE /products/delete/:id
-// ------------------------------------------------
-async function deleteProduct(productId) {
-    if (!productId) {
-        setMessage("Invalid Product ID for deletion.", "error");
-        return;
-    }
+                if (!response.ok) {
+                    throw new Error(data.message || `Request failed (${response.status})`);
+                }
 
-    if (!confirm("Are you sure you want to delete this product?")) return;
+                const rawList = extractProductList(data);
+                const products = rawList.map(normalizeProduct).filter(Boolean);
 
-    setMessage("Deleting product...", "loading");
+                setMessage(`Loaded ${products.length} product(s).`, "success");
+                displayProducts(products);
 
-    try {
-        const response = await fetch(`${API_URL}/products/delete/${productId}`, {
-            method: "DELETE",
-            headers: getHeaders()
-        });
-
-        let data = {};
-        const text = await response.text();
-        if (text) {
-            try { data = JSON.parse(text); } catch (_) {}
+            } catch (error) {
+                console.error("loadProducts error:", error);
+                setMessage(`Failed to load products: ${error.message}`, "error");
+                document.getElementById("productList").innerHTML = `<p style="color: var(--error-color);">Error loading products: ${error.message}</p>`;
+            }
         }
 
-        if (!response.ok) {
-            throw new Error(data.message || `Delete failed (${response.status})`);
+        // ------------------------------------------------
+        // FILTER / SEARCH PRODUCTS
+        // GET /products?search=...&category=...&brand=...&minPrice=...&maxPrice=...
+        // ------------------------------------------------
+        async function filterProducts() {
+            const search = document.getElementById("searchKeyword").value.trim();
+            const category = document.getElementById("category").value;
+            const brand = document.getElementById("brand").value;
+            const minPrice = document.getElementById("minPrice").value;
+            const maxPrice = document.getElementById("maxPrice").value;
+
+            const params = new URLSearchParams();
+            if (search) params.append("search", search);
+            if (category) params.append("category", category);
+            if (brand) params.append("brand", brand);
+            if (minPrice) params.append("minPrice", minPrice);
+            if (maxPrice) params.append("maxPrice", maxPrice);
+
+            let url = `${API_URL}/products`;
+            if (params.toString()) url += `?${params.toString()}`;
+
+            setMessage("Filtering products...", "loading");
+
+            try {
+                const response = await fetch(url, {
+                    method: "GET",
+                    headers: getHeaders()
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.message || `Filter failed (${response.status})`);
+                }
+
+                const rawList = extractProductList(data);
+                const products = rawList.map(normalizeProduct).filter(Boolean);
+
+                setMessage(`Found ${products.length} matching product(s).`, "success");
+                displayProducts(products);
+
+            } catch (error) {
+                console.error("filterProducts error:", error);
+                setMessage(`Filter failed: ${error.message}`, "error");
+                document.getElementById("productList").innerHTML = `<p style="color: var(--error-color);">${error.message}</p>`;
+            }
         }
 
-        setMessage("Product deleted successfully!", "success");
-        loadProducts();
+        // ------------------------------------------------
+        // GET PRODUCT BY ID
+        // GET /products/:id
+        // ------------------------------------------------
+        async function getProductById() {
+            const productId = document.getElementById("productId").value.trim();
 
-    } catch (error) {
-        console.error("deleteProduct error:", error);
-        setMessage(`Delete failed: ${error.message}`, "error");
-    }
-}
+            if (!productId) {
+                setMessage("Please enter a valid Product ID.", "error");
+                return;
+            }
 
-// ------------------------------------------------
-// GET PRODUCT RATING
-// GET /products/:id/rating
-// ------------------------------------------------
-async function getProductRating(productId) {
-    if (!productId) return "N/A";
-    try {
-        const response = await fetch(`${API_URL}/products/${productId}/rating`);
-        const data = await response.json();
+            setMessage("Searching product by ID...", "loading");
 
-        if (!response.ok) return "No ratings";
-        if (typeof data === "number") return `${data} ★`;
-        if (data.rating !== undefined) return `${data.rating} ★`;
-        if (data.averageRating !== undefined) return `${data.averageRating} ★`;
-        if (data.avgRating !== undefined) return `${data.avgRating} ★`;
-        return "No ratings";
+            try {
+                const response = await fetch(`${API_URL}/products/${productId}`, {
+                    method: "GET",
+                    headers: getHeaders()
+                });
 
-    } catch (error) {
-        return "No ratings";
-    }
-}
+                const data = await response.json();
 
-// ------------------------------------------------
-// DISPLAY PRODUCTS (Instant synchronous render, no layout shifts)
-// ------------------------------------------------
-function displayProducts(products) {
-    const productList = document.getElementById("productList");
-    productList.innerHTML = "";
+                if (!response.ok) {
+                    throw new Error(data.message || "Product not found");
+                }
 
-    if (!Array.isArray(products) || products.length === 0) {
-        productList.innerHTML = "<p style='grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 40px;'>No products found matching your criteria.</p>";
-        return;
-    }
+                const rawList = extractProductList(data);
+                const products = rawList.map(normalizeProduct).filter(Boolean);
 
-    const fragment = document.createDocumentFragment();
+                if (products.length === 0) {
+                    setMessage("No product found for the given ID.", "error");
+                    document.getElementById("productList").innerHTML = "<p>No product matches that ID.</p>";
+                    return;
+                }
 
-    products.forEach(product => {
-        const productDiv = document.createElement("div");
-        productDiv.className = "product-card";
+                setMessage(`Product found: ${products[0].name}`, "success");
+                displayProducts(products);
 
-        const imageSrc = product.Image ? product.Image : 'https://via.placeholder.com/200x150?text=No+Image';
-        const pId = product._id || '';
+            } catch (error) {
+                console.error("getProductById error:", error);
+                setMessage(`Search failed: ${error.message}`, "error");
+                document.getElementById("productList").innerHTML = `<p style="color: var(--error-color);">${error.message}</p>`;
+            }
+        }
 
-        productDiv.innerHTML = `
+        // ------------------------------------------------
+        // CREATE PRODUCT (admin)
+        // POST /products/create
+        // ------------------------------------------------
+        async function createProduct() {
+            const body = {
+                name: document.getElementById("newName").value.trim(),
+                description: document.getElementById("newDescription").value.trim(),
+                category: document.getElementById("newCategory").value.trim(),
+                brand: document.getElementById("newBrand").value.trim(),
+                price: Number(document.getElementById("newPrice").value),
+                stock: Number(document.getElementById("newStock").value),
+                Image: document.getElementById("newImage").value.trim()
+            };
+
+            if (!body.name || !body.category || !body.price) {
+                setMessage("Name, category, and price are required fields.", "error");
+                return;
+            }
+
+            setMessage("Creating product...", "loading");
+
+            try {
+                const response = await fetch(`${API_URL}/products/create`, {
+                    method: "POST",
+                    headers: getHeaders(),
+                    body: JSON.stringify(body)
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.message || `Create failed (${response.status})`);
+                }
+
+                setMessage("Product created successfully!", "success");
+                loadProducts();
+
+            } catch (error) {
+                console.error("createProduct error:", error);
+                setMessage(`Create failed: ${error.message}`, "error");
+            }
+        }
+
+        // ------------------------------------------------
+        // UPDATE PRODUCT (admin)
+        // PUT /products/update/:id
+        // ------------------------------------------------
+        async function updateProduct(productId) {
+            if (!productId) {
+                setMessage("Invalid Product ID for update.", "error");
+                return;
+            }
+
+            const newPrice = prompt("Enter new price (leave empty to skip):");
+            const newStock = prompt("Enter new stock quantity (leave empty to skip):");
+
+            const body = {};
+            if (newPrice !== null && newPrice.trim() !== "") body.price = Number(newPrice);
+            if (newStock !== null && newStock.trim() !== "") body.stock = Number(newStock);
+
+            if (Object.keys(body).length === 0) {
+                setMessage("Update cancelled. No new values entered.", "error");
+                return;
+            }
+
+            setMessage("Updating product...", "loading");
+
+            try {
+                const response = await fetch(`${API_URL}/products/update/${productId}`, {
+                    method: "PUT",
+                    headers: getHeaders(),
+                    body: JSON.stringify(body)
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.message || `Update failed (${response.status})`);
+                }
+
+                setMessage("Product updated successfully!", "success");
+                loadProducts();
+
+            } catch (error) {
+                console.error("updateProduct error:", error);
+                setMessage(`Update failed: ${error.message}`, "error");
+            }
+        }
+
+        // ------------------------------------------------
+        // DELETE PRODUCT (admin)
+        // DELETE /products/delete/:id
+        // ------------------------------------------------
+        async function deleteProduct(productId) {
+            if (!productId) {
+                setMessage("Invalid Product ID for deletion.", "error");
+                return;
+            }
+
+            if (!confirm("Are you sure you want to delete this product?")) return;
+
+            setMessage("Deleting product...", "loading");
+
+            try {
+                const response = await fetch(`${API_URL}/products/delete/${productId}`, {
+                    method: "DELETE",
+                    headers: getHeaders()
+                });
+
+                let data = {};
+                const text = await response.text();
+                if (text) {
+                    try { data = JSON.parse(text); } catch (_) { }
+                }
+
+                if (!response.ok) {
+                    throw new Error(data.message || `Delete failed (${response.status})`);
+                }
+
+                setMessage("Product deleted successfully!", "success");
+                loadProducts();
+
+            } catch (error) {
+                console.error("deleteProduct error:", error);
+                setMessage(`Delete failed: ${error.message}`, "error");
+            }
+        }
+
+        // ------------------------------------------------
+        // GET PRODUCT RATING
+        // GET /products/:id/rating
+        // ------------------------------------------------
+        async function getProductRating(productId) {
+            if (!productId) return "N/A";
+            try {
+                const response = await fetch(`${API_URL}/products/${productId}/rating`);
+                const data = await response.json();
+
+                if (!response.ok) return "No ratings";
+                if (typeof data === "number") return `${data} ★`;
+                if (data.rating !== undefined) return `${data.rating} ★`;
+                if (data.averageRating !== undefined) return `${data.averageRating} ★`;
+                if (data.avgRating !== undefined) return `${data.avgRating} ★`;
+                return "No ratings";
+
+            } catch (error) {
+                return "No ratings";
+            }
+        }
+
+        // ------------------------------------------------
+        // DISPLAY PRODUCTS (Instant synchronous render, no layout shifts)
+        // ------------------------------------------------
+        function displayProducts(products) {
+            const productList = document.getElementById("productList");
+            productList.innerHTML = "";
+
+            if (!Array.isArray(products) || products.length === 0) {
+                productList.innerHTML = "<p style='grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 40px;'>No products found matching your criteria.</p>";
+                return;
+            }
+
+            const fragment = document.createDocumentFragment();
+
+            products.forEach(product => {
+                const productDiv = document.createElement("div");
+                productDiv.className = "product-card";
+
+                const imageSrc = product.Image ? product.Image : 'https://via.placeholder.com/200x150?text=No+Image';
+                const pId = product._id || '';
+
+                productDiv.innerHTML = `
             <div>
                 <img class="product-img" src="${imageSrc}" alt="${product.name}" onerror="this.onerror=null; this.src='https://via.placeholder.com/200x150?text=No+Image'">
                 <div>
@@ -822,43 +833,44 @@ function displayProducts(products) {
             </div>
         `;
 
-        fragment.appendChild(productDiv);
-    });
+                fragment.appendChild(productDiv);
+            });
 
-    productList.appendChild(fragment);
+            productList.appendChild(fragment);
 
-    // Fetch ratings in background asynchronously in parallel without blocking DOM rendering
-    products.forEach(async (product) => {
-        const pId = product._id || '';
-        if (!pId) return;
-        const rating = await getProductRating(pId);
-        const ratingEl = document.getElementById(`rating-${pId}`);
-        if (ratingEl) {
-            ratingEl.textContent = rating;
+            // Fetch ratings in background asynchronously in parallel without blocking DOM rendering
+            products.forEach(async (product) => {
+                const pId = product._id || '';
+                if (!pId) return;
+                const rating = await getProductRating(pId);
+                const ratingEl = document.getElementById(`rating-${pId}`);
+                if (ratingEl) {
+                    ratingEl.textContent = rating;
+                }
+            });
         }
-    });
-}
 
-function viewProduct(productId) {
-    if (!productId) return;
-    window.location.href = `product.html?id=${productId}`;
-}
+        function viewProduct(productId) {
+            if (!productId) return;
+            window.location.href = `product.html?id=${productId}`;
+        }
 
-function goToProfile() {
-    window.location.href = "profile.html";
-}
+        function goToProfile() {
+            window.location.href = "profile.html";
+        }
 
-function logout() {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    window.location.href = "First login page.html";
-}
+        function logout() {
+            localStorage.removeItem("token");
+            localStorage.removeItem("user");
+            window.location.href = "First login page.html";
+        }
 
-window.addEventListener("DOMContentLoaded", function () {
-    loadProducts();
-});
+        window.addEventListener("DOMContentLoaded", function () {
+            loadProducts();
+        });
 
-</script>
+    </script>
 
 </body>
+
 </html>
