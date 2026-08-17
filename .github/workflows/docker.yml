@@ -26,15 +26,23 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build Docker image
+      - name: Check project files
         run: |
-          docker build -t ghcr.io/${{ github.repository_owner }}/g-lab-backend:latest .
+          pwd
+          ls -la
+          ls -la frontend
 
-      - name: Push Docker image
+      - name: Build backend Docker image
+        run: |
+          docker build \
+            -t ghcr.io/${{ github.repository_owner }}/g-lab-backend:latest \
+            .
+
+      - name: Push backend Docker image
         run: |
           docker push ghcr.io/${{ github.repository_owner }}/g-lab-backend:latest
 
-      - name: Deploy container
+      - name: Deploy backend container
         run: |
           docker stop g-lab-backend || true
           docker rm g-lab-backend || true
@@ -63,4 +71,4 @@ jobs:
           docker run -d \
             --name g-lab-frontend \
             -p 8080:80 \
-            ghcr.io/${{ github.repository_owner }}/g-lab-frontend:latest       
+            ghcr.io/${{ github.repository_owner }}/g-lab-frontend:latest
