@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8" />
   <title>G Lab — My Profile</title>
@@ -127,6 +128,7 @@
       background-color: var(--accent-color);
       color: white;
     }
+
     .btn-primary:hover {
       background-color: var(--accent-hover);
     }
@@ -136,6 +138,7 @@
       border-color: var(--border-color);
       color: var(--text-main);
     }
+
     .btn-outline:hover {
       background-color: #334155;
     }
@@ -145,6 +148,7 @@
       color: var(--error-color);
       border-color: var(--error-color);
     }
+
     .btn-danger:hover {
       background-color: var(--error-color);
       color: white;
@@ -177,8 +181,11 @@
 
     <div class="action-buttons">
       <button type="button" class="btn btn-outline" onclick="window.location.href='home.html'">Products</button>
-      <button type="button" class="btn btn-primary" onclick="window.location.href='edit profile.html'">Edit Profile</button>
-      <button type="button" class="btn btn-outline" id="adminProfileBtn" style="display: none; border-color: var(--accent-color); color: var(--accent-color);" onclick="window.location.href='admin.html'">Admin Panel</button>
+      <button type="button" class="btn btn-primary" onclick="window.location.href='edit profile.html'">Edit
+        Profile</button>
+      <button type="button" class="btn btn-outline" id="adminProfileBtn"
+        style="display: none; border-color: var(--accent-color); color: var(--accent-color);"
+        onclick="window.location.href='admin.html'">Admin Panel</button>
       <button type="button" class="btn btn-outline" onclick="logout()">Log Out</button>
     </div>
 
@@ -186,13 +193,15 @@
 
     <div class="danger-section" style="text-align: center;">
       <h3 style="font-size: 0.95rem; color: var(--error-color); margin-bottom: 8px;">⚠️ Delete Account</h3>
-      <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 15px;">Permanently delete your account and all associated data.</p>
-      <button type="button" class="btn btn-danger" style="width: 100%;" onclick="deleteAccount()">Delete Account</button>
+      <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 15px;">Permanently delete your account and
+        all associated data.</p>
+      <button type="button" class="btn btn-danger" style="width: 100%;" onclick="deleteAccount()">Delete
+        Account</button>
     </div>
   </div>
 
   <script>
-    const API_URL = "http://192.168.1.43:3001";
+    const API_URL = "http://192.168.1.36:3001";
     const token = localStorage.getItem("token");
     if (!token) {
       window.location.href = "First login page.html";
@@ -294,4 +303,5 @@
     window.addEventListener("DOMContentLoaded", loadUserProfile);
   </script>
 </body>
+
 </html>

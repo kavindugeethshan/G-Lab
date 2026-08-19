@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -178,12 +179,14 @@
             margin-bottom: 20px;
             display: none;
         }
+
         #message.error {
             display: block;
             background-color: rgba(239, 68, 68, 0.15);
             color: var(--error-color);
             border: 1px solid var(--error-color);
         }
+
         #message.success {
             display: block;
             background-color: rgba(16, 185, 129, 0.15);
@@ -192,115 +195,118 @@
         }
     </style>
 </head>
+
 <body>
 
-<header>
-    <div class="logo-title">
-        <h1 onclick="window.location.href='home.html'">G Lab</h1>
-    </div>
-    <div>
-        <button class="btn btn-outline" onclick="window.location.href='home.html'">Back to Products</button>
-        <button class="btn btn-outline" onclick="window.location.href='profile.html'">Profile</button>
-    </div>
-</header>
+    <header>
+        <div class="logo-title">
+            <h1 onclick="window.location.href='home.html'">G Lab</h1>
+        </div>
+        <div>
+            <button class="btn btn-outline" onclick="window.location.href='home.html'">Back to Products</button>
+            <button class="btn btn-outline" onclick="window.location.href='profile.html'">Profile</button>
+        </div>
+    </header>
 
-<div class="container">
-    <div id="message"></div>
+    <div class="container">
+        <div id="message"></div>
 
-    <div class="detail-card" id="productCard">
-        <p>Loading product details...</p>
-    </div>
+        <div class="detail-card" id="productCard">
+            <p>Loading product details...</p>
+        </div>
 
-    <div class="review-section">
-        <h3>✍️ Leave a Review</h3>
-        <form id="reviewForm">
-            <div style="margin-bottom: 12px; display: flex; align-items: center; gap: 10px;">
-                <label for="reviewRating" style="font-weight: 600; font-size: 0.9rem;">Rating:</label>
-                <select id="reviewRating" style="padding: 6px 12px; background: #0f172a; border: 1px solid var(--border-color); color: var(--text-main); border-radius: 6px;" required>
-                    <option value="5">5 ★★★★★ (Excellent)</option>
-                    <option value="4">4 ★★★★☆ (Good)</option>
-                    <option value="3">3 ★★★☆☆ (Average)</option>
-                    <option value="2">2 ★★☆☆☆ (Poor)</option>
-                    <option value="1">1 ★☆☆☆☆ (Terrible)</option>
-                </select>
+        <div class="review-section">
+            <h3>✍️ Leave a Review</h3>
+            <form id="reviewForm">
+                <div style="margin-bottom: 12px; display: flex; align-items: center; gap: 10px;">
+                    <label for="reviewRating" style="font-weight: 600; font-size: 0.9rem;">Rating:</label>
+                    <select id="reviewRating"
+                        style="padding: 6px 12px; background: #0f172a; border: 1px solid var(--border-color); color: var(--text-main); border-radius: 6px;"
+                        required>
+                        <option value="5">5 ★★★★★ (Excellent)</option>
+                        <option value="4">4 ★★★★☆ (Good)</option>
+                        <option value="3">3 ★★★☆☆ (Average)</option>
+                        <option value="2">2 ★★☆☆☆ (Poor)</option>
+                        <option value="1">1 ★☆☆☆☆ (Terrible)</option>
+                    </select>
+                </div>
+                <textarea id="reviewText" placeholder="Write your comment here..." required></textarea>
+                <button type="submit" class="btn btn-primary">Submit Review</button>
+            </form>
+
+            <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 25px 0;">
+
+            <h3>💬 Customer Reviews</h3>
+            <div id="reviewsList" style="margin-top: 15px;">
+                <p style="color: var(--text-muted);">Loading reviews...</p>
             </div>
-            <textarea id="reviewText" placeholder="Write your comment here..." required></textarea>
-            <button type="submit" class="btn btn-primary">Submit Review</button>
-        </form>
-
-        <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 25px 0;">
-
-        <h3>💬 Customer Reviews</h3>
-        <div id="reviewsList" style="margin-top: 15px;">
-            <p style="color: var(--text-muted);">Loading reviews...</p>
         </div>
     </div>
-</div>
 
-<script>
-    const API_URL = "http://192.168.1.43:3001";
-    const token = localStorage.getItem("token");
+    <script>
+        const API_URL = "http://192.168.1.36:3001";
+        const token = localStorage.getItem("token");
 
-    if (!token) {
-        window.location.href = "First login page.html";
-    }
-
-    const urlParams = new URLSearchParams(window.location.search);
-    const productId = urlParams.get("id");
-
-    function setMessage(text, type) {
-        const el = document.getElementById("message");
-        if (!text) {
-            el.style.display = "none";
-            return;
-        }
-        el.textContent = text;
-        el.className = type || "";
-    }
-
-    function extractProduct(data) {
-        if (!data) return null;
-        if (data.product && typeof data.product === "object") return data.product;
-        if (data.data && typeof data.data === "object" && !Array.isArray(data.data)) return data.data;
-        if (Array.isArray(data) && data.length > 0) return data[0];
-        if (typeof data === "object") return data;
-        return null;
-    }
-
-    async function loadProductDetails() {
-        if (!productId) {
-            setMessage("No Product ID specified in URL.", "error");
-            return;
+        if (!token) {
+            window.location.href = "First login page.html";
         }
 
-        try {
-            const response = await fetch(`${API_URL}/products/${productId}`, {
-                headers: { "Authorization": `Bearer ${token}` }
-            });
+        const urlParams = new URLSearchParams(window.location.search);
+        const productId = urlParams.get("id");
 
-            const data = await response.json();
-            if (!response.ok) {
-                throw new Error(data.message || "Failed to fetch product details.");
+        function setMessage(text, type) {
+            const el = document.getElementById("message");
+            if (!text) {
+                el.style.display = "none";
+                return;
+            }
+            el.textContent = text;
+            el.className = type || "";
+        }
+
+        function extractProduct(data) {
+            if (!data) return null;
+            if (data.product && typeof data.product === "object") return data.product;
+            if (data.data && typeof data.data === "object" && !Array.isArray(data.data)) return data.data;
+            if (Array.isArray(data) && data.length > 0) return data[0];
+            if (typeof data === "object") return data;
+            return null;
+        }
+
+        async function loadProductDetails() {
+            if (!productId) {
+                setMessage("No Product ID specified in URL.", "error");
+                return;
             }
 
-            const p = extractProduct(data);
-            if (!p) {
-                throw new Error("Product data not found.");
-            }
-
-            // Rating
-            let ratingStr = "No ratings";
             try {
-                const rRes = await fetch(`${API_URL}/products/${productId}/rating`);
-                const rData = await rRes.json();
-                if (rRes.ok) {
-                    ratingStr = typeof rData === "number" ? `${rData} ★` : `${rData.rating || rData.averageRating || 'No ratings'} ★`;
+                const response = await fetch(`${API_URL}/products/${productId}`, {
+                    headers: { "Authorization": `Bearer ${token}` }
+                });
+
+                const data = await response.json();
+                if (!response.ok) {
+                    throw new Error(data.message || "Failed to fetch product details.");
                 }
-            } catch (_) {}
 
-            const img = p.Image || p.image || p.imageUrl || 'https://via.placeholder.com/300?text=No+Image';
+                const p = extractProduct(data);
+                if (!p) {
+                    throw new Error("Product data not found.");
+                }
 
-            document.getElementById("productCard").innerHTML = `
+                // Rating
+                let ratingStr = "No ratings";
+                try {
+                    const rRes = await fetch(`${API_URL}/products/${productId}/rating`);
+                    const rData = await rRes.json();
+                    if (rRes.ok) {
+                        ratingStr = typeof rData === "number" ? `${rData} ★` : `${rData.rating || rData.averageRating || 'No ratings'} ★`;
+                    }
+                } catch (_) { }
+
+                const img = p.Image || p.image || p.imageUrl || 'https://via.placeholder.com/300?text=No+Image';
+
+                document.getElementById("productCard").innerHTML = `
                 <div>
                     <img class="product-img" src="${img}" alt="${p.name || 'Product'}" onerror="this.src='https://via.placeholder.com/300?text=No+Image'">
                 </div>
@@ -320,43 +326,43 @@
                 </div>
             `;
 
-        } catch (err) {
-            console.error("Error:", err);
-            setMessage(err.message, "error");
-            document.getElementById("productCard").innerHTML = `<p style="color: var(--error-color);">${err.message}</p>`;
+            } catch (err) {
+                console.error("Error:", err);
+                setMessage(err.message, "error");
+                document.getElementById("productCard").innerHTML = `<p style="color: var(--error-color);">${err.message}</p>`;
+            }
         }
-    }
 
-    async function loadProductReviews() {
-        if (!productId) return;
-        const reviewsList = document.getElementById("reviewsList");
-        try {
-            const response = await fetch(`${API_URL}/products/${productId}/reviews`);
-            const data = await response.json();
-
-            if (!response.ok || !Array.isArray(data.reviews)) {
-                reviewsList.innerHTML = "<p style='color: var(--text-muted);'>No reviews yet for this product.</p>";
-                return;
-            }
-
-            if (data.reviews.length === 0) {
-                reviewsList.innerHTML = "<p style='color: var(--text-muted);'>No reviews yet for this product. Be the first to review!</p>";
-                return;
-            }
-
-            let currentUser = {};
+        async function loadProductReviews() {
+            if (!productId) return;
+            const reviewsList = document.getElementById("reviewsList");
             try {
-                currentUser = JSON.parse(localStorage.getItem("user")) || {};
-            } catch (e) {}
+                const response = await fetch(`${API_URL}/products/${productId}/reviews`);
+                const data = await response.json();
 
-            const currentUserId = currentUser._id || currentUser.id || currentUser.userId;
+                if (!response.ok || !Array.isArray(data.reviews)) {
+                    reviewsList.innerHTML = "<p style='color: var(--text-muted);'>No reviews yet for this product.</p>";
+                    return;
+                }
 
-            reviewsList.innerHTML = data.reviews.map(rev => {
-                const u = rev.user || {};
-                const uName = u.firstname ? `${u.firstname} ${u.lastname || ''}`.trim() : (u.email || 'Anonymous');
-                const isOwner = currentUserId && (u._id === currentUserId || rev.user === currentUserId || rev.user._id === currentUserId);
-                
-                return `
+                if (data.reviews.length === 0) {
+                    reviewsList.innerHTML = "<p style='color: var(--text-muted);'>No reviews yet for this product. Be the first to review!</p>";
+                    return;
+                }
+
+                let currentUser = {};
+                try {
+                    currentUser = JSON.parse(localStorage.getItem("user")) || {};
+                } catch (e) { }
+
+                const currentUserId = currentUser._id || currentUser.id || currentUser.userId;
+
+                reviewsList.innerHTML = data.reviews.map(rev => {
+                    const u = rev.user || {};
+                    const uName = u.firstname ? `${u.firstname} ${u.lastname || ''}`.trim() : (u.email || 'Anonymous');
+                    const isOwner = currentUserId && (u._id === currentUserId || rev.user === currentUserId || rev.user._id === currentUserId);
+
+                    return `
                     <div style="background-color: #0f172a; border: 1px solid var(--border-color); border-radius: 8px; padding: 15px; margin-bottom: 12px;">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
                             <div>
@@ -373,117 +379,118 @@
                         <p style="font-size: 0.9rem; color: var(--text-main); margin: 0;">${rev.comment || ''}</p>
                     </div>
                 `;
-            }).join('');
+                }).join('');
 
-        } catch (err) {
-            console.error("Error loading reviews:", err);
-            reviewsList.innerHTML = "<p style='color: var(--text-muted);'>Could not load reviews.</p>";
-        }
-    }
-
-    async function editReview(reviewId, currentRating, currentComment) {
-        const newRatingStr = prompt("Enter new rating (1-5):", currentRating);
-        if (newRatingStr === null) return;
-        const parsedRating = Number(newRatingStr);
-        if (isNaN(parsedRating) || parsedRating < 1 || parsedRating > 5) {
-            alert("Rating must be a number between 1 and 5.");
-            return;
+            } catch (err) {
+                console.error("Error loading reviews:", err);
+                reviewsList.innerHTML = "<p style='color: var(--text-muted);'>Could not load reviews.</p>";
+            }
         }
 
-        const newComment = prompt("Enter new review comment:", currentComment);
-        if (newComment === null) return;
-        if (!newComment.trim()) {
-            alert("Comment cannot be empty.");
-            return;
-        }
-
-        try {
-            const response = await fetch(`${API_URL}/reviews/${reviewId}`, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`
-                },
-                body: JSON.stringify({ rating: parsedRating, comment: newComment.trim() })
-            });
-
-            const data = await response.json();
-            if (!response.ok) {
-                throw new Error(data.message || "Failed to update review.");
+        async function editReview(reviewId, currentRating, currentComment) {
+            const newRatingStr = prompt("Enter new rating (1-5):", currentRating);
+            if (newRatingStr === null) return;
+            const parsedRating = Number(newRatingStr);
+            if (isNaN(parsedRating) || parsedRating < 1 || parsedRating > 5) {
+                alert("Rating must be a number between 1 and 5.");
+                return;
             }
 
-            setMessage("Review updated successfully!", "success");
-            loadProductDetails();
-            loadProductReviews();
+            const newComment = prompt("Enter new review comment:", currentComment);
+            if (newComment === null) return;
+            if (!newComment.trim()) {
+                alert("Comment cannot be empty.");
+                return;
+            }
 
-        } catch (err) {
-            alert(`Error: ${err.message}`);
-        }
-    }
+            try {
+                const response = await fetch(`${API_URL}/reviews/${reviewId}`, {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ rating: parsedRating, comment: newComment.trim() })
+                });
 
-    async function deleteReview(reviewId) {
-        if (!confirm("Are you sure you want to delete your review?")) return;
-
-        try {
-            const response = await fetch(`${API_URL}/reviews/${reviewId}`, {
-                method: "DELETE",
-                headers: {
-                    "Authorization": `Bearer ${token}`
+                const data = await response.json();
+                if (!response.ok) {
+                    throw new Error(data.message || "Failed to update review.");
                 }
-            });
 
-            const data = await response.json();
-            if (!response.ok) {
-                throw new Error(data.message || "Failed to delete review.");
+                setMessage("Review updated successfully!", "success");
+                loadProductDetails();
+                loadProductReviews();
+
+            } catch (err) {
+                alert(`Error: ${err.message}`);
             }
+        }
 
-            setMessage("Review deleted successfully!", "success");
+        async function deleteReview(reviewId) {
+            if (!confirm("Are you sure you want to delete your review?")) return;
+
+            try {
+                const response = await fetch(`${API_URL}/reviews/${reviewId}`, {
+                    method: "DELETE",
+                    headers: {
+                        "Authorization": `Bearer ${token}`
+                    }
+                });
+
+                const data = await response.json();
+                if (!response.ok) {
+                    throw new Error(data.message || "Failed to delete review.");
+                }
+
+                setMessage("Review deleted successfully!", "success");
+                loadProductDetails();
+                loadProductReviews();
+
+            } catch (err) {
+                alert(`Error: ${err.message}`);
+            }
+        }
+
+        document.getElementById("reviewForm").addEventListener("submit", async function (e) {
+            e.preventDefault();
+            const rating = Number(document.getElementById("reviewRating").value);
+            const comment = document.getElementById("reviewText").value.trim();
+            if (!comment || !productId) return;
+
+            setMessage("Submitting review...", "");
+
+            try {
+                const response = await fetch(`${API_URL}/products/${productId}/reviews`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ rating, comment })
+                });
+
+                const data = await response.json();
+                if (!response.ok) {
+                    throw new Error(data.message || "Failed to submit review.");
+                }
+
+                setMessage("Review submitted successfully!", "success");
+                document.getElementById("reviewText").value = "";
+                loadProductDetails();
+                loadProductReviews();
+
+            } catch (err) {
+                setMessage(`Review failed: ${err.message}`, "error");
+            }
+        });
+
+        window.addEventListener("DOMContentLoaded", function () {
             loadProductDetails();
             loadProductReviews();
-
-        } catch (err) {
-            alert(`Error: ${err.message}`);
-        }
-    }
-
-    document.getElementById("reviewForm").addEventListener("submit", async function (e) {
-        e.preventDefault();
-        const rating = Number(document.getElementById("reviewRating").value);
-        const comment = document.getElementById("reviewText").value.trim();
-        if (!comment || !productId) return;
-
-        setMessage("Submitting review...", "");
-
-        try {
-            const response = await fetch(`${API_URL}/products/${productId}/reviews`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`
-                },
-                body: JSON.stringify({ rating, comment })
-            });
-
-            const data = await response.json();
-            if (!response.ok) {
-                throw new Error(data.message || "Failed to submit review.");
-            }
-
-            setMessage("Review submitted successfully!", "success");
-            document.getElementById("reviewText").value = "";
-            loadProductDetails();
-            loadProductReviews();
-
-        } catch (err) {
-            setMessage(`Review failed: ${err.message}`, "error");
-        }
-    });
-
-    window.addEventListener("DOMContentLoaded", function() {
-        loadProductDetails();
-        loadProductReviews();
-    });
-</script>
+        });
+    </script>
 
 </body>
+
 </html>

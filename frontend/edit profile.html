@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8" />
   <title>G Lab — Edit Profile</title>
@@ -69,7 +70,8 @@
       margin-bottom: 6px;
     }
 
-    input, textarea {
+    input,
+    textarea {
       width: 100%;
       padding: 10px 12px;
       background-color: #0f172a;
@@ -79,7 +81,8 @@
       font-size: 0.95rem;
     }
 
-    input:focus, textarea:focus {
+    input:focus,
+    textarea:focus {
       outline: none;
       border-color: var(--accent-color);
     }
@@ -116,6 +119,7 @@
       background-color: var(--accent-color);
       color: white;
     }
+
     .btn-primary:hover {
       background-color: var(--accent-hover);
     }
@@ -125,6 +129,7 @@
       border-color: var(--border-color);
       color: var(--text-main);
     }
+
     .btn-outline:hover {
       background-color: #334155;
     }
@@ -137,6 +142,7 @@
       text-align: center;
       display: none;
     }
+
     .msg {
       margin-top: 15px;
       padding: 10px;
@@ -145,18 +151,21 @@
       text-align: center;
       display: none;
     }
+
     .msg.success {
       display: block;
       background-color: rgba(16, 185, 129, 0.15);
       color: var(--success-color);
       border: 1px solid var(--success-color);
     }
+
     .msg.error {
       display: block;
       background-color: rgba(239, 68, 68, 0.15);
       color: var(--error-color);
       border: 1px solid var(--error-color);
     }
+
     .msg.loading {
       display: block;
       background-color: rgba(59, 130, 246, 0.15);
@@ -202,11 +211,13 @@
     <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 30px 0 25px 0;">
 
     <form id="changePasswordForm">
-      <h3 style="font-size: 1.1rem; color: var(--text-main); margin-bottom: 18px; text-align: center;">🔒 Change Password</h3>
-      
+      <h3 style="font-size: 1.1rem; color: var(--text-main); margin-bottom: 18px; text-align: center;">🔒 Change
+        Password</h3>
+
       <div class="form-group">
         <label for="currentPassword">Current Password</label>
-        <input type="password" id="currentPassword" name="currentPassword" placeholder="Enter current password" required>
+        <input type="password" id="currentPassword" name="currentPassword" placeholder="Enter current password"
+          required>
       </div>
 
       <div class="form-group">
@@ -223,7 +234,7 @@
   </div>
 
   <script>
-    const API_URL = "http://192.168.1.43:3001";
+    const API_URL = "http://192.168.1.36:3001";
     const token = localStorage.getItem("token");
     if (!token) {
       window.location.href = "First login page.html";
@@ -258,7 +269,7 @@
         if (rawUser) {
           populateFields(JSON.parse(rawUser));
         }
-      } catch (e) {}
+      } catch (e) { }
     }
 
     function populateFields(user) {
@@ -367,4 +378,5 @@
     window.addEventListener("DOMContentLoaded", loadProfileForEdit);
   </script>
 </body>
+
 </html>

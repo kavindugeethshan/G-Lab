@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -174,6 +175,7 @@
         }
     </style>
 </head>
+
 <body>
 
     <div class="login-box">
@@ -215,7 +217,7 @@
     </div>
 
     <script>
-        const BASE_URL = "http://192.168.1.43:3001";
+        const BASE_URL = "http://192.168.1.36:3001";
         let currentMode = "login";
 
         function switchMode(mode) {
@@ -302,7 +304,7 @@
 
                 } catch (error) {
                     console.error("Login error:", error);
-                    showMessage("Cannot connect to the server (http://192.168.1.43:3001).", "error");
+                    showMessage("Cannot connect to the server (http://192.168.1.36:3001).", "error");
                 }
             } else {
                 // Register mode
@@ -331,10 +333,11 @@
 
                 } catch (error) {
                     console.error("Registration error:", error);
-                    showMessage("Cannot connect to the server (http://192.168.1.43:3001).", "error");
+                    showMessage("Cannot connect to the server (http://192.168.1.36:3001).", "error");
                 }
             }
         });
     </script>
 </body>
+
 </html>

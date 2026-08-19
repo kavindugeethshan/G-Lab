@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -160,7 +161,9 @@
             font-weight: 500;
         }
 
-        input, select, textarea {
+        input,
+        select,
+        textarea {
             padding: 10px 12px;
             background-color: #0f172a;
             border: 1px solid var(--border-color);
@@ -169,7 +172,9 @@
             font-size: 0.9rem;
         }
 
-        input:focus, select:focus, textarea:focus {
+        input:focus,
+        select:focus,
+        textarea:focus {
             outline: none;
             border-color: var(--accent-color);
         }
@@ -192,6 +197,7 @@
             background-color: var(--accent-color);
             color: white;
         }
+
         .btn-primary:hover {
             background-color: var(--accent-hover);
         }
@@ -200,6 +206,7 @@
             background-color: var(--admin-color);
             color: white;
         }
+
         .btn-admin:hover {
             background-color: #7c3aed;
         }
@@ -209,6 +216,7 @@
             border-color: var(--border-color);
             color: var(--text-main);
         }
+
         .btn-outline:hover {
             background-color: var(--card-hover);
         }
@@ -218,6 +226,7 @@
             color: var(--error-color);
             border-color: var(--error-color);
         }
+
         .btn-danger:hover {
             background-color: var(--error-color);
             color: white;
@@ -230,18 +239,21 @@
             display: none;
             font-size: 0.95rem;
         }
+
         #message.error {
             display: block;
             background-color: rgba(239, 68, 68, 0.15);
             color: var(--error-color);
             border: 1px solid var(--error-color);
         }
+
         #message.success {
             display: block;
             background-color: rgba(16, 185, 129, 0.15);
             color: var(--success-color);
             border: 1px solid var(--success-color);
         }
+
         #message.loading {
             display: block;
             background-color: rgba(59, 130, 246, 0.15);
@@ -255,7 +267,8 @@
             margin-top: 15px;
         }
 
-        .products-table th, .products-table td {
+        .products-table th,
+        .products-table td {
             padding: 12px 15px;
             text-align: left;
             border-bottom: 1px solid var(--border-color);
@@ -273,194 +286,200 @@
         }
     </style>
 </head>
+
 <body>
 
-<header>
-    <div class="logo-title">
-        <h1>G Lab Admin <span class="admin-badge">Admin Panel</span></h1>
-        <span>Product & System Management</span>
-    </div>
-    <div class="nav-actions">
-        <span id="adminGreeting" style="font-size: 0.9rem; color: var(--text-muted);"></span>
-        <button type="button" class="btn btn-outline" onclick="window.location.href='home.html'">Customer View</button>
-        <button type="button" class="btn btn-outline" onclick="window.location.href='profile.html'">Profile</button>
-        <button type="button" class="btn btn-danger" onclick="logout()">Logout</button>
-    </div>
-</header>
-
-<div class="container">
-    <div id="message"></div>
-
-    <!-- Stats Row -->
-    <div class="stats-grid">
-        <div class="stat-card">
-            <div class="stat-icon">📦</div>
-            <div class="stat-info">
-                <h4>Total Products</h4>
-                <div id="totalProductsCount">0</div>
-            </div>
+    <header>
+        <div class="logo-title">
+            <h1>G Lab Admin <span class="admin-badge">Admin Panel</span></h1>
+            <span>Product & System Management</span>
         </div>
-        <div class="stat-card">
-            <div class="stat-icon">👤</div>
-            <div class="stat-info">
-                <h4>Logged Admin</h4>
-                <div id="statAdminName" style="font-size: 1.1rem;">Admin</div>
-            </div>
+        <div class="nav-actions">
+            <span id="adminGreeting" style="font-size: 0.9rem; color: var(--text-muted);"></span>
+            <button type="button" class="btn btn-outline" onclick="window.location.href='home.html'">Customer
+                View</button>
+            <button type="button" class="btn btn-outline" onclick="window.location.href='profile.html'">Profile</button>
+            <button type="button" class="btn btn-danger" onclick="logout()">Logout</button>
         </div>
-        <div class="stat-card">
-            <div class="stat-icon">🟢</div>
-            <div class="stat-info">
-                <h4>Server Status</h4>
-                <div style="font-size: 1.1rem; color: var(--success-color);">Connected</div>
-            </div>
-        </div>
-    </div>
+    </header>
 
-    <!-- Create Product Form (Admin Route) -->
-    <div class="section-card">
-        <h3>➕ Create New Product (Admin Route: POST /admin/products/create)</h3>
-        <form id="createProductForm">
-            <div class="grid-inputs">
-                <div class="form-group">
-                    <label for="newName">Product Name*</label>
-                    <input type="text" id="newName" placeholder="e.g. AMD Ryzen 7 7800X3D" required>
-                </div>
-                <div class="form-group">
-                    <label for="newCategory">Category*</label>
-                    <input type="text" id="newCategory" placeholder="e.g. CPU" required>
-                </div>
-                <div class="form-group">
-                    <label for="newBrand">Brand</label>
-                    <input type="text" id="newBrand" placeholder="e.g. AMD">
-                </div>
-                <div class="form-group">
-                    <label for="newPrice">Price (Rs.)*</label>
-                    <input type="number" id="newPrice" placeholder="e.g. 125000" required min="0">
-                </div>
-                <div class="form-group">
-                    <label for="newStock">Stock Quantity</label>
-                    <input type="number" id="newStock" placeholder="e.g. 15" min="0">
-                </div>
-                <div class="form-group">
-                    <label for="newImage">Image Name / URL</label>
-                    <input type="text" id="newImage" placeholder="e.g. ryzen7.jpg">
+    <div class="container">
+        <div id="message"></div>
+
+        <!-- Stats Row -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">📦</div>
+                <div class="stat-info">
+                    <h4>Total Products</h4>
+                    <div id="totalProductsCount">0</div>
                 </div>
             </div>
-            <div class="form-group" style="margin-bottom: 15px;">
-                <label for="newDescription">Description</label>
-                <input type="text" id="newDescription" placeholder="Enter product description...">
+            <div class="stat-card">
+                <div class="stat-icon">👤</div>
+                <div class="stat-info">
+                    <h4>Logged Admin</h4>
+                    <div id="statAdminName" style="font-size: 1.1rem;">Admin</div>
+                </div>
             </div>
-            <button type="submit" class="btn btn-admin">Create Product</button>
-        </form>
-    </div>
-
-    <!-- Manage Existing Products -->
-    <div class="section-card">
-        <h3>🛠️ Manage Products (Admin Operations)</h3>
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-            <p style="color: var(--text-muted); font-size: 0.9rem;">View, update prices, or delete products using admin protected endpoints.</p>
-            <button class="btn btn-outline" onclick="loadProducts()">Refresh List</button>
+            <div class="stat-card">
+                <div class="stat-icon">🟢</div>
+                <div class="stat-info">
+                    <h4>Server Status</h4>
+                    <div style="font-size: 1.1rem; color: var(--success-color);">Connected</div>
+                </div>
+            </div>
         </div>
 
-        <div style="overflow-x: auto;">
-            <table class="products-table">
-                <thead>
-                    <tr>
-                        <th>Product ID</th>
-                        <th>Name</th>
-                        <th>Category</th>
-                        <th>Brand</th>
-                        <th>Price (Rs.)</th>
-                        <th>Stock</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody id="productsTableBody">
-                    <tr><td colspan="7" style="text-align: center; color: var(--text-muted);">Loading products...</td></tr>
-                </tbody>
-            </table>
+        <!-- Create Product Form (Admin Route) -->
+        <div class="section-card">
+            <h3>➕ Create New Product (Admin Route: POST /admin/products/create)</h3>
+            <form id="createProductForm">
+                <div class="grid-inputs">
+                    <div class="form-group">
+                        <label for="newName">Product Name*</label>
+                        <input type="text" id="newName" placeholder="e.g. AMD Ryzen 7 7800X3D" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="newCategory">Category*</label>
+                        <input type="text" id="newCategory" placeholder="e.g. CPU" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="newBrand">Brand</label>
+                        <input type="text" id="newBrand" placeholder="e.g. AMD">
+                    </div>
+                    <div class="form-group">
+                        <label for="newPrice">Price (Rs.)*</label>
+                        <input type="number" id="newPrice" placeholder="e.g. 125000" required min="0">
+                    </div>
+                    <div class="form-group">
+                        <label for="newStock">Stock Quantity</label>
+                        <input type="number" id="newStock" placeholder="e.g. 15" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label for="newImage">Image Name / URL</label>
+                        <input type="text" id="newImage" placeholder="e.g. ryzen7.jpg">
+                    </div>
+                </div>
+                <div class="form-group" style="margin-bottom: 15px;">
+                    <label for="newDescription">Description</label>
+                    <input type="text" id="newDescription" placeholder="Enter product description...">
+                </div>
+                <button type="submit" class="btn btn-admin">Create Product</button>
+            </form>
+        </div>
+
+        <!-- Manage Existing Products -->
+        <div class="section-card">
+            <h3>🛠️ Manage Products (Admin Operations)</h3>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <p style="color: var(--text-muted); font-size: 0.9rem;">View, update prices, or delete products using
+                    admin protected endpoints.</p>
+                <button class="btn btn-outline" onclick="loadProducts()">Refresh List</button>
+            </div>
+
+            <div style="overflow-x: auto;">
+                <table class="products-table">
+                    <thead>
+                        <tr>
+                            <th>Product ID</th>
+                            <th>Name</th>
+                            <th>Category</th>
+                            <th>Brand</th>
+                            <th>Price (Rs.)</th>
+                            <th>Stock</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="productsTableBody">
+                        <tr>
+                            <td colspan="7" style="text-align: center; color: var(--text-muted);">Loading products...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
-</div>
 
-<script>
-    const API_URL = "http://192.168.1.43:3001";
-    const token = localStorage.getItem("token");
-    const rawUser = localStorage.getItem("user");
+    <script>
+        const API_URL = "http://192.168.1.36:3001";
+        const token = localStorage.getItem("token");
+        const rawUser = localStorage.getItem("user");
 
-    if (!token) {
-        window.location.href = "First login page.html";
-    }
-
-    let user = {};
-    try {
-        if (rawUser) user = JSON.parse(rawUser);
-    } catch (e) {}
-
-    // Verify Admin Role
-    if (!user.isadmin) {
-        alert("Access Denied: Admin privileges required.");
-        window.location.href = "home.html";
-    }
-
-    document.getElementById("adminGreeting").textContent = `Admin: ${user.firstname ? user.firstname : (user.email || 'Admin')}`;
-    document.getElementById("statAdminName").textContent = user.firstname ? `${user.firstname} ${user.lastname || ''}` : (user.email || 'Admin');
-
-    function getHeaders() {
-        return {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
-        };
-    }
-
-    function setMessage(text, type) {
-        const el = document.getElementById("message");
-        if (!text) {
-            el.style.display = "none";
-            return;
+        if (!token) {
+            window.location.href = "First login page.html";
         }
-        el.textContent = text;
-        el.className = type || "";
-    }
 
-    // Verify admin access via GET /admin/dashboard
-    async function checkAdminDashboard() {
+        let user = {};
         try {
-            const res = await fetch(`${API_URL}/admin/dashboard`, {
-                headers: getHeaders()
-            });
-            const data = await res.json();
-            if (!res.ok) {
-                console.warn("Admin dashboard check returned error:", data.message);
-            } else {
-                console.log("Admin dashboard active:", data.message);
-            }
-        } catch (e) {
-            console.error("Dashboard check error:", e);
+            if (rawUser) user = JSON.parse(rawUser);
+        } catch (e) { }
+
+        // Verify Admin Role
+        if (!user.isadmin) {
+            alert("Access Denied: Admin privileges required.");
+            window.location.href = "home.html";
         }
-    }
 
-    async function loadProducts() {
-        setMessage("Loading products...", "loading");
-        try {
-            const res = await fetch(`${API_URL}/products`);
-            const data = await res.json();
+        document.getElementById("adminGreeting").textContent = `Admin: ${user.firstname ? user.firstname : (user.email || 'Admin')}`;
+        document.getElementById("statAdminName").textContent = user.firstname ? `${user.firstname} ${user.lastname || ''}` : (user.email || 'Admin');
 
-            let products = [];
-            if (Array.isArray(data)) products = data;
-            else if (data.products && Array.isArray(data.products)) products = data.products;
-            else if (data.data && Array.isArray(data.data)) products = data.data;
+        function getHeaders() {
+            return {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            };
+        }
 
-            document.getElementById("totalProductsCount").textContent = products.length;
-
-            const tbody = document.getElementById("productsTableBody");
-            if (products.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--text-muted);">No products found.</td></tr>`;
-                setMessage("Loaded 0 products.", "success");
+        function setMessage(text, type) {
+            const el = document.getElementById("message");
+            if (!text) {
+                el.style.display = "none";
                 return;
             }
+            el.textContent = text;
+            el.className = type || "";
+        }
 
-            tbody.innerHTML = products.map(p => `
+        // Verify admin access via GET /admin/dashboard
+        async function checkAdminDashboard() {
+            try {
+                const res = await fetch(`${API_URL}/admin/dashboard`, {
+                    headers: getHeaders()
+                });
+                const data = await res.json();
+                if (!res.ok) {
+                    console.warn("Admin dashboard check returned error:", data.message);
+                } else {
+                    console.log("Admin dashboard active:", data.message);
+                }
+            } catch (e) {
+                console.error("Dashboard check error:", e);
+            }
+        }
+
+        async function loadProducts() {
+            setMessage("Loading products...", "loading");
+            try {
+                const res = await fetch(`${API_URL}/products`);
+                const data = await res.json();
+
+                let products = [];
+                if (Array.isArray(data)) products = data;
+                else if (data.products && Array.isArray(data.products)) products = data.products;
+                else if (data.data && Array.isArray(data.data)) products = data.data;
+
+                document.getElementById("totalProductsCount").textContent = products.length;
+
+                const tbody = document.getElementById("productsTableBody");
+                if (products.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--text-muted);">No products found.</td></tr>`;
+                    setMessage("Loaded 0 products.", "success");
+                    return;
+                }
+
+                tbody.innerHTML = products.map(p => `
                 <tr>
                     <td style="font-family: monospace; font-size: 0.85rem;">${p._id || p.id}</td>
                     <td><strong>${p.name || 'Unnamed'}</strong></td>
@@ -477,125 +496,126 @@
                 </tr>
             `).join('');
 
-            setMessage(`Loaded ${products.length} product(s).`, "success");
+                setMessage(`Loaded ${products.length} product(s).`, "success");
 
-        } catch (err) {
-            console.error("Load products error:", err);
-            setMessage(`Failed to load products: ${err.message}`, "error");
-        }
-    }
-
-    // Create Product (POST /admin/products/create)
-    document.getElementById("createProductForm").addEventListener("submit", async function (e) {
-        e.preventDefault();
-
-        const body = {
-            name: document.getElementById("newName").value.trim(),
-            description: document.getElementById("newDescription").value.trim(),
-            category: document.getElementById("newCategory").value.trim(),
-            brand: document.getElementById("newBrand").value.trim(),
-            price: Number(document.getElementById("newPrice").value),
-            stock: Number(document.getElementById("newStock").value),
-            Image: document.getElementById("newImage").value.trim()
-        };
-
-        setMessage("Creating product via admin route...", "loading");
-
-        try {
-            const res = await fetch(`${API_URL}/admin/products/create`, {
-                method: "POST",
-                headers: getHeaders(),
-                body: JSON.stringify(body)
-            });
-
-            const data = await res.json();
-            if (!res.ok) {
-                throw new Error(data.message || `Failed to create product (${res.status})`);
+            } catch (err) {
+                console.error("Load products error:", err);
+                setMessage(`Failed to load products: ${err.message}`, "error");
             }
-
-            setMessage("Product created successfully via Admin API!", "success");
-            document.getElementById("createProductForm").reset();
-            loadProducts();
-
-        } catch (err) {
-            console.error("Admin create product error:", err);
-            setMessage(`Create failed: ${err.message}`, "error");
         }
-    });
 
-    // Update Product (PUT /admin/products/update/:id)
-    async function adminUpdateProduct(id) {
-        if (!id) return;
-        const newPrice = prompt("Enter new price (leave empty to skip):");
-        const newStock = prompt("Enter new stock quantity (leave empty to skip):");
+        // Create Product (POST /admin/products/create)
+        document.getElementById("createProductForm").addEventListener("submit", async function (e) {
+            e.preventDefault();
 
-        const body = {};
-        if (newPrice !== null && newPrice.trim() !== "") body.price = Number(newPrice);
-        if (newStock !== null && newStock.trim() !== "") body.stock = Number(newStock);
+            const body = {
+                name: document.getElementById("newName").value.trim(),
+                description: document.getElementById("newDescription").value.trim(),
+                category: document.getElementById("newCategory").value.trim(),
+                brand: document.getElementById("newBrand").value.trim(),
+                price: Number(document.getElementById("newPrice").value),
+                stock: Number(document.getElementById("newStock").value),
+                Image: document.getElementById("newImage").value.trim()
+            };
 
-        if (Object.keys(body).length === 0) return;
+            setMessage("Creating product via admin route...", "loading");
 
-        setMessage("Updating product via admin route...", "loading");
+            try {
+                const res = await fetch(`${API_URL}/admin/products/create`, {
+                    method: "POST",
+                    headers: getHeaders(),
+                    body: JSON.stringify(body)
+                });
 
-        try {
-            const res = await fetch(`${API_URL}/admin/products/update/${id}`, {
-                method: "PUT",
-                headers: getHeaders(),
-                body: JSON.stringify(body)
-            });
+                const data = await res.json();
+                if (!res.ok) {
+                    throw new Error(data.message || `Failed to create product (${res.status})`);
+                }
 
-            const data = await res.json();
-            if (!res.ok) {
-                throw new Error(data.message || `Update failed (${res.status})`);
+                setMessage("Product created successfully via Admin API!", "success");
+                document.getElementById("createProductForm").reset();
+                loadProducts();
+
+            } catch (err) {
+                console.error("Admin create product error:", err);
+                setMessage(`Create failed: ${err.message}`, "error");
             }
+        });
 
-            setMessage("Product updated successfully!", "success");
-            loadProducts();
+        // Update Product (PUT /admin/products/update/:id)
+        async function adminUpdateProduct(id) {
+            if (!id) return;
+            const newPrice = prompt("Enter new price (leave empty to skip):");
+            const newStock = prompt("Enter new stock quantity (leave empty to skip):");
 
-        } catch (err) {
-            console.error("Admin update product error:", err);
-            setMessage(`Update failed: ${err.message}`, "error");
-        }
-    }
+            const body = {};
+            if (newPrice !== null && newPrice.trim() !== "") body.price = Number(newPrice);
+            if (newStock !== null && newStock.trim() !== "") body.stock = Number(newStock);
 
-    // Delete Product (DELETE /admin/products/:id)
-    async function adminDeleteProduct(id) {
-        if (!id) return;
-        if (!confirm("Are you sure you want to delete this product?")) return;
+            if (Object.keys(body).length === 0) return;
 
-        setMessage("Deleting product via admin route...", "loading");
+            setMessage("Updating product via admin route...", "loading");
 
-        try {
-            const res = await fetch(`${API_URL}/admin/products/${id}`, {
-                method: "DELETE",
-                headers: getHeaders()
-            });
+            try {
+                const res = await fetch(`${API_URL}/admin/products/update/${id}`, {
+                    method: "PUT",
+                    headers: getHeaders(),
+                    body: JSON.stringify(body)
+                });
 
-            const data = await res.json();
-            if (!res.ok) {
-                throw new Error(data.message || `Delete failed (${res.status})`);
+                const data = await res.json();
+                if (!res.ok) {
+                    throw new Error(data.message || `Update failed (${res.status})`);
+                }
+
+                setMessage("Product updated successfully!", "success");
+                loadProducts();
+
+            } catch (err) {
+                console.error("Admin update product error:", err);
+                setMessage(`Update failed: ${err.message}`, "error");
             }
-
-            setMessage("Product deleted successfully via Admin API!", "success");
-            loadProducts();
-
-        } catch (err) {
-            console.error("Admin delete product error:", err);
-            setMessage(`Delete failed: ${err.message}`, "error");
         }
-    }
 
-    function logout() {
-        localStorage.removeItem("token");
-        localStorage.removeItem("user");
-        window.location.href = "First login page.html";
-    }
+        // Delete Product (DELETE /admin/products/:id)
+        async function adminDeleteProduct(id) {
+            if (!id) return;
+            if (!confirm("Are you sure you want to delete this product?")) return;
 
-    window.addEventListener("DOMContentLoaded", function () {
-        checkAdminDashboard();
-        loadProducts();
-    });
-</script>
+            setMessage("Deleting product via admin route...", "loading");
+
+            try {
+                const res = await fetch(`${API_URL}/admin/products/${id}`, {
+                    method: "DELETE",
+                    headers: getHeaders()
+                });
+
+                const data = await res.json();
+                if (!res.ok) {
+                    throw new Error(data.message || `Delete failed (${res.status})`);
+                }
+
+                setMessage("Product deleted successfully via Admin API!", "success");
+                loadProducts();
+
+            } catch (err) {
+                console.error("Admin delete product error:", err);
+                setMessage(`Delete failed: ${err.message}`, "error");
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem("token");
+            localStorage.removeItem("user");
+            window.location.href = "First login page.html";
+        }
+
+        window.addEventListener("DOMContentLoaded", function () {
+            checkAdminDashboard();
+            loadProducts();
+        });
+    </script>
 
 </body>
+
 </html>

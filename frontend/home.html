@@ -318,7 +318,9 @@
         </div>
         <div class="nav-actions">
             <span class="user-greeting" id="userGreeting"></span>
-            <button type="button" class="btn btn-outline" id="adminNavBtn" style="display: none; border-color: var(--accent-color); color: var(--accent-color);" onclick="window.location.href='admin.html'">Admin Panel</button>
+            <button type="button" class="btn btn-outline" id="adminNavBtn"
+                style="display: none; border-color: var(--accent-color); color: var(--accent-color);"
+                onclick="window.location.href='admin.html'">Admin Panel</button>
             <button type="button" class="btn btn-outline" onclick="goToProfile()">Profile</button>
             <button type="button" class="btn btn-danger" onclick="logout()">Logout</button>
         </div>
@@ -447,7 +449,7 @@
 
     <script>
 
-        const API_URL = "http://192.168.1.43:3001";
+        const API_URL = "http://192.168.1.36:3001";
         const token = localStorage.getItem("token");
 
         if (!token) {
