@@ -178,6 +178,7 @@
     <div class="action-buttons">
       <button type="button" class="btn btn-outline" onclick="window.location.href='home.html'">Products</button>
       <button type="button" class="btn btn-primary" onclick="window.location.href='edit profile.html'">Edit Profile</button>
+      <button type="button" class="btn btn-outline" id="adminProfileBtn" style="display: none; border-color: var(--accent-color); color: var(--accent-color);" onclick="window.location.href='admin.html'">Admin Panel</button>
       <button type="button" class="btn btn-outline" onclick="logout()">Log Out</button>
     </div>
 
@@ -239,6 +240,11 @@
       document.getElementById("userLastName").textContent = user.lastname || "-";
       document.getElementById("userEmail").textContent = user.email || "-";
       document.getElementById("userRole").textContent = user.isadmin ? "Admin" : "Customer";
+
+      if (user.isadmin) {
+        const btn = document.getElementById("adminProfileBtn");
+        if (btn) btn.style.display = "inline-block";
+      }
 
       const pic = document.getElementById("profilePic");
       const imgUrl = user.Image || user.image || user.avatar || user.profilePic;

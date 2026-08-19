@@ -318,6 +318,7 @@
         </div>
         <div class="nav-actions">
             <span class="user-greeting" id="userGreeting"></span>
+            <button type="button" class="btn btn-outline" id="adminNavBtn" style="display: none; border-color: var(--accent-color); color: var(--accent-color);" onclick="window.location.href='admin.html'">Admin Panel</button>
             <button type="button" class="btn btn-outline" onclick="goToProfile()">Profile</button>
             <button type="button" class="btn btn-danger" onclick="logout()">Logout</button>
         </div>
@@ -460,6 +461,10 @@
                 const u = JSON.parse(rawUser);
                 const name = u.firstname ? `${u.firstname} ${u.lastname || ''}` : (u.name || u.email || 'User');
                 document.getElementById("userGreeting").textContent = `Logged in as: ${name}`;
+                if (u.isadmin) {
+                    const adminBtn = document.getElementById("adminNavBtn");
+                    if (adminBtn) adminBtn.style.display = "inline-block";
+                }
             }
         } catch (e) {
             console.error("User parse error", e);
@@ -661,7 +666,7 @@
             setMessage("Creating product...", "loading");
 
             try {
-                const response = await fetch(`${API_URL}/products/create`, {
+                const response = await fetch(`${API_URL}/admin/products/create`, {
                     method: "POST",
                     headers: getHeaders(),
                     body: JSON.stringify(body)
@@ -684,7 +689,7 @@
 
         // ------------------------------------------------
         // UPDATE PRODUCT (admin)
-        // PUT /products/update/:id
+        // PUT /admin/products/update/:id
         // ------------------------------------------------
         async function updateProduct(productId) {
             if (!productId) {
@@ -707,7 +712,7 @@
             setMessage("Updating product...", "loading");
 
             try {
-                const response = await fetch(`${API_URL}/products/update/${productId}`, {
+                const response = await fetch(`${API_URL}/admin/products/update/${productId}`, {
                     method: "PUT",
                     headers: getHeaders(),
                     body: JSON.stringify(body)
@@ -730,7 +735,7 @@
 
         // ------------------------------------------------
         // DELETE PRODUCT (admin)
-        // DELETE /products/delete/:id
+        // DELETE /admin/products/:id
         // ------------------------------------------------
         async function deleteProduct(productId) {
             if (!productId) {
@@ -743,7 +748,7 @@
             setMessage("Deleting product...", "loading");
 
             try {
-                const response = await fetch(`${API_URL}/products/delete/${productId}`, {
+                const response = await fetch(`${API_URL}/admin/products/${productId}`, {
                     method: "DELETE",
                     headers: getHeaders()
                 });

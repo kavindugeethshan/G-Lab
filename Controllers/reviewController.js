@@ -152,3 +152,102 @@ export const getProductRating = async (req, res) => {
     });
   }
 };
+
+// Get all reviews for a product
+export const getProductReviews = async (req, res) => {
+  try {
+    const { productId } = req.params;
+    const reviews = await Review.find({ product: productId })
+      .populate("user", "firstname lastname email Image")
+      .sort({ createdAt: -1 });
+
+    res.status(200).json({
+      productId,
+      reviews,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+//-------------------------------------------------------------------------------
+//update review function
+// Update own review
+export const updateReview = async (req, res) => {
+  try {
+    const { rating, comment } = req.body;
+
+    // Find review by ID
+    const review = await Review.findById(req.params.id);
+
+    // Check whether review exists
+    if (!review) {
+      return res.status(404).json({
+        message: "Review not found",
+      });
+    }
+
+    // Check whether logged-in user owns this review
+    if (review.user.toString() !== req.user.userId.toString()) {
+      return res.status(403).json({
+        message: "You can only update your own review",
+      });
+    }
+
+    // Update fields if provided
+    if (rating !== undefined) {
+      review.rating = rating;
+    }
+
+    if (comment !== undefined) {
+      review.comment = comment;
+    }
+
+    // Save updated review
+    await review.save();
+
+    res.status(200).json({
+      message: "Review updated successfully",
+      review,
+    });
+  } catch (err) {
+    res.status(500).json({
+      message: err.message,
+    });
+  }
+};
+
+//-------------------------------------------------------------------------------
+// delete review function
+export const deleteReview = async (req, res) => {
+  try {
+    // Find review by ID
+    const review = await Review.findById(req.params.id);
+
+    // Check whether review exists
+    if (!review) {
+      return res.status(404).json({
+        message: "Review not found",
+      });
+    }
+
+    // Check whether logged-in user owns this review
+    if (review.user.toString() !== req.user.userId.toString()) {
+      return res.status(403).json({
+        message: "You can only delete your own review",
+      });
+    }
+
+    // Delete review
+    await Review.findByIdAndDelete(req.params.id);
+
+    res.status(200).json({
+      message: "Review deleted successfully",
+    });
+  } catch (err) {
+    res.status(500).json({
+      message: err.message,
+    });
+  }
+};

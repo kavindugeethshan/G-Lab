@@ -9,6 +9,7 @@ dotenv.config();
 import userRouter from "./routers/userRouter.js";
 import productRouter from "./routers/productRouter.js";
 import reviewRouter from "./routers/reviewRouter.js";
+import adminRouter from "./routers/adminRouter.js";
 
 const app = express();
 // cors error handling 
@@ -35,7 +36,7 @@ io.on("connection", (socket) => {
 });
 
 // MongoDB connection
-const mongoDBURI =process.env.MONGO_URI;
+const mongoDBURI = process.env.MONGO_URI;
 mongoose.connect(mongoDBURI).then(() => {
   console.log("Connected to MongoDB successfully ");
 });
@@ -44,7 +45,8 @@ mongoose.connect(mongoDBURI).then(() => {
 app.use("/users", userRouter);
 app.use("/products", productRouter);
 app.use("/", reviewRouter);
-
+app.use("/admin", adminRouter);
+app.use("/admin", adminRouter);
 
 
 
