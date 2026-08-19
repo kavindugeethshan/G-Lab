@@ -153,27 +153,17 @@
     <form id="editProfileForm">
       <div class="form-group">
         <label for="firstname">First Name</label>
-        <input type="text" id="firstname" name="firstname" placeholder="First Name">
+        <input type="text" id="firstname" name="firstname" placeholder="First Name" required>
       </div>
 
       <div class="form-group">
         <label for="lastname">Last Name</label>
-        <input type="text" id="lastname" name="lastname" placeholder="Last Name">
+        <input type="text" id="lastname" name="lastname" placeholder="Last Name" required>
       </div>
 
       <div class="form-group">
         <label for="Email">Email Address</label>
         <input type="email" id="Email" name="Email" placeholder="email@example.com" required>
-      </div>
-
-      <div class="form-group">
-        <label for="Mobile">Mobile Number</label>
-        <input type="text" id="Mobile" name="Mobile" placeholder="0705566015">
-      </div>
-
-      <div class="form-group">
-        <label for="Bio">Bio</label>
-        <input type="text" id="Bio" name="Bio" placeholder="Tell us about yourself">
       </div>
 
       <div class="form-group">
@@ -185,57 +175,106 @@
 
       <div class="action-buttons">
         <button type="button" class="btn btn-outline" onclick="window.location.href='profile.html'">Cancel</button>
-        <button type="submit" class="btn btn-primary">Save Changes</button>
+        <button type="submit" class="btn btn-primary" id="saveBtn">Save Changes</button>
       </div>
     </form>
   </div>
 
   <script>
+    const API_URL = "http://192.168.1.43:3001";
     const token = localStorage.getItem("token");
     if (!token) {
       window.location.href = "First login page.html";
     }
 
-    let currentUser = {};
-
-    function loadProfileForEdit() {
+    async function loadProfileForEdit() {
       try {
-        const rawUser = localStorage.getItem("user");
-        if (rawUser) {
-          currentUser = JSON.parse(rawUser);
+        const response = await fetch(`${API_URL}/users/profile`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+          }
+        });
 
-          document.getElementById("firstname").value = currentUser.firstname || "";
-          document.getElementById("lastname").value = currentUser.lastname || "";
-          document.getElementById("Email").value = currentUser.email || "";
-          document.getElementById("Mobile").value = currentUser.phone || currentUser.mobile || currentUser['Mobile-Number'] || "";
-          document.getElementById("Bio").value = currentUser.bio || "";
-          document.getElementById("avatar").value = currentUser.avatar || currentUser.profilePic || currentUser.image || "";
+        const data = await response.json();
+        if (response.ok && data.user) {
+          populateFields(data.user);
+          localStorage.setItem("user", JSON.stringify(data.user));
+        } else {
+          loadFromLocal();
         }
       } catch (err) {
-        console.error("Error loading user edit:", err);
+        console.error("Error fetching profile for edit:", err);
+        loadFromLocal();
       }
     }
 
-    document.getElementById("editProfileForm").addEventListener("submit", function (e) {
+    function loadFromLocal() {
+      try {
+        const rawUser = localStorage.getItem("user");
+        if (rawUser) {
+          populateFields(JSON.parse(rawUser));
+        }
+      } catch (e) {}
+    }
+
+    function populateFields(user) {
+      document.getElementById("firstname").value = user.firstname || "";
+      document.getElementById("lastname").value = user.lastname || "";
+      document.getElementById("Email").value = user.email || "";
+      document.getElementById("avatar").value = user.Image || user.image || user.avatar || user.profilePic || "";
+    }
+
+    function showMsg(text, type) {
+      const msg = document.getElementById("msg");
+      msg.textContent = text;
+      msg.className = type;
+    }
+
+    document.getElementById("editProfileForm").addEventListener("submit", async function (e) {
       e.preventDefault();
 
-      currentUser.firstname = document.getElementById("firstname").value.trim();
-      currentUser.lastname = document.getElementById("lastname").value.trim();
-      currentUser.email = document.getElementById("Email").value.trim();
-      currentUser.phone = document.getElementById("Mobile").value.trim();
-      currentUser.mobile = currentUser.phone;
-      currentUser.bio = document.getElementById("Bio").value.trim();
-      currentUser.avatar = document.getElementById("avatar").value.trim();
+      const firstname = document.getElementById("firstname").value.trim();
+      const lastname = document.getElementById("lastname").value.trim();
+      const email = document.getElementById("Email").value.trim();
+      const image = document.getElementById("avatar").value.trim();
 
-      localStorage.setItem("user", JSON.stringify(currentUser));
+      const saveBtn = document.getElementById("saveBtn");
+      saveBtn.disabled = true;
+      showMsg("Saving changes...", "loading");
 
-      const msg = document.getElementById("msg");
-      msg.textContent = "Profile updated successfully! Redirecting...";
-      msg.className = "success";
+      try {
+        const response = await fetch(`${API_URL}/users/profile`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+          },
+          body: JSON.stringify({ firstname, lastname, email, image })
+        });
 
-      setTimeout(() => {
-        window.location.href = "profile.html";
-      }, 800);
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.message || `Update failed (${response.status})`);
+        }
+
+        if (data.user) {
+          localStorage.setItem("user", JSON.stringify(data.user));
+        }
+
+        showMsg("Profile updated successfully! Redirecting...", "success");
+
+        setTimeout(() => {
+          window.location.href = "profile.html";
+        }, 800);
+
+      } catch (err) {
+        console.error("Update profile error:", err);
+        showMsg(`Error: ${err.message}`, "error");
+        saveBtn.disabled = false;
+      }
     });
 
     window.addEventListener("DOMContentLoaded", loadProfileForEdit);

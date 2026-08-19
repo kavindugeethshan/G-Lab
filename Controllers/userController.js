@@ -216,7 +216,7 @@ export async function getprofile(req, res) {
 //Update user profile function 
 export const updateprofule = async (req, res) => {
   try {
-    const { firstname, lastname, email, image } = req.body;
+    const { firstname, lastname, email, image, Image } = req.body;
     const user = await User.findById(req.user.userId);
     if (!user) {
       return res.status(404).json({
@@ -226,6 +226,9 @@ export const updateprofule = async (req, res) => {
     if (firstname) user.firstname = firstname.trim();
     if (lastname) user.lastname = lastname.trim();
     if (email) user.email = email.trim().toLowerCase();
+
+    const profilePic = image !== undefined ? image : Image;
+    if (profilePic !== undefined) user.Image = profilePic.trim();
 
     await user.save();
     const userResponse = user.toObject();

@@ -161,18 +161,28 @@
     </div>
 
     <div class="info-group">
+      <div class="info-label">First Name</div>
+      <div class="info-value" id="userFirstName">-</div>
+    </div>
+
+    <div class="info-group">
+      <div class="info-label">Last Name</div>
+      <div class="info-value" id="userLastName">-</div>
+    </div>
+
+    <div class="info-group">
       <div class="info-label">Email Address</div>
       <div class="info-value" id="userEmail">-</div>
     </div>
 
     <div class="info-group">
-      <div class="info-label">Mobile Number</div>
-      <div class="info-value" id="userPhone">Not provided</div>
+      <div class="info-label">Email Verification</div>
+      <div class="info-value" id="userEmailVerified">-</div>
     </div>
 
     <div class="info-group">
-      <div class="info-label">Bio</div>
-      <div class="info-value" id="userBio">No bio added yet</div>
+      <div class="info-label">Account Status</div>
+      <div class="info-value" id="userStatus">-</div>
     </div>
 
     <div class="action-buttons">
@@ -183,30 +193,63 @@
   </div>
 
   <script>
+    const API_URL = "http://192.168.1.43:3001";
     const token = localStorage.getItem("token");
     if (!token) {
       window.location.href = "First login page.html";
     }
 
-    function loadUserProfile() {
+    async function loadUserProfile() {
+      try {
+        const response = await fetch(`${API_URL}/users/profile`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+          }
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.user) {
+          localStorage.setItem("user", JSON.stringify(data.user));
+          renderProfile(data.user);
+        } else {
+          loadFromLocalStorage();
+        }
+      } catch (err) {
+        console.error("Error fetching profile from server:", err);
+        loadFromLocalStorage();
+      }
+    }
+
+    function loadFromLocalStorage() {
       try {
         const rawUser = localStorage.getItem("user");
         if (rawUser) {
-          const user = JSON.parse(rawUser);
-          
-          const fullName = user.firstname ? `${user.firstname} ${user.lastname || ''}`.trim() : (user.name || user.email || 'User Profile');
-          document.getElementById("userName").textContent = fullName;
-          document.getElementById("userEmail").textContent = user.email || "Not specified";
-          document.getElementById("userPhone").textContent = user.phone || user.mobile || user['Mobile-Number'] || "Not provided";
-          document.getElementById("userBio").textContent = user.bio || "No bio added yet";
-          document.getElementById("userRole").textContent = user.role || "Member";
-
-          if (user.avatar || user.profilePic || user.image) {
-            document.getElementById("profilePic").src = user.avatar || user.profilePic || user.image;
-          }
+          renderProfile(JSON.parse(rawUser));
         }
-      } catch (err) {
-        console.error("Error loading profile:", err);
+      } catch (e) {
+        console.error("Error loading local user:", e);
+      }
+    }
+
+    function renderProfile(user) {
+      const fullName = `${user.firstname || ''} ${user.lastname || ''}`.trim() || user.email || 'User Profile';
+      document.getElementById("userName").textContent = fullName;
+      document.getElementById("userFirstName").textContent = user.firstname || "-";
+      document.getElementById("userLastName").textContent = user.lastname || "-";
+      document.getElementById("userEmail").textContent = user.email || "-";
+      document.getElementById("userRole").textContent = user.isadmin ? "Admin" : "Customer";
+      document.getElementById("userEmailVerified").textContent = user.isemailverified ? "Verified ✓" : "Not Verified";
+      document.getElementById("userStatus").textContent = user.isblocked ? "Blocked 🚫" : "Active ✅";
+
+      const pic = document.getElementById("profilePic");
+      const imgUrl = user.Image || user.image || user.avatar || user.profilePic;
+      if (imgUrl) {
+        pic.src = imgUrl;
+      } else {
+        pic.src = "https://via.placeholder.com/100?text=User";
       }
     }
 
