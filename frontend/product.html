@@ -323,13 +323,38 @@
                         <p>Customer Rating: <strong>${ratingStr}</strong></p>
                         <p>Product ID: <strong>${p._id || p.id || productId}</strong></p>
                     </div>
+                    <div style="margin-top: 20px; display: flex; gap: 10px; align-items: center;">
+                        <input type="number" id="detailQty" value="1" min="1" max="${p.stock}" style="width: 70px; padding: 10px; border-radius: 6px; border: 1px solid var(--border-color); background: #0f172a; color: var(--text-main); text-align: center;">
+                        <button type="button" class="btn btn-primary" onclick="addToCartFromDetail('${p._id || p.id || productId}')">🛒 Add to Cart</button>
+                    </div>
                 </div>
             `;
 
             } catch (err) {
                 console.error("Error:", err);
-                setMessage(err.message, "error");
-                document.getElementById("productCard").innerHTML = `<p style="color: var(--error-color);">${err.message}</p>`;
+                setMessage(`Failed to load product: ${err.message}`, "error");
+                document.getElementById("productCard").innerHTML = `<p style="color: var(--error-color);">Product could not be loaded.</p>`;
+            }
+        }
+
+        async function addToCartFromDetail(pId) {
+            const qty = Number(document.getElementById("detailQty").value) || 1;
+            try {
+                const response = await fetch(`${API_URL}/cart/add`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ productId: pId, quantity: qty })
+                });
+                const data = await response.json();
+                if (!response.ok) {
+                    throw new Error(data.message || "Failed to add to cart");
+                }
+                alert("Product added to your cart! 🛒");
+            } catch (err) {
+                alert(`Add to cart error: ${err.message}`);
             }
         }
 

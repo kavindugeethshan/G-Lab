@@ -10,6 +10,8 @@ import userRouter from "./routers/userRouter.js";
 import productRouter from "./routers/productRouter.js";
 import reviewRouter from "./routers/reviewRouter.js";
 import adminRouter from "./routers/adminRouter.js";
+import cartRouter from "./routers/CartRouters.js";
+
 
 const app = express();
 // cors error handling 
@@ -46,10 +48,7 @@ app.use("/users", userRouter);
 app.use("/products", productRouter);
 app.use("/", reviewRouter);
 app.use("/admin", adminRouter);
-app.use("/admin", adminRouter);
-
-
-
+app.use("/cart", cartRouter);
 
 const PORT = process.env.PORT || 3001;
 server.listen(PORT, () => {

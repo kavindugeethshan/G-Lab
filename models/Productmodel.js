@@ -49,17 +49,22 @@ const productSchema = new mongoose.Schema(
       default: true,
     },
 
-    ratingAverage:{
-      type:Number,
-      default:0,
-      min:0,
-      max:5
+    discount: {
+      type: Number,
+      default: 0
     },
 
-    ratingCount:{
-      type:Number,
-      min:0,
-      default:0
+    ratingAverage: {
+      type: Number,
+      default: 0,
+      min: 0,
+      max: 5
+    },
+
+    ratingCount: {
+      type: Number,
+      min: 0,
+      default: 0
     },
   },
   {
@@ -67,6 +72,6 @@ const productSchema = new mongoose.Schema(
   }
 );
 
-const Product = mongoose.model("Product", productSchema);
+const Product = mongoose.models.Product || mongoose.model("Product", productSchema);
 
 export default Product;
