@@ -18,6 +18,13 @@ const userschema = new mongoose.Schema(
       required: true
     },
 
+    address: {
+      addressLine: { type: String, default: "" },
+      city: { type: String, default: "" },
+      district: { type: String, default: "" },
+      postalCode: { type: String, default: "" }
+    },
+
     password: {
       type: String,
       required: true

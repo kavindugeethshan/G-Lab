@@ -210,6 +210,38 @@
 
     <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 30px 0 25px 0;">
 
+    <form id="updateAddressForm">
+      <h3 style="font-size: 1.1rem; color: var(--text-main); margin-bottom: 18px; text-align: center;">📍 Shipping Address</h3>
+
+      <div class="form-group">
+        <label for="addressLine">Address Line</label>
+        <input type="text" id="addressLine" name="addressLine" placeholder="e.g. 123 Main Street">
+      </div>
+
+      <div class="form-group">
+        <label for="city">City</label>
+        <input type="text" id="city" name="city" placeholder="e.g. Colombo">
+      </div>
+
+      <div class="form-group">
+        <label for="district">District</label>
+        <input type="text" id="district" name="district" placeholder="e.g. Colombo">
+      </div>
+
+      <div class="form-group">
+        <label for="postalCode">Postal Code</label>
+        <input type="text" id="postalCode" name="postalCode" placeholder="e.g. 00100">
+      </div>
+
+      <div id="addressMsg" class="msg"></div>
+
+      <div class="action-buttons" style="margin-top: 15px;">
+        <button type="submit" class="btn btn-primary" id="saveAddressBtn">Save Address</button>
+      </div>
+    </form>
+
+    <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 30px 0 25px 0;">
+
     <form id="changePasswordForm">
       <h3 style="font-size: 1.1rem; color: var(--text-main); margin-bottom: 18px; text-align: center;">🔒 Change
         Password</h3>
@@ -277,6 +309,12 @@
       document.getElementById("lastname").value = user.lastname || "";
       document.getElementById("Email").value = user.email || "";
       document.getElementById("avatar").value = user.Image || user.image || user.avatar || user.profilePic || "";
+
+      const addr = user.address || {};
+      document.getElementById("addressLine").value = addr.addressLine || "";
+      document.getElementById("city").value = addr.city || "";
+      document.getElementById("district").value = addr.district || "";
+      document.getElementById("postalCode").value = addr.postalCode || "";
     }
 
     function showMsg(elemId, text, type) {
@@ -328,6 +366,55 @@
       } catch (err) {
         console.error("Update profile error:", err);
         showMsg("profileMsg", `Error: ${err.message}`, "error");
+        saveBtn.disabled = false;
+      }
+    });
+
+    // Handle Update Address submission (PUT /users/address)
+    document.getElementById("updateAddressForm").addEventListener("submit", async function (e) {
+      e.preventDefault();
+
+      const addressLine = document.getElementById("addressLine").value.trim();
+      const city = document.getElementById("city").value.trim();
+      const district = document.getElementById("district").value.trim();
+      const postalCode = document.getElementById("postalCode").value.trim();
+
+      const saveBtn = document.getElementById("saveAddressBtn");
+      saveBtn.disabled = true;
+      showMsg("addressMsg", "Saving address...", "loading");
+
+      try {
+        const response = await fetch(`${API_URL}/users/address`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+          },
+          body: JSON.stringify({ addressLine, city, district, postalCode })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.message || `Address update failed (${response.status})`);
+        }
+
+        // Update local user object address property
+        try {
+          const rawUser = localStorage.getItem("user");
+          if (rawUser) {
+            const u = JSON.parse(rawUser);
+            u.address = data.address || { addressLine, city, district, postalCode };
+            localStorage.setItem("user", JSON.stringify(u));
+          }
+        } catch (e) {}
+
+        showMsg("addressMsg", "Address updated successfully!", "success");
+
+      } catch (err) {
+        console.error("Update address error:", err);
+        showMsg("addressMsg", `Error: ${err.message}`, "error");
+      } finally {
         saveBtn.disabled = false;
       }
     });

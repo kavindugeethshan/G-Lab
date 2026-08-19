@@ -315,3 +315,40 @@ export const deleteOwnAccount = async (req, res) => {
     });
   }
 };
+//-----------------------------------------------------------------
+//// Update user address
+export const updateAddress = async (req, res) => {
+  try {
+    const { addressLine, city, district, postalCode } = req.body;
+
+    // Find logged-in user
+    const user = await User.findById(req.user.userId);
+
+    // Check whether user exists
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found",
+      });
+    }
+
+    // Update address
+    user.address = {
+      addressLine,
+      city,
+      district,
+      postalCode,
+    };
+
+    // Save updated user
+    await user.save();
+
+    res.status(200).json({
+      message: "Address updated successfully",
+      address: user.address,
+    });
+  } catch (err) {
+    res.status(500).json({
+      message: err.message,
+    });
+  }
+};

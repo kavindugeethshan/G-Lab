@@ -179,6 +179,11 @@
       <div class="info-value" id="userEmail">-</div>
     </div>
 
+    <div class="info-group">
+      <div class="info-label">Address</div>
+      <div class="info-value" id="userAddress">Not provided</div>
+    </div>
+
     <div class="action-buttons">
       <button type="button" class="btn btn-outline" onclick="window.location.href='home.html'">Products</button>
       <button type="button" class="btn btn-primary" onclick="window.location.href='edit profile.html'">Edit
@@ -249,6 +254,10 @@
       document.getElementById("userLastName").textContent = user.lastname || "-";
       document.getElementById("userEmail").textContent = user.email || "-";
       document.getElementById("userRole").textContent = user.isadmin ? "Admin" : "Customer";
+
+      const addr = user.address || {};
+      const fullAddress = [addr.addressLine, addr.city, addr.district, addr.postalCode].filter(Boolean).join(", ");
+      document.getElementById("userAddress").textContent = fullAddress || "Not provided";
 
       if (user.isadmin) {
         const btn = document.getElementById("adminProfileBtn");
