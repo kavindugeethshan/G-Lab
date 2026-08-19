@@ -296,11 +296,17 @@
 
                     localStorage.setItem("user", JSON.stringify(userObj));
 
-                    showMessage("Login successful! Redirecting...", "success");
-
-                    setTimeout(() => {
-                        window.location.href = "home.html";
-                    }, 500);
+                    if (userObj.isadmin) {
+                        showMessage("Admin login successful! Redirecting to Admin Dashboard...", "success");
+                        setTimeout(() => {
+                            window.location.href = "admin.html";
+                        }, 500);
+                    } else {
+                        showMessage("Login successful! Redirecting...", "success");
+                        setTimeout(() => {
+                            window.location.href = "home.html";
+                        }, 500);
+                    }
 
                 } catch (error) {
                     console.error("Login error:", error);
