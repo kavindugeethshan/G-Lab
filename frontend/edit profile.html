@@ -137,11 +137,31 @@
       text-align: center;
       display: none;
     }
-    #msg.success {
+    .msg {
+      margin-top: 15px;
+      padding: 10px;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      text-align: center;
+      display: none;
+    }
+    .msg.success {
       display: block;
       background-color: rgba(16, 185, 129, 0.15);
       color: var(--success-color);
       border: 1px solid var(--success-color);
+    }
+    .msg.error {
+      display: block;
+      background-color: rgba(239, 68, 68, 0.15);
+      color: var(--error-color);
+      border: 1px solid var(--error-color);
+    }
+    .msg.loading {
+      display: block;
+      background-color: rgba(59, 130, 246, 0.15);
+      color: var(--accent-color);
+      border: 1px solid var(--accent-color);
     }
   </style>
 </head>
@@ -171,11 +191,33 @@
         <input type="text" id="avatar" name="avatar" placeholder="https://example.com/image.jpg">
       </div>
 
-      <div id="msg"></div>
+      <div id="profileMsg" class="msg"></div>
 
       <div class="action-buttons">
         <button type="button" class="btn btn-outline" onclick="window.location.href='profile.html'">Cancel</button>
-        <button type="submit" class="btn btn-primary" id="saveBtn">Save Changes</button>
+        <button type="submit" class="btn btn-primary" id="saveProfileBtn">Save Profile</button>
+      </div>
+    </form>
+
+    <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 30px 0 25px 0;">
+
+    <form id="changePasswordForm">
+      <h3 style="font-size: 1.1rem; color: var(--text-main); margin-bottom: 18px; text-align: center;">🔒 Change Password</h3>
+      
+      <div class="form-group">
+        <label for="currentPassword">Current Password</label>
+        <input type="password" id="currentPassword" name="currentPassword" placeholder="Enter current password" required>
+      </div>
+
+      <div class="form-group">
+        <label for="newPassword">New Password</label>
+        <input type="password" id="newPassword" name="newPassword" placeholder="Enter new password" required>
+      </div>
+
+      <div id="passwordMsg" class="msg"></div>
+
+      <div class="action-buttons" style="margin-top: 15px;">
+        <button type="submit" class="btn btn-primary" id="changePassBtn">Update Password</button>
       </div>
     </form>
   </div>
@@ -226,12 +268,14 @@
       document.getElementById("avatar").value = user.Image || user.image || user.avatar || user.profilePic || "";
     }
 
-    function showMsg(text, type) {
-      const msg = document.getElementById("msg");
+    function showMsg(elemId, text, type) {
+      const msg = document.getElementById(elemId);
+      if (!msg) return;
       msg.textContent = text;
-      msg.className = type;
+      msg.className = `msg ${type}`;
     }
 
+    // Handle Edit Profile submission (PUT /users/profile)
     document.getElementById("editProfileForm").addEventListener("submit", async function (e) {
       e.preventDefault();
 
@@ -240,9 +284,9 @@
       const email = document.getElementById("Email").value.trim();
       const image = document.getElementById("avatar").value.trim();
 
-      const saveBtn = document.getElementById("saveBtn");
+      const saveBtn = document.getElementById("saveProfileBtn");
       saveBtn.disabled = true;
-      showMsg("Saving changes...", "loading");
+      showMsg("profileMsg", "Saving profile...", "loading");
 
       try {
         const response = await fetch(`${API_URL}/users/profile`, {
@@ -264,7 +308,7 @@
           localStorage.setItem("user", JSON.stringify(data.user));
         }
 
-        showMsg("Profile updated successfully! Redirecting...", "success");
+        showMsg("profileMsg", "Profile updated successfully! Redirecting...", "success");
 
         setTimeout(() => {
           window.location.href = "profile.html";
@@ -272,8 +316,51 @@
 
       } catch (err) {
         console.error("Update profile error:", err);
-        showMsg(`Error: ${err.message}`, "error");
+        showMsg("profileMsg", `Error: ${err.message}`, "error");
         saveBtn.disabled = false;
+      }
+    });
+
+    // Handle Change Password submission (PUT /users/change-password)
+    document.getElementById("changePasswordForm").addEventListener("submit", async function (e) {
+      e.preventDefault();
+
+      const currentPassword = document.getElementById("currentPassword").value.trim();
+      const newPassword = document.getElementById("newPassword").value.trim();
+      const passBtn = document.getElementById("changePassBtn");
+
+      if (!currentPassword || !newPassword) {
+        showMsg("passwordMsg", "Current password and new password are required", "error");
+        return;
+      }
+
+      passBtn.disabled = true;
+      showMsg("passwordMsg", "Updating password...", "loading");
+
+      try {
+        const response = await fetch(`${API_URL}/users/change-password`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+          },
+          body: JSON.stringify({ currentPassword, newPassword })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.message || `Password update failed (${response.status})`);
+        }
+
+        showMsg("passwordMsg", "Password changed successfully!", "success");
+        document.getElementById("changePasswordForm").reset();
+
+      } catch (err) {
+        console.error("Change password error:", err);
+        showMsg("passwordMsg", err.message, "error");
+      } finally {
+        passBtn.disabled = false;
       }
     });
 

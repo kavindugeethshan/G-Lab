@@ -175,20 +175,18 @@
       <div class="info-value" id="userEmail">-</div>
     </div>
 
-    <div class="info-group">
-      <div class="info-label">Email Verification</div>
-      <div class="info-value" id="userEmailVerified">-</div>
-    </div>
-
-    <div class="info-group">
-      <div class="info-label">Account Status</div>
-      <div class="info-value" id="userStatus">-</div>
-    </div>
-
     <div class="action-buttons">
       <button type="button" class="btn btn-outline" onclick="window.location.href='home.html'">Products</button>
       <button type="button" class="btn btn-primary" onclick="window.location.href='edit profile.html'">Edit Profile</button>
-      <button type="button" class="btn btn-danger" onclick="logout()">Log Out</button>
+      <button type="button" class="btn btn-outline" onclick="logout()">Log Out</button>
+    </div>
+
+    <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 30px 0 20px 0;">
+
+    <div class="danger-section" style="text-align: center;">
+      <h3 style="font-size: 0.95rem; color: var(--error-color); margin-bottom: 8px;">⚠️ Delete Account</h3>
+      <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 15px;">Permanently delete your account and all associated data.</p>
+      <button type="button" class="btn btn-danger" style="width: 100%;" onclick="deleteAccount()">Delete Account</button>
     </div>
   </div>
 
@@ -241,8 +239,6 @@
       document.getElementById("userLastName").textContent = user.lastname || "-";
       document.getElementById("userEmail").textContent = user.email || "-";
       document.getElementById("userRole").textContent = user.isadmin ? "Admin" : "Customer";
-      document.getElementById("userEmailVerified").textContent = user.isemailverified ? "Verified ✓" : "Not Verified";
-      document.getElementById("userStatus").textContent = user.isblocked ? "Blocked 🚫" : "Active ✅";
 
       const pic = document.getElementById("profilePic");
       const imgUrl = user.Image || user.image || user.avatar || user.profilePic;
@@ -250,6 +246,36 @@
         pic.src = imgUrl;
       } else {
         pic.src = "https://via.placeholder.com/100?text=User";
+      }
+    }
+
+    async function deleteAccount() {
+      const confirmDelete = confirm("Are you sure you want to delete your account? This action is permanent and cannot be undone.");
+      if (!confirmDelete) return;
+
+      try {
+        const response = await fetch(`${API_URL}/users/delete-account`, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+          }
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.message || `Failed to delete account (${response.status})`);
+        }
+
+        alert("Your account has been deleted successfully.");
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        window.location.href = "First login page.html";
+
+      } catch (err) {
+        console.error("Delete account error:", err);
+        alert(`Error deleting account: ${err.message}`);
       }
     }
 

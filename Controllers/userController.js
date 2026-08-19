@@ -246,3 +246,72 @@ export const updateprofule = async (req, res) => {
     })
   }
 }
+//---------------------------------------------------------------------
+//change password 
+export const changePassword = async (req, res) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+
+    if (!currentPassword || !newPassword) {
+      return res.status(400).json({
+        message: "Current password and new password are required"
+      });
+    }
+    const user = await User.findById(req.user.userId);
+
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found"
+      });
+    }
+
+    const isPasswordvalid = await bcrypt.compare(
+      currentPassword,
+      user.password
+    );
+
+    if (!isPasswordvalid) {
+      return res.status(400).json({
+        message: "Incorrect current password"
+      });
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 12);
+    user.password = hashedPassword;
+
+    await user.save();
+    res.status(200).json({
+      message: "Password changed successfully"
+    });
+
+  } catch (error) {
+    res.status(500).json({
+      message: "Server error",
+      error: error.message
+    })
+  }
+}
+
+//---------------------------------------------------------------------------
+//Delete  own account 
+export const deleteOwnAccount = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.userId);
+
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found",
+      });
+    }
+
+    await User.findByIdAndDelete(req.user.userId);
+
+    res.status(200).json({
+      message: "Account deleted successfully",
+    });
+  } catch (err) {
+    res.status(500).json({
+      message: err.message,
+    });
+  }
+};
