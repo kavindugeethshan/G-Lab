@@ -37,6 +37,14 @@ export const createOrder = async (req, res) => {
             });
         }
 
+        // Validate Delivery Address
+        const userAddr = user.address || {};
+        if (!userAddr.addressLine || !userAddr.city || !userAddr.district || !userAddr.postalCode) {
+            return res.status(400).json({
+                message: "Your delivery address is incomplete. Please set your address in Profile settings before placing an order."
+            });
+        }
+
         const orderProducts = [];
 
         for (const item of cart.items) {
@@ -79,7 +87,12 @@ export const createOrder = async (req, res) => {
             Products: orderProducts,
             Total: totalAmount,
 
-            Diliveryaddress: user.address,
+            Diliveryaddress: {
+                addressLine: userAddr.addressLine,
+                city: userAddr.city,
+                district: userAddr.district,
+                postalCode: userAddr.postalCode
+            },
 
             Orderstatus: "Pending",
         });

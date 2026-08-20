@@ -547,7 +547,14 @@
                 const data = await response.json();
 
                 if (!response.ok) {
-                    throw new Error(data.message || `Failed to create order (${response.status})`);
+                    const errMsg = data.message || data.error || `Failed to create order (${response.status})`;
+                    if (errMsg.toLowerCase().includes("address")) {
+                        if (confirm(`Order Warning: ${errMsg}\n\nWould you like to go to your Profile settings now to set your delivery address?`)) {
+                            window.location.href = "edit profile.html";
+                            return;
+                        }
+                    }
+                    throw new Error(errMsg);
                 }
 
                 setMessage("🎉 Order created successfully! Thank you for your purchase.", "success");
