@@ -444,7 +444,8 @@
         </div>
         <div class="nav-actions">
             <span class="user-greeting" id="userGreeting"></span>
-            <button type="button" class="btn cart-badge-btn" onclick="openCartModal()">🛒 Cart (<span id="cartBadge">0</span>)</button>
+            <button type="button" class="btn cart-badge-btn" onclick="openCartModal()">🛒 Cart (<span
+                    id="cartBadge">0</span>)</button>
             <button type="button" class="btn btn-outline" id="adminNavBtn"
                 style="display: none; border-color: var(--accent-color); color: var(--accent-color);"
                 onclick="window.location.href='admin.html'">Admin Panel</button>
@@ -467,7 +468,8 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <div style="font-size: 1.1rem; font-weight: 700;">Total: <span id="cartTotalText" style="color: var(--success-color);">Rs. 0</span></div>
+                <div style="font-size: 1.1rem; font-weight: 700;">Total: <span id="cartTotalText"
+                        style="color: var(--success-color);">Rs. 0</span></div>
                 <div style="display: flex; gap: 10px;">
                     <button type="button" class="btn btn-danger" onclick="clearCart()">Clear Cart</button>
                     <button type="button" class="btn btn-outline" onclick="closeCartModal()">Close</button>
@@ -560,7 +562,7 @@
 
     <script>
 
-        const API_URL = "http://192.168.1.36:3001";
+        const API_URL = "http://192.168.1.43:3001";
         const token = localStorage.getItem("token");
 
         if (!token) {

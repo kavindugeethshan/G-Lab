@@ -211,7 +211,8 @@
     <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 30px 0 25px 0;">
 
     <form id="updateAddressForm">
-      <h3 style="font-size: 1.1rem; color: var(--text-main); margin-bottom: 18px; text-align: center;">📍 Shipping Address</h3>
+      <h3 style="font-size: 1.1rem; color: var(--text-main); margin-bottom: 18px; text-align: center;">📍 Shipping
+        Address</h3>
 
       <div class="form-group">
         <label for="addressLine">Address Line</label>
@@ -266,7 +267,7 @@
   </div>
 
   <script>
-    const API_URL = "http://192.168.1.36:3001";
+    const API_URL = "http://192.168.1.43:3001";
     const token = localStorage.getItem("token");
     if (!token) {
       window.location.href = "First login page.html";
@@ -407,7 +408,7 @@
             u.address = data.address || { addressLine, city, district, postalCode };
             localStorage.setItem("user", JSON.stringify(u));
           }
-        } catch (e) {}
+        } catch (e) { }
 
         showMsg("addressMsg", "Address updated successfully!", "success");
 
