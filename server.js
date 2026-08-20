@@ -11,6 +11,7 @@ import productRouter from "./routers/productRouter.js";
 import reviewRouter from "./routers/reviewRouter.js";
 import adminRouter from "./routers/adminRouter.js";
 import cartRouter from "./routers/CartRouters.js";
+import orderRouter from "./routers/orderRouter.js";
 
 
 const app = express();
@@ -49,6 +50,7 @@ app.use("/products", productRouter);
 app.use("/", reviewRouter);
 app.use("/admin", adminRouter);
 app.use("/cart", cartRouter);
+app.use("/order", orderRouter);
 
 const PORT = process.env.PORT || 3001;
 server.listen(PORT, () => {

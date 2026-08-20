@@ -362,6 +362,36 @@
             </form>
         </div>
 
+        <!-- Update Order Status (Admin Route: PATCH /admin/orders/:id/status) -->
+        <div class="section-card">
+            <h3>🚚 Update Order Status (Admin Route: PATCH /admin/orders/:id/status)</h3>
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 15px;">Search an Order by ID or enter Order ID to update its fulfillment status.</p>
+
+            <div class="grid-inputs" style="grid-template-columns: 1fr auto auto;">
+                <div class="form-group">
+                    <label for="adminOrderId">Order ID*</label>
+                    <input type="text" id="adminOrderId" placeholder="Enter Order ID (e.g. 64a1b2c3...)">
+                </div>
+                <div class="form-group">
+                    <label for="adminOrderStatus">New Status*</label>
+                    <select id="adminOrderStatus" style="height: 42px; padding: 0 12px; background: #0f172a; border: 1px solid var(--border-color); color: var(--text-main); border-radius: 6px;">
+                        <option value="Pending">Pending</option>
+                        <option value="Confirmed">Confirmed</option>
+                        <option value="Shipped">Shipped</option>
+                        <option value="Delivered">Delivered</option>
+                        <option value="Cancelled">Cancelled</option>
+                    </select>
+                </div>
+                <button type="button" class="btn btn-admin" style="height: 42px; margin-top: auto;" onclick="adminUpdateOrderStatus()">Update Status</button>
+            </div>
+
+            <div style="margin-top: 15px;">
+                <button type="button" class="btn btn-outline" onclick="searchOrderByIdAdmin()">Find Order Details</button>
+            </div>
+
+            <div id="adminOrderDetailCard" style="margin-top: 15px; display: none; padding: 15px; border: 1px solid var(--border-color); border-radius: 8px; background: #0f172a;"></div>
+        </div>
+
         <!-- Manage Existing Products -->
         <div class="section-card">
             <h3>🛠️ Manage Products (Admin Operations)</h3>
@@ -594,6 +624,92 @@
             } catch (err) {
                 console.error("Admin delete product error:", err);
                 setMessage(`Delete failed: ${err.message}`, "error");
+            }
+        }
+
+        // Search Order Details by ID (GET /order/:id)
+        async function searchOrderByIdAdmin() {
+            const orderId = document.getElementById("adminOrderId").value.trim();
+            if (!orderId) {
+                setMessage("Please enter a valid Order ID to search.", "error");
+                return;
+            }
+
+            setMessage("Fetching order details...", "loading");
+
+            try {
+                const res = await fetch(`${API_URL}/order/${orderId}`, {
+                    headers: getHeaders()
+                });
+                const data = await res.json();
+
+                if (!res.ok) {
+                    throw new Error(data.message || `Order not found (${res.status})`);
+                }
+
+                const order = data.order || data;
+                const card = document.getElementById("adminOrderDetailCard");
+                card.style.display = "block";
+
+                const addr = order.Diliveryaddress || {};
+                const addressStr = [addr.addressLine, addr.city, addr.district, addr.postalCode].filter(Boolean).join(", ") || "No address specified";
+
+                card.innerHTML = `
+                    <h4 style="color: var(--accent-color); margin-bottom: 8px;">Order #${order._id}</h4>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 6px;">📍 <strong>Delivery Address:</strong> ${addressStr}</p>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 6px;">🏷️ <strong>Current Status:</strong> <span style="color: var(--success-color); font-weight: 600;">${order.Orderstatus || 'Pending'}</span></p>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 6px;">💰 <strong>Total Amount:</strong> Rs. ${(order.Total || 0).toLocaleString()}</p>
+                    <div style="font-size: 0.85rem; margin-top: 8px;">
+                        <strong>Products:</strong>
+                        <ul style="margin-left: 20px; margin-top: 4px;">
+                            ${(order.Products || []).map(p => `<li>${p.name} (x${p.quantity}) — Rs. ${(p.price * p.quantity).toLocaleString()}</li>`).join('')}
+                        </ul>
+                    </div>
+                `;
+
+                if (order.Orderstatus) {
+                    document.getElementById("adminOrderStatus").value = order.Orderstatus;
+                }
+
+                setMessage(`Order details loaded for #${order._id}`, "success");
+
+            } catch (err) {
+                console.error("searchOrderByIdAdmin error:", err);
+                setMessage(`Search failed: ${err.message}`, "error");
+            }
+        }
+
+        // Update Order Status (PATCH /admin/orders/:id/status)
+        async function adminUpdateOrderStatus() {
+            const orderId = document.getElementById("adminOrderId").value.trim();
+            const status = document.getElementById("adminOrderStatus").value;
+
+            if (!orderId) {
+                setMessage("Please enter an Order ID to update.", "error");
+                return;
+            }
+
+            setMessage(`Updating order status to "${status}"...`, "loading");
+
+            try {
+                const res = await fetch(`${API_URL}/admin/orders/${orderId}/status`, {
+                    method: "PATCH",
+                    headers: getHeaders(),
+                    body: JSON.stringify({ status })
+                });
+
+                const data = await res.json();
+
+                if (!res.ok) {
+                    throw new Error(data.message || `Status update failed (${res.status})`);
+                }
+
+                setMessage(`Order #${orderId} status updated to "${status}" successfully!`, "success");
+                searchOrderByIdAdmin();
+
+            } catch (err) {
+                console.error("adminUpdateOrderStatus error:", err);
+                setMessage(`Update failed: ${err.message}`, "error");
             }
         }
 
