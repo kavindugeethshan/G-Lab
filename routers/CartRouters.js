@@ -6,7 +6,7 @@ import {
     updateCartQuantity,
     removeFromCart,
     clearCart,
-} from "../Controllers/cartController.js";
+} from "../Controllers/Cartcontroller.js";
 
 import { authMiddleware } from "../Middleware/authMiddleware.js";
 
