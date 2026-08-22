@@ -204,7 +204,7 @@
         </div>
         <div>
             <button class="btn btn-outline" onclick="window.location.href='home.html'">Back to Products</button>
-            <button class="btn btn-outline" onclick="window.location.href='cart.html'">🛒 Cart & Orders</button>
+            <button class="btn btn-outline" onclick="window.location.href='cart.html'">🛒 Cart & Orders <span id="cartBadge" style="background: rgba(59, 130, 246, 0.3); border-radius: 10px; padding: 2px 7px; margin-left: 4px; font-size: 0.8rem; color: #3b82f6;">0</span></button>
             <button class="btn btn-outline" onclick="window.location.href='profile.html'">Profile</button>
         </div>
     </header>
@@ -245,7 +245,9 @@
     </div>
 
     <script>
-        const API_URL = "http://192.168.1.43:3001";
+        const API_URL = (window.location.origin.startsWith('http') && !window.location.origin.includes('file:')) 
+            ? window.location.origin 
+            : "http://localhost:3001";
         const token = localStorage.getItem("token");
 
         if (!token) {
@@ -338,6 +340,21 @@
             }
         }
 
+        async function updateCartBadge() {
+            try {
+                const response = await fetch(`${API_URL}/cart`, {
+                    headers: { "Authorization": `Bearer ${token}` }
+                });
+                const data = await response.json();
+                if (response.ok) {
+                    const badge = document.getElementById("cartBadge");
+                    if (badge) {
+                        badge.textContent = data.totalQuantity || data.itemCount || (data.items || []).reduce((s, i) => s + (i.quantity || 0), 0);
+                    }
+                }
+            } catch (_) {}
+        }
+
         async function addToCartFromDetail(pId) {
             const qty = Number(document.getElementById("detailQty").value) || 1;
             try {
@@ -353,9 +370,10 @@
                 if (!response.ok) {
                     throw new Error(data.message || "Failed to add to cart");
                 }
-                alert("Product added to your cart! 🛒");
+                setMessage("Product added to your cart! 🛒", "success");
+                updateCartBadge();
             } catch (err) {
-                alert(`Add to cart error: ${err.message}`);
+                setMessage(`Add to cart error: ${err.message}`, "error");
             }
         }
 
@@ -514,6 +532,7 @@
         window.addEventListener("DOMContentLoaded", function () {
             loadProductDetails();
             loadProductReviews();
+            updateCartBadge();
         });
     </script>
 

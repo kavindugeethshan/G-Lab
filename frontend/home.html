@@ -444,7 +444,7 @@
         </div>
         <div class="nav-actions">
             <span class="user-greeting" id="userGreeting"></span>
-            <button type="button" class="btn cart-badge-btn" onclick="window.location.href='cart.html'">🛒 Cart & Orders</button>
+            <button type="button" class="btn cart-badge-btn" onclick="window.location.href='cart.html'">🛒 Cart & Orders <span id="cartBadge" style="background: rgba(255,255,255,0.25); border-radius: 10px; padding: 2px 7px; margin-left: 5px; font-size: 0.8rem;">0</span></button>
             <button type="button" class="btn btn-outline" id="adminNavBtn"
                 style="display: none; border-color: var(--accent-color); color: var(--accent-color);"
                 onclick="window.location.href='admin.html'">Admin Panel</button>
@@ -561,7 +561,9 @@
 
     <script>
 
-        const API_URL = "http://192.168.1.43:3001";
+        const API_URL = (window.location.origin.startsWith('http') && !window.location.origin.includes('file:')) 
+            ? window.location.origin 
+            : "http://localhost:3001";
         const token = localStorage.getItem("token");
 
         if (!token) {

@@ -7,10 +7,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <style>
         :root {
-            --bg-color: #0f172a;
+            --bg-color: #0b1329;
             --card-bg: #1e293b;
+            --card-hover: #334155;
             --accent-color: #3b82f6;
             --accent-hover: #2563eb;
+            --accent-glow: rgba(59, 130, 246, 0.25);
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
             --border-color: #334155;
@@ -35,25 +37,30 @@
             background-color: var(--bg-color);
             color: var(--text-main);
             min-height: 100vh;
-            padding-bottom: 50px;
+            padding-bottom: 60px;
         }
 
         header {
-            background-color: var(--card-bg);
+            background-color: rgba(30, 41, 59, 0.95);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             border-bottom: 1px solid var(--border-color);
-            padding: 18px 40px;
+            padding: 16px 36px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             position: sticky;
             top: 0;
             z-index: 100;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
         }
 
         .logo-title h1 {
             font-size: 1.5rem;
             color: var(--accent-color);
             cursor: pointer;
+            font-weight: 700;
+            letter-spacing: -0.5px;
         }
 
         .logo-title span {
@@ -67,8 +74,14 @@
             gap: 12px;
         }
 
+        .user-greeting {
+            font-size: 0.88rem;
+            color: var(--text-muted);
+            margin-right: 6px;
+        }
+
         .container {
-            max-width: 950px;
+            max-width: 1050px;
             margin: 30px auto;
             padding: 0 20px;
         }
@@ -77,29 +90,29 @@
             background-color: var(--card-bg);
             border: 1px solid var(--border-color);
             border-radius: 12px;
-            padding: 25px;
+            padding: 26px;
             margin-bottom: 25px;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.4);
         }
 
         .section-card h2,
         .section-card h3 {
-            font-size: 1.25rem;
+            font-size: 1.3rem;
             color: var(--accent-color);
-            margin-bottom: 15px;
+            margin-bottom: 18px;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
         }
 
         .btn {
             padding: 10px 18px;
-            border-radius: 6px;
+            border-radius: 8px;
             font-size: 0.9rem;
             font-weight: 600;
             cursor: pointer;
             border: 1px solid transparent;
-            transition: all 0.2s;
+            transition: all 0.2s ease;
             display: inline-flex;
             align-items: center;
             justify-content: center;
@@ -109,10 +122,12 @@
         .btn-primary {
             background-color: var(--accent-color);
             color: white;
+            box-shadow: 0 4px 14px var(--accent-glow);
         }
 
         .btn-primary:hover {
             background-color: var(--accent-hover);
+            transform: translateY(-1px);
         }
 
         .btn-outline {
@@ -128,7 +143,7 @@
         .btn-danger {
             background-color: rgba(239, 68, 68, 0.15);
             color: var(--error-color);
-            border-color: var(--error-color);
+            border-color: rgba(239, 68, 68, 0.4);
         }
 
         .btn-danger:hover {
@@ -139,18 +154,26 @@
         .btn-success {
             background-color: var(--success-color);
             color: white;
+            box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3);
         }
 
         .btn-success:hover {
             background-color: #059669;
+            transform: translateY(-1px);
         }
 
         #message {
-            padding: 12px 16px;
-            border-radius: 8px;
-            margin-bottom: 20px;
+            padding: 14px 18px;
+            border-radius: 10px;
+            margin-bottom: 22px;
             display: none;
             font-size: 0.95rem;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-6px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         #message.error {
@@ -174,65 +197,215 @@
             border: 1px solid var(--accent-color);
         }
 
+        /* Cart Badge */
+        .badge-pill {
+            background-color: var(--accent-color);
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 12px;
+            margin-left: 4px;
+        }
+
+        /* Cart Metrics Bar */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .metric-box {
+            background-color: #0f172a;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 14px 16px;
+            text-align: center;
+        }
+
+        .metric-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+
+        .metric-val {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        /* Cart Table */
+        .cart-table-wrapper {
+            overflow-x: auto;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            background-color: #0f172a;
+        }
+
         .cart-table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 15px;
+            font-size: 0.92rem;
         }
 
         .cart-table th,
         .cart-table td {
-            padding: 14px;
+            padding: 16px;
             text-align: left;
             border-bottom: 1px solid var(--border-color);
         }
 
         .cart-table th {
-            background-color: #0f172a;
+            background-color: #0b1329;
             color: var(--text-muted);
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .cart-item-img {
-            width: 50px;
-            height: 50px;
-            object-fit: cover;
-            border-radius: 6px;
-            background: #0f172a;
+            width: 65px;
+            height: 65px;
+            object-fit: contain;
+            border-radius: 8px;
+            background: #1e293b;
+            padding: 4px;
+            border: 1px solid var(--border-color);
+        }
+
+        /* Quantity controls */
+        .qty-picker {
+            display: inline-flex;
+            align-items: center;
+            background: #1e293b;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .qty-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-main);
+            width: 32px;
+            height: 32px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.15s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .qty-btn:hover:not(:disabled) {
+            background: #334155;
+            color: var(--accent-color);
+        }
+
+        .qty-btn:disabled {
+            color: var(--border-color);
+            cursor: not-allowed;
         }
 
         .cart-qty-input {
-            width: 60px;
-            padding: 6px;
-            border-radius: 6px;
-            border: 1px solid var(--border-color);
-            background: #0f172a;
+            width: 48px;
+            height: 32px;
+            border: none;
+            border-left: 1px solid var(--border-color);
+            border-right: 1px solid var(--border-color);
+            background: transparent;
             color: var(--text-main);
             text-align: center;
+            font-weight: 600;
+            font-size: 0.95rem;
+            -moz-appearance: textfield;
         }
 
+        .cart-qty-input::-webkit-outer-spin-button,
+        .cart-qty-input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        /* Badges & Tags */
+        .discount-tag {
+            background-color: rgba(239, 68, 68, 0.2);
+            color: var(--error-color);
+            font-weight: 700;
+            font-size: 0.75rem;
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-left: 4px;
+        }
+
+        .price-alert-tag {
+            background-color: rgba(245, 158, 11, 0.2);
+            color: var(--warning-color);
+            font-size: 0.75rem;
+            padding: 2px 6px;
+            border-radius: 4px;
+            display: inline-block;
+            margin-top: 4px;
+        }
+
+        /* Cart Summary Box */
         .cart-summary {
-            margin-top: 20px;
+            margin-top: 25px;
+            background-color: #0f172a;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 22px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .summary-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding-top: 15px;
-            border-top: 1px solid var(--border-color);
+            font-size: 0.95rem;
+            color: var(--text-muted);
+        }
+
+        .summary-row.total-row {
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: var(--text-main);
+            padding-top: 12px;
+            border-top: 1px dashed var(--border-color);
         }
 
         .total-price {
-            font-size: 1.3rem;
-            font-weight: 700;
             color: var(--success-color);
         }
 
+        .summary-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        /* Orders */
         .order-card {
             background: #0f172a;
             border: 1px solid var(--border-color);
             border-radius: 10px;
-            padding: 18px;
-            margin-bottom: 15px;
+            padding: 20px;
+            margin-bottom: 16px;
+            transition: border-color 0.2s;
+        }
+
+        .order-card:hover {
+            border-color: var(--accent-color);
         }
 
         .order-header {
@@ -240,15 +413,15 @@
             justify-content: space-between;
             align-items: center;
             border-bottom: 1px solid var(--border-color);
-            padding-bottom: 10px;
-            margin-bottom: 12px;
+            padding-bottom: 12px;
+            margin-bottom: 14px;
         }
 
         .status-badge {
-            padding: 4px 12px;
-            border-radius: 12px;
-            font-size: 0.8rem;
-            font-weight: 600;
+            padding: 5px 14px;
+            border-radius: 14px;
+            font-size: 0.82rem;
+            font-weight: 700;
         }
 
         .grid-inputs {
@@ -266,11 +439,23 @@
 
         .form-group input {
             width: 100%;
-            padding: 10px;
-            border-radius: 6px;
+            padding: 10px 14px;
+            border-radius: 8px;
             border: 1px solid var(--border-color);
             background: #0f172a;
             color: var(--text-main);
+            font-size: 0.9rem;
+        }
+
+        .empty-cart-state {
+            text-align: center;
+            padding: 50px 20px;
+        }
+
+        .empty-cart-icon {
+            font-size: 4rem;
+            margin-bottom: 15px;
+            opacity: 0.6;
         }
     </style>
 </head>
@@ -283,38 +468,76 @@
             <span>Computer Parts & Accessories</span>
         </div>
         <div class="nav-actions">
-            <button type="button" class="btn btn-outline" onclick="window.location.href='home.html'">Back to Products</button>
+            <span class="user-greeting" id="userGreeting"></span>
+            <button type="button" class="btn btn-outline" onclick="window.location.href='home.html'">🏠 Home</button>
+            <button type="button" class="btn btn-primary" onclick="window.location.href='cart.html'">
+                🛒 Cart <span class="badge-pill" id="navCartCount">0</span>
+            </button>
             <button type="button" class="btn btn-outline" onclick="window.location.href='profile.html'">Profile</button>
             <button type="button" class="btn btn-danger" onclick="logout()">Logout</button>
         </div>
     </header>
 
     <div class="container">
+        <!-- Global Feedback Message -->
         <div id="message"></div>
 
         <!-- SECTION 1: SHOPPING CART -->
         <div class="section-card">
-            <h2>🛒 My Shopping Cart</h2>
-            <div id="cartContent">
-                <p style="text-align: center; color: var(--text-muted); padding: 20px;">Loading your cart...</p>
+            <h2>🛒 Shopping Cart Management</h2>
+            
+            <!-- Cart Metrics Bar -->
+            <div class="metrics-grid" id="cartMetricsBar" style="display: none;">
+                <div class="metric-box">
+                    <div class="metric-label">Unique Products</div>
+                    <div class="metric-val" id="metricItemCount">0</div>
+                </div>
+                <div class="metric-box">
+                    <div class="metric-label">Total Quantity</div>
+                    <div class="metric-val" id="metricTotalQuantity">0</div>
+                </div>
+                <div class="metric-box">
+                    <div class="metric-label">Total Discount</div>
+                    <div class="metric-val" style="color: var(--success-color);" id="metricTotalDiscount">Rs. 0</div>
+                </div>
+                <div class="metric-box">
+                    <div class="metric-label">Payable Total</div>
+                    <div class="metric-val" style="color: var(--accent-color);" id="metricPayableTotal">Rs. 0</div>
+                </div>
             </div>
+
+            <!-- Cart Items Container -->
+            <div id="cartContent">
+                <p style="text-align: center; color: var(--text-muted); padding: 30px;">Loading your cart...</p>
+            </div>
+
+            <!-- Cart Financial Summary -->
             <div class="cart-summary" id="cartSummary" style="display: none;">
-                <div>
-                    <span>Total Amount: </span>
+                <div class="summary-row">
+                    <span>Cart Subtotal (Original Prices):</span>
+                    <span style="font-weight: 600;" id="cartSubtotal">Rs. 0</span>
+                </div>
+                <div class="summary-row">
+                    <span>Total Discount Savings:</span>
+                    <span style="color: var(--success-color); font-weight: 600;" id="cartTotalDiscount">- Rs. 0</span>
+                </div>
+                <div class="summary-row total-row">
+                    <span>Final Payable Amount:</span>
                     <span class="total-price" id="cartGrandTotal">Rs. 0</span>
                 </div>
-                <div style="display: flex; gap: 10px;">
-                    <button type="button" class="btn btn-danger" onclick="clearCart()">Clear Cart</button>
-                    <button type="button" class="btn btn-success" style="font-size: 1rem; padding: 12px 24px;" onclick="createOrderFromCart()">💳 Checkout & Place Order</button>
+
+                <div class="summary-actions">
+                    <button type="button" class="btn btn-danger" onclick="clearCart()">🗑️ Clear Entire Cart</button>
+                    <button type="button" class="btn btn-success" style="font-size: 1rem; padding: 12px 28px;" onclick="createOrderFromCart()">💳 Checkout & Place Order</button>
                 </div>
             </div>
         </div>
 
         <!-- SECTION 2: MY ORDERS HISTORY (GET /order/my-orders) -->
         <div class="section-card">
-            <h2>📦 My Order History</h2>
-            <div style="margin-bottom: 15px;">
-                <button type="button" class="btn btn-outline" onclick="loadMyOrders()">Refresh Order History</button>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <h2>📦 My Order History</h2>
+                <button type="button" class="btn btn-outline" style="padding: 6px 14px; font-size: 0.85rem;" onclick="loadMyOrders()">🔄 Refresh History</button>
             </div>
             <div id="myOrdersContainer">
                 <p style="text-align: center; color: var(--text-muted); padding: 20px;">Loading your past orders...</p>
@@ -331,17 +554,32 @@
                 </div>
                 <button type="button" class="btn btn-primary" style="height: 42px;" onclick="searchOrderById()">Search Order</button>
             </div>
-            <div id="singleOrderResult" style="margin-top: 15px; display: none;"></div>
+            <div id="singleOrderResult" style="margin-top: 18px; display: none;"></div>
         </div>
     </div>
 
     <script>
-        const API_URL = "http://192.168.1.43:3001";
+        // Dynamic API Base URL resolution
+        const API_URL = (window.location.origin.startsWith('http') && !window.location.origin.includes('file:')) 
+            ? window.location.origin 
+            : "http://localhost:3001";
+
         const token = localStorage.getItem("token");
 
         if (!token) {
             window.location.href = "First login page.html";
         }
+
+        // Parse and display User Info
+        try {
+            const rawUser = localStorage.getItem("user");
+            if (rawUser) {
+                const u = JSON.parse(rawUser);
+                const name = u.firstname ? `${u.firstname} ${u.lastname || ''}` : (u.name || u.email || 'User');
+                const userEl = document.getElementById("userGreeting");
+                if (userEl) userEl.textContent = `Hi, ${name}`;
+            }
+        } catch (_) {}
 
         function getHeaders() {
             return {
@@ -358,11 +596,15 @@
             }
             el.textContent = text;
             el.className = type || "";
-            console.log(`[Status:${type || "info"}]`, text);
+            if (type === "success") {
+                setTimeout(() => {
+                    if (el.textContent === text) el.style.display = "none";
+                }, 4000);
+            }
         }
 
         // ----------------------------------------------------
-        // 1. SHOPPING CART FUNCTIONS (GET /cart, PUT /cart/update/:id, DELETE /cart/remove/:id, DELETE /cart/clear)
+        // 1. SHOPPING CART FUNCTIONS
         // ----------------------------------------------------
         async function loadCart() {
             try {
@@ -377,37 +619,68 @@
                     throw new Error(data.message || `Failed to fetch cart (${response.status})`);
                 }
 
-                renderCart(data.items || [], data.total || 0);
+                // Update Nav Badge
+                const navCount = document.getElementById("navCartCount");
+                if (navCount) {
+                    navCount.textContent = data.totalQuantity || data.itemCount || 0;
+                }
+
+                renderCart(data);
 
             } catch (err) {
                 console.error("loadCart error:", err);
-                document.getElementById("cartContent").innerHTML = `<p style="color: var(--error-color); text-align: center;">Error loading cart: ${err.message}</p>`;
+                document.getElementById("cartContent").innerHTML = `<p style="color: var(--error-color); text-align: center; padding: 20px;">Error loading cart: ${err.message}</p>`;
             }
         }
 
-        function renderCart(items, total) {
+        function renderCart(cartData) {
             const cartContent = document.getElementById("cartContent");
             const cartSummary = document.getElementById("cartSummary");
-            const grandTotal = document.getElementById("cartGrandTotal");
+            const cartMetricsBar = document.getElementById("cartMetricsBar");
+
+            const items = cartData.items || [];
+            const subtotal = cartData.subtotal || 0;
+            const total = cartData.total || cartData.finalPayableAmount || 0;
+            const totalDiscount = cartData.totalDiscount || (subtotal - total) || 0;
+            const itemCount = cartData.itemCount !== undefined ? cartData.itemCount : items.length;
+            const totalQuantity = cartData.totalQuantity !== undefined ? cartData.totalQuantity : items.reduce((s, i) => s + i.quantity, 0);
 
             if (!items || items.length === 0) {
-                cartContent.innerHTML = `<p style="text-align: center; color: var(--text-muted); padding: 30px 0;">Your shopping cart is empty.</p>`;
+                cartContent.innerHTML = `
+                    <div class="empty-cart-state">
+                        <div class="empty-cart-icon">🛒</div>
+                        <h3 style="color: var(--text-main); margin-bottom: 8px;">Your Shopping Cart is Empty</h3>
+                        <p style="color: var(--text-muted); margin-bottom: 20px;">Look like you haven't added any products to your cart yet.</p>
+                        <button type="button" class="btn btn-primary" onclick="window.location.href='home.html'">Browse Products Now</button>
+                    </div>
+                `;
                 cartSummary.style.display = "none";
+                cartMetricsBar.style.display = "none";
                 return;
             }
 
+            // Update Metrics Bar
+            document.getElementById("metricItemCount").textContent = itemCount;
+            document.getElementById("metricTotalQuantity").textContent = totalQuantity;
+            document.getElementById("metricTotalDiscount").textContent = `Rs. ${totalDiscount.toLocaleString()}`;
+            document.getElementById("metricPayableTotal").textContent = `Rs. ${total.toLocaleString()}`;
+            cartMetricsBar.style.display = "grid";
+
+            // Update Financial Summary
+            document.getElementById("cartSubtotal").textContent = `Rs. ${subtotal.toLocaleString()}`;
+            document.getElementById("cartTotalDiscount").textContent = `- Rs. ${totalDiscount.toLocaleString()}`;
+            document.getElementById("cartGrandTotal").textContent = `Rs. ${total.toLocaleString()}`;
             cartSummary.style.display = "flex";
-            grandTotal.textContent = `Rs. ${total.toLocaleString()}`;
 
             let html = `
-                <div style="overflow-x: auto;">
+                <div class="cart-table-wrapper">
                     <table class="cart-table">
                         <thead>
                             <tr>
-                                <th>Product</th>
-                                <th>Price</th>
+                                <th>Product Details</th>
+                                <th>Unit Price</th>
                                 <th>Quantity</th>
-                                <th>Subtotal</th>
+                                <th>Item Subtotal & Total</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -418,35 +691,71 @@
                 const product = item.product || {};
                 const pId = product._id || item.product;
                 const pName = product.name || "Product";
-                const pImg = product.Image || product.image || 'https://via.placeholder.com/50?text=No+Image';
-                const origPrice = item.originalPrice || product.price || 0;
-                const discPrice = item.discountedPrice || origPrice;
+                const pCat = product.category || "";
+                const pBrand = product.brand || "";
+                const pStock = product.stock !== undefined ? product.stock : 999;
+                const pImg = product.Image || product.image || 'https://via.placeholder.com/65?text=No+Image';
+
+                const origPrice = item.originalPrice !== undefined ? item.originalPrice : (product.price || 0);
+                const discPrice = item.discountedPrice !== undefined ? item.discountedPrice : origPrice;
                 const discount = item.discount || 0;
-                const itemTotal = item.itemTotal || (discPrice * item.quantity);
+
+                const itemSubtotal = item.itemSubtotal !== undefined ? item.itemSubtotal : (origPrice * item.quantity);
+                const itemTotal = item.itemTotal !== undefined ? item.itemTotal : (discPrice * item.quantity);
+                const itemSaved = itemSubtotal - itemTotal;
+
+                const isPriceChanged = item.priceChanged === true;
 
                 html += `
                     <tr>
                         <td>
-                            <div style="display: flex; align-items: center; gap: 12px;">
-                                <img src="${pImg}" class="cart-item-img" alt="${pName}" onerror="this.src='https://via.placeholder.com/50?text=No+Image'">
+                            <div style="display: flex; align-items: center; gap: 14px;">
+                                <img src="${pImg}" class="cart-item-img" alt="${pName}" onerror="this.src='https://via.placeholder.com/65?text=No+Image'">
                                 <div>
-                                    <strong>${pName}</strong>
-                                    <div style="font-size: 0.75rem; color: var(--text-muted);">ID: ${pId}</div>
+                                    <strong style="font-size: 1rem; color: var(--text-main);">${pName}</strong>
+                                    <div style="margin-top: 4px;">
+                                        ${pCat ? `<span style="font-size: 0.75rem; background: #334155; padding: 2px 6px; border-radius: 4px; color: var(--text-muted); margin-right: 4px;">${pCat}</span>` : ''}
+                                        ${pBrand ? `<span style="font-size: 0.75rem; background: #334155; padding: 2px 6px; border-radius: 4px; color: var(--text-muted);">${pBrand}</span>` : ''}
+                                    </div>
+                                    <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px;">Stock available: <strong style="color: ${pStock <= item.quantity ? 'var(--warning-color)' : 'var(--text-main)'};">${pStock}</strong> units</div>
+                                    ${isPriceChanged ? `<div class="price-alert-tag">⚠️ Current price updated in store</div>` : ''}
                                 </div>
                             </div>
                         </td>
                         <td>
-                            <strong style="color: var(--success-color);">Rs. ${discPrice.toLocaleString()}</strong>
-                            ${discount > 0 ? `<br><span style="text-decoration: line-through; color: var(--text-muted); font-size: 0.8rem;">Rs. ${origPrice}</span> <span style="color: #ef4444; font-size: 0.75rem;">(-${discount}%)</span>` : ''}
+                            <div>
+                                <strong style="color: var(--success-color); font-size: 1rem;">Rs. ${discPrice.toLocaleString()}</strong>
+                                ${discount > 0 ? `
+                                    <div style="margin-top: 2px;">
+                                        <span style="text-decoration: line-through; color: var(--text-muted); font-size: 0.8rem;">Rs. ${origPrice.toLocaleString()}</span>
+                                        <span class="discount-tag">-${discount}% OFF</span>
+                                    </div>
+                                ` : ''}
+                            </div>
                         </td>
                         <td>
-                            <input type="number" class="cart-qty-input" value="${item.quantity}" min="1" onchange="updateCartQuantity('${pId}', this.value)">
+                            <div class="qty-picker">
+                                <button type="button" class="qty-btn" onclick="changeQuantity('${pId}', ${item.quantity}, -1, ${pStock})" ${item.quantity <= 1 ? 'disabled' : ''}>−</button>
+                                <input type="number" class="cart-qty-input" value="${item.quantity}" min="1" max="${pStock}" onchange="onManualQtyChange('${pId}', this.value, ${pStock})">
+                                <button type="button" class="qty-btn" onclick="changeQuantity('${pId}', ${item.quantity}, 1, ${pStock})" ${item.quantity >= pStock ? 'disabled' : ''}>+</button>
+                            </div>
+                            ${item.quantity >= pStock ? `<div style="font-size: 0.72rem; color: var(--warning-color); margin-top: 4px;">Max stock reached</div>` : ''}
                         </td>
                         <td>
-                            <strong style="color: var(--success-color);">Rs. ${itemTotal.toLocaleString()}</strong>
+                            <div>
+                                <strong style="color: var(--accent-color); font-size: 1.05rem;">Rs. ${itemTotal.toLocaleString()}</strong>
+                                ${itemSaved > 0 ? `
+                                    <div style="font-size: 0.78rem; color: var(--success-color); margin-top: 2px;">
+                                        Save Rs. ${itemSaved.toLocaleString()}
+                                    </div>
+                                ` : ''}
+                                <div style="font-size: 0.75rem; color: var(--text-muted);">
+                                    Subtotal: Rs. ${itemSubtotal.toLocaleString()}
+                                </div>
+                            </div>
                         </td>
                         <td>
-                            <button type="button" class="btn btn-danger" style="padding: 6px 12px; font-size: 0.8rem;" onclick="removeFromCart('${pId}')">🗑️ Remove</button>
+                            <button type="button" class="btn btn-danger" style="padding: 7px 12px; font-size: 0.82rem;" onclick="removeFromCart('${pId}')">🗑️ Remove</button>
                         </td>
                     </tr>
                 `;
@@ -461,11 +770,35 @@
             cartContent.innerHTML = html;
         }
 
-        async function updateCartQuantity(productId, newQty) {
-            const quantity = Number(newQty);
-            if (!quantity || quantity < 1) return;
+        async function changeQuantity(productId, currentQty, delta, maxStock) {
+            const targetQty = currentQty + delta;
+            if (targetQty < 1) {
+                setMessage("Quantity cannot be less than 1", "error");
+                return;
+            }
+            if (targetQty > maxStock) {
+                setMessage(`Maximum available stock for this product is ${maxStock}`, "error");
+                return;
+            }
+            await updateCartQuantity(productId, targetQty);
+        }
 
-            setMessage("Updating cart quantity...", "loading");
+        async function onManualQtyChange(productId, val, maxStock) {
+            let num = Number(val);
+            if (isNaN(num) || num < 1) {
+                setMessage("Quantity must be at least 1", "error");
+                loadCart();
+                return;
+            }
+            if (num > maxStock) {
+                setMessage(`Cannot exceed maximum stock of ${maxStock}`, "error");
+                num = maxStock;
+            }
+            await updateCartQuantity(productId, num);
+        }
+
+        async function updateCartQuantity(productId, quantity) {
+            setMessage("Updating quantity...", "loading");
             try {
                 const response = await fetch(`${API_URL}/cart/update/${productId}`, {
                     method: "PUT",
@@ -476,7 +809,7 @@
                 const data = await response.json();
                 if (!response.ok) throw new Error(data.message || "Failed to update quantity");
 
-                setMessage("Cart updated!", "success");
+                setMessage("Cart updated successfully!", "success");
                 loadCart();
 
             } catch (err) {
@@ -487,9 +820,9 @@
         }
 
         async function removeFromCart(productId) {
-            if (!confirm("Remove this item from your cart?")) return;
+            if (!confirm("Are you sure you want to remove this item from your cart?")) return;
 
-            setMessage("Removing item from cart...", "loading");
+            setMessage("Removing item...", "loading");
             try {
                 const response = await fetch(`${API_URL}/cart/remove/${productId}`, {
                     method: "DELETE",
@@ -509,7 +842,7 @@
         }
 
         async function clearCart() {
-            if (!confirm("Are you sure you want to clear your entire cart?")) return;
+            if (!confirm("Are you sure you want to clear your entire cart? This cannot be undone.")) return;
 
             setMessage("Clearing cart...", "loading");
             try {
@@ -521,7 +854,7 @@
                 const data = await response.json();
                 if (!response.ok) throw new Error(data.message || "Failed to clear cart");
 
-                setMessage("Cart cleared!", "success");
+                setMessage("Cart cleared successfully!", "success");
                 loadCart();
 
             } catch (err) {
@@ -531,12 +864,12 @@
         }
 
         // ----------------------------------------------------
-        // 2. CREATE ORDER (POST /order)
+        // 2. CREATE ORDER FROM CART
         // ----------------------------------------------------
         async function createOrderFromCart() {
-            if (!confirm("Are you sure you want to checkout and place your order?")) return;
+            if (!confirm("Proceed to checkout and place your order?")) return;
 
-            setMessage("Creating your order...", "loading");
+            setMessage("Validating stock and placing order...", "loading");
 
             try {
                 const response = await fetch(`${API_URL}/order`, {
@@ -549,7 +882,7 @@
                 if (!response.ok) {
                     const errMsg = data.message || data.error || `Failed to create order (${response.status})`;
                     if (errMsg.toLowerCase().includes("address")) {
-                        if (confirm(`Order Warning: ${errMsg}\n\nWould you like to go to your Profile settings now to set your delivery address?`)) {
+                        if (confirm(`Delivery Address Required:\n\n${errMsg}\n\nWould you like to navigate to your Profile to add your delivery address now?`)) {
                             window.location.href = "edit profile.html";
                             return;
                         }
@@ -557,22 +890,22 @@
                     throw new Error(errMsg);
                 }
 
-                setMessage("🎉 Order created successfully! Thank you for your purchase.", "success");
+                setMessage("🎉 Order created successfully! Thank you for shopping with G Lab.", "success");
                 loadCart();
                 loadMyOrders();
 
             } catch (err) {
                 console.error("createOrder error:", err);
-                setMessage(`Create order failed: ${err.message}`, "error");
+                setMessage(`Order creation failed: ${err.message}`, "error");
             }
         }
 
         // ----------------------------------------------------
-        // 3. GET MY ORDERS (GET /order/my-orders)
+        // 3. GET MY ORDERS
         // ----------------------------------------------------
         async function loadMyOrders() {
             const container = document.getElementById("myOrdersContainer");
-            container.innerHTML = `<p style="text-align: center; color: var(--text-muted); padding: 20px;">Loading your orders...</p>`;
+            container.innerHTML = `<p style="text-align: center; color: var(--text-muted); padding: 20px;">Loading your order history...</p>`;
 
             try {
                 const response = await fetch(`${API_URL}/order/my-orders`, {
@@ -605,24 +938,24 @@
                         <div class="order-card">
                             <div class="order-header">
                                 <div>
-                                    <strong style="color: var(--accent-color);">Order #${order._id}</strong>
-                                    <div style="font-size: 0.8rem; color: var(--text-muted);">${orderDate}</div>
+                                    <strong style="color: var(--accent-color); font-size: 1.05rem;">Order #${order._id}</strong>
+                                    <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 2px;">Placed on: ${orderDate}</div>
                                 </div>
                                 <div>
                                     <span class="status-badge" style="background: ${statusColor.bg}; color: ${statusColor.text};">${status}</span>
                                 </div>
                             </div>
-                            <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">
+                            <div style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 12px;">
                                 📍 <strong>Delivery Address:</strong> ${addressStr}
                             </div>
-                            <div style="margin-bottom: 10px;">
-                                <strong style="font-size: 0.9rem;">Products Ordered:</strong>
-                                <ul style="margin-left: 20px; font-size: 0.85rem; margin-top: 6px;">
-                                    ${(order.Products || []).map(p => `<li>${p.name} (x${p.quantity}) — <span style="color: var(--success-color);">Rs. ${(p.price * p.quantity).toLocaleString()}</span></li>`).join('')}
+                            <div style="margin-bottom: 12px;">
+                                <strong style="font-size: 0.9rem; color: var(--text-main);">Items Purchased:</strong>
+                                <ul style="margin-left: 20px; font-size: 0.88rem; margin-top: 6px; color: var(--text-muted);">
+                                    ${(order.Products || []).map(p => `<li><strong style="color: var(--text-main);">${p.name}</strong> (x${p.quantity}) — <span style="color: var(--success-color);">Rs. ${(p.price * p.quantity).toLocaleString()}</span></li>`).join('')}
                                 </ul>
                             </div>
-                            <div style="text-align: right; font-size: 1.1rem; font-weight: 700; color: var(--success-color);">
-                                Total: Rs. ${(order.Total || 0).toLocaleString()}
+                            <div style="text-align: right; font-size: 1.15rem; font-weight: 700; color: var(--success-color); border-top: 1px dashed var(--border-color); padding-top: 10px;">
+                                Total Amount Paid: Rs. ${(order.Total || 0).toLocaleString()}
                             </div>
                         </div>
                     `;
@@ -647,7 +980,7 @@
         }
 
         // ----------------------------------------------------
-        // 4. GET ORDER BY ID (GET /order/:id)
+        // 4. GET ORDER BY ID
         // ----------------------------------------------------
         async function searchOrderById() {
             const orderId = document.getElementById("searchOrderId").value.trim();
@@ -692,10 +1025,10 @@
                                 <span class="status-badge" style="background: ${statusColor.bg}; color: ${statusColor.text};">${status}</span>
                             </div>
                         </div>
-                        <div style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 8px;">
+                        <div style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 10px;">
                             📍 <strong>Delivery Address:</strong> ${addressStr}
                         </div>
-                        <div style="margin-bottom: 10px;">
+                        <div style="margin-bottom: 12px;">
                             <strong style="font-size: 0.95rem;">Products Included:</strong>
                             <ul style="margin-left: 20px; font-size: 0.9rem; margin-top: 6px;">
                                 ${(order.Products || []).map(p => `<li>${p.name} (x${p.quantity}) — Rs. ${(p.price * p.quantity).toLocaleString()}</li>`).join('')}
