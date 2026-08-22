@@ -561,13 +561,30 @@
 
     <script>
 
-        const API_URL = (window.location.origin.startsWith('http') && !window.location.origin.includes('file:')) 
-            ? window.location.origin 
+        const API_URL = (window.location.protocol.startsWith('http')) 
+            ? `${window.location.protocol}//${window.location.hostname}:3001` 
             : "http://localhost:3001";
         const token = localStorage.getItem("token");
 
         if (!token) {
             window.location.href = "First login page.html";
+        }
+
+        async function safeFetch(url, options = {}) {
+            const response = await fetch(url, options);
+            const contentType = response.headers.get("content-type") || "";
+            let data = {};
+            if (contentType.includes("application/json")) {
+                data = await response.json();
+            } else {
+                const text = await response.text();
+                try {
+                    data = JSON.parse(text);
+                } catch (_) {
+                    throw new Error(`Server returned HTML/non-JSON response (Status ${response.status}). Ensure backend is running on port 3001.`);
+                }
+            }
+            return { response, data };
         }
 
         // Display user info in header
@@ -642,12 +659,10 @@
         async function loadProducts() {
             setMessage("Loading products...", "loading");
             try {
-                const response = await fetch(`${API_URL}/products`, {
+                const { response, data } = await safeFetch(`${API_URL}/products`, {
                     method: "GET",
                     headers: getHeaders()
                 });
-
-                const data = await response.json();
 
                 if (!response.ok) {
                     throw new Error(data.message || `Request failed (${response.status})`);
@@ -690,12 +705,10 @@
             setMessage("Filtering products...", "loading");
 
             try {
-                const response = await fetch(url, {
+                const { response, data } = await safeFetch(url, {
                     method: "GET",
                     headers: getHeaders()
                 });
-
-                const data = await response.json();
 
                 if (!response.ok) {
                     throw new Error(data.message || `Filter failed (${response.status})`);
@@ -729,12 +742,10 @@
             setMessage("Searching product by ID...", "loading");
 
             try {
-                const response = await fetch(`${API_URL}/products/${productId}`, {
+                const { response, data } = await safeFetch(`${API_URL}/products/${productId}`, {
                     method: "GET",
                     headers: getHeaders()
                 });
-
-                const data = await response.json();
 
                 if (!response.ok) {
                     throw new Error(data.message || "Product not found");
