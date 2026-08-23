@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import Product from "../models/Productmodel.js";
 
 //create product function
@@ -397,10 +398,16 @@ export const getallProducts = async (req, res) => {
   }
 };
 //-----------------------------------------------------------------------------------------
-//Getall productby id  function
+// Get product by id function
 export const getProductById = async (req, res) => {
   try {
     const { id } = req.params;
+
+    if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({
+        message: "Invalid product ID",
+      });
+    }
 
     const product = await Product.findById(id);
 
@@ -422,60 +429,77 @@ export const getProductById = async (req, res) => {
 };
 
 //-----------------------------------------------------------------------------------------
-//updateProduct
+// updateProduct function
 export const updateProduct = async (req, res) => {
   try {
-    // Get the product ID from the URL
     const { id } = req.params;
+    const updateData = { ...req.body };
 
-    // Get updated product data from request body
-    const updateData = req.body;
+    if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({
+        message: "Invalid product ID",
+      });
+    }
 
-    // Find the product by ID and update it
+    if (updateData.price !== undefined) {
+      if (typeof updateData.price !== "number" || updateData.price < 0) {
+        return res.status(400).json({
+          message: "Product price must be a non-negative number",
+        });
+      }
+    }
+
+    if (updateData.stock !== undefined) {
+      if (typeof updateData.stock !== "number" || updateData.stock < 0) {
+        return res.status(400).json({
+          message: "Product stock must be a non-negative number",
+        });
+      }
+      updateData.isavailable = updateData.stock > 0;
+    }
+
     const updatedProduct = await Product.findByIdAndUpdate(id, updateData, {
-      // Return the updated product after the update
       returnDocument: "after",
-
-      // Run Mongoose schema validation during update
       runValidators: true,
     });
 
-    // Check whether the product exists
     if (!updatedProduct) {
       return res.status(404).json({
         message: "Product not found",
       });
     }
 
-    // Send successful response
     res.status(200).json({
       message: "Product updated successfully",
       product: updatedProduct,
     });
   } catch (error) {
-    // Handle server/database errors
     res.status(500).json({
       message: error.message,
     });
   }
 };
+
 //---------------------------------------------------------------------------------------------
-//deleteProduct function
+// deleteProduct function
 export const deleteProduct = async (req, res) => {
   try {
-    //get the product id from url
     const { id } = req.params;
-    // Find the product by ID and delete it
+
+    if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({
+        message: "Invalid product ID",
+      });
+    }
+
     const deletedProduct = await Product.findByIdAndDelete(id);
 
-    // Check whether the product exists
     if (!deletedProduct) {
       return res.status(404).json({
         message: "Product not found",
       });
     }
 
-    // Send successful response
     res.status(200).json({
       message: "Product deleted successfully",
       product: deletedProduct,

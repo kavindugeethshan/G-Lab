@@ -48,7 +48,27 @@ const orderSchema = new mongoose.Schema(
             },
         ],
 
-        Total: {
+        Subtotal: {
+            type: Number,
+            required: true,
+            min: 0,
+        },
+
+        TotalDiscount: {
+            type: Number,
+            required: true,
+            min: 0,
+            default: 0,
+        },
+
+        ShippingFee: {
+            type: Number,
+            required: true,
+            min: 0,
+            default: 500,
+        },
+
+        FinalTotal: {
             type: Number,
             required: true,
             min: 0,
@@ -87,13 +107,37 @@ const orderSchema = new mongoose.Schema(
             ],
             default: "Pending",
         },
+        statusHistory: [
+            {
+                status: {
+                    type: String,
+                    enum: [
+                        "Pending",
+                        "Confirmed",
+                        "Shipped",
+                        "Delivered",
+                        "Cancelled",
+                    ],
+                    required: true,
+                },
+
+                changedAt: {
+                    type: Date,
+                    default: Date.now,
+                },
+            },
+        ]
     },
     {
         timestamps: true,
     }
 );
 
-const Order =
-    mongoose.models.Order || mongoose.model("Order", orderSchema);
+// Clear cached model if it exists to ensure schema updates like statusHistory are compiled
+if (mongoose.models && mongoose.models.Order) {
+    delete mongoose.models.Order;
+}
+
+const Order = mongoose.model("Order", orderSchema);
 
 export default Order;

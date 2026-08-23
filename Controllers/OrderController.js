@@ -73,19 +73,32 @@ export const createOrder = async (req, res) => {
             });
         }
 
-        let totalAmount = 0;
+        let subtotal = 0;
+        let totalDiscount = 0;
 
         for (const item of orderProducts) {
-            const discountedPrice =
-                item.price - (item.price * item.discount) / 100;
+            const itemSubtotal = item.price * item.quantity;
 
-            totalAmount += discountedPrice * item.quantity;
+            const discountAmount =
+                (item.price * item.discount / 100) * item.quantity;
+
+            subtotal += itemSubtotal;
+            totalDiscount += discountAmount;
         }
+
+        const shippingFee = 500;
+
+        const finalTotal =
+            subtotal - totalDiscount + shippingFee;
 
         const order = await Order.create({
             User: userId,
             Products: orderProducts,
-            Total: totalAmount,
+
+            Subtotal: subtotal,
+            TotalDiscount: totalDiscount,
+            ShippingFee: shippingFee,
+            FinalTotal: finalTotal,
 
             Diliveryaddress: {
                 addressLine: userAddr.addressLine,
@@ -95,6 +108,13 @@ export const createOrder = async (req, res) => {
             },
 
             Orderstatus: "Pending",
+
+            statusHistory: [
+                {
+                    status: "Pending",
+                    changedAt: new Date(),
+                },
+            ],
         });
 
         cart.items = [];
@@ -175,6 +195,106 @@ export const getOrderById = async (req, res) => {
 
     } catch (error) {
         console.log(error.message);
+
+        return res.status(500).json({
+            message: "Internal server error",
+        });
+    }
+};
+
+//------------------------------------------------------------------------
+// CANCEL OWN ORDER
+
+export const cancelOwnOrder = async (req, res) => {
+    try {
+        const userId = req.user.userId;
+        const { id } = req.params;
+
+        // Check authenticated user
+        if (!userId) {
+            return res.status(401).json({
+                message: "Authentication required",
+            });
+        }
+
+        // Check Order ID
+        if (!id) {
+            return res.status(400).json({
+                message: "Order ID is required",
+            });
+        }
+
+        // Find order belonging to logged-in user
+        const order = await Order.findOne({
+            _id: id,
+            User: userId,
+        });
+
+        // Order not found or does not belong to user
+        if (!order) {
+            return res.status(404).json({
+                message: "Order not found",
+            });
+        }
+
+        // Already cancelled
+        if (order.Orderstatus === "Cancelled") {
+            return res.status(400).json({
+                message: "Order is already cancelled",
+            });
+        }
+
+        // Cannot cancel shipped or delivered orders
+        if (
+            order.Orderstatus === "Shipped" ||
+            order.Orderstatus === "Delivered"
+        ) {
+            return res.status(400).json({
+                message: `Order cannot be cancelled because it is already ${order.Orderstatus}`,
+            });
+        }
+
+        // Cancel order
+        if (order.Orderstatus === "Confirmed") {
+
+            for (const item of order.Products) {
+
+                const product = await Product.findById(item.productId);
+
+                if (!product) {
+                    return res.status(404).json({
+                        message: `Product not found: ${item.productId}`,
+                    });
+                }
+
+                product.stock += item.quantity;
+
+                product.isavailable = product.stock > 0;
+
+                await product.save();
+            }
+        }
+
+        order.Orderstatus = "Cancelled";
+
+        if (!order.statusHistory) {
+            order.statusHistory = [];
+        }
+
+        order.statusHistory.push({
+            status: "Cancelled",
+            changedAt: new Date(),
+        });
+
+        await order.save();
+
+        return res.status(200).json({
+            message: "Order cancelled successfully",
+            order,
+        });
+
+    } catch (error) {
+        console.log("Cancel order error:", error.message);
 
         return res.status(500).json({
             message: "Internal server error",
