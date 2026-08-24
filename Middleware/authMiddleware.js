@@ -18,7 +18,7 @@ export const authMiddleware = (req, res, next) => {
       });
     }
 
-    const decoded = jwt.verify(token, "G-Lab-2026-My-Secret-Key-9xK72");
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.user = decoded;
 
     next();

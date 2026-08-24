@@ -63,9 +63,13 @@ export const createUser = async (req, res) => {
     }
 
     // Check minimum password length
-    if (password.length < 8) {
+    const passwordRegex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+
+    if (!passwordRegex.test(password)) {
       return res.status(400).json({
-        message: "Password must be at least 8 characters",
+        message:
+          "Password must be at least 8 characters and contain uppercase, lowercase, and a number",
       });
     }
 
@@ -166,7 +170,7 @@ export const loginUser = async (req, res) => {
         isblocked: user.isblocked,
         image: user.Image,
       },
-      "G-Lab-2026-My-Secret-Key-9xK72",
+      process.env.JWT_SECRET,
       {
         expiresIn: "1h",
       }
@@ -223,9 +227,57 @@ export const updateprofule = async (req, res) => {
         message: "User not found",
       });
     }
-    if (firstname) user.firstname = firstname.trim();
-    if (lastname) user.lastname = lastname.trim();
-    if (email) user.email = email.trim().toLowerCase();
+    if (firstname !== undefined) {
+      if (typeof firstname !== "string") {
+        return res.status(400).json({
+          message: "First name must be a string",
+        });
+      }
+
+      const cleanFirstname = firstname.trim();
+
+      if (cleanFirstname.length < 2 || cleanFirstname.length > 50) {
+        return res.status(400).json({
+          message: "First name must be between 2 and 50 characters",
+        });
+      }
+
+      user.firstname = cleanFirstname;
+    }
+
+    if (lastname !== undefined) {
+      if (typeof lastname !== "string") {
+        return res.status(400).json({
+          message: "Last name must be a string",
+        });
+      }
+
+      const cleanLastname = lastname.trim();
+
+      if (cleanLastname.length < 2 || cleanLastname.length > 50) {
+        return res.status(400).json({
+          message: "Last name must be between 2 and 50 characters",
+        });
+      }
+
+      user.lastname = cleanLastname;
+    }
+    if (email) {
+      const cleanEmail = email.trim().toLowerCase();
+
+      const existingUser = await User.findOne({
+        email: cleanEmail,
+        _id: { $ne: req.user.userId },
+      });
+
+      if (existingUser) {
+        return res.status(409).json({
+          message: "Email is already in use",
+        });
+      }
+
+      user.email = cleanEmail;
+    }
 
     const profilePic = image !== undefined ? image : Image;
     if (profilePic !== undefined) user.Image = profilePic.trim();
@@ -273,6 +325,11 @@ export const changePassword = async (req, res) => {
     if (!isPasswordvalid) {
       return res.status(400).json({
         message: "Incorrect current password"
+      });
+    }
+    if (currentPassword === newPassword) {
+      return res.status(400).json({
+        message: "New password must be different from current password",
       });
     }
 
@@ -330,13 +387,35 @@ export const updateAddress = async (req, res) => {
         message: "User not found",
       });
     }
+    if (!addressLine || typeof addressLine !== "string") {
+      return res.status(400).json({
+        message: "Address line is required",
+      });
+    }
 
+    if (!city || typeof city !== "string") {
+      return res.status(400).json({
+        message: "City is required",
+      });
+    }
+
+    if (!district || typeof district !== "string") {
+      return res.status(400).json({
+        message: "District is required",
+      });
+    }
+
+    if (!postalCode || typeof postalCode !== "string") {
+      return res.status(400).json({
+        message: "Postal code is required",
+      });
+    }
     // Update address
     user.address = {
-      addressLine,
-      city,
-      district,
-      postalCode,
+      addressLine: addressLine.trim(),
+      city: city.trim(),
+      district: district.trim(),
+      postalCode: postalCode.trim(),
     };
 
     // Save updated user
