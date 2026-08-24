@@ -1,5 +1,10 @@
 import mongoose from "mongoose";
 import Product from "../models/Productmodel.js";
+
+const escapeRegex = (value) => {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+};
+
 // Create Product Function
 export const createProduct = async (req, res) => {
   try {
@@ -278,10 +283,12 @@ export const getallProducts = async (req, res) => {
 
     // Search
     if (search) {
+      const safeSearch = escapeRegex(search);
+
       filter.$or = [
-        { name: { $regex: search, $options: "i" } },
-        { category: { $regex: search, $options: "i" } },
-        { brand: { $regex: search, $options: "i" } },
+        { name: { $regex: safeSearch, $options: "i" } },
+        { category: { $regex: safeSearch, $options: "i" } },
+        { brand: { $regex: safeSearch, $options: "i" } },
       ];
     }
 
@@ -293,7 +300,7 @@ export const getallProducts = async (req, res) => {
         .filter(Boolean);
 
       filter.category = {
-        $in: categories.map((item) => new RegExp(`^${item}$`, "i")),
+        $in: categories.map((item) => new RegExp(`^${escapeRegex(item)}$`, "i"))
       };
     }
 
@@ -305,7 +312,7 @@ export const getallProducts = async (req, res) => {
         .filter(Boolean);
 
       filter.brand = {
-        $in: brands.map((item) => new RegExp(`^${item}$`, "i")),
+        $in: brands.map((item) => new RegExp(`^${escapeRegex(item)}$`, "i")),
       };
     }
 

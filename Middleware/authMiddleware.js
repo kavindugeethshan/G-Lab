@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
-
-export const authMiddleware = (req, res, next) => {
+import User from "../models/Usermodel.js";
+export const authMiddleware = async (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
 
@@ -19,6 +19,21 @@ export const authMiddleware = (req, res, next) => {
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    const user = await User.findById(decoded.userId);
+
+    if (!user) {
+      return res.status(401).json({
+        message: "User not found",
+      });
+    }
+
+    if (user.isblocked) {
+      return res.status(403).json({
+        message: "Your account has been blocked",
+      });
+    }
+
     req.user = decoded;
 
     next();

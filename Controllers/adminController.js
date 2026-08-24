@@ -19,6 +19,8 @@ export const adminDashboard = async (req, res) => {
 
 // Update Order Status - Admin
 export const updateOrderStatus = async (req, res) => {
+    const session = await mongoose.startSession();
+
     try {
         const { id } = req.params;
         const { status } = req.body;
@@ -47,10 +49,15 @@ export const updateOrderStatus = async (req, res) => {
             });
         }
 
+        // Start transaction
+        session.startTransaction();
+
         // Find order
-        const order = await Order.findById(id);
+        const order = await Order.findById(id).session(session);
 
         if (!order) {
+            await session.abortTransaction();
+            session.endSession();
             return res.status(404).json({
                 message: "Order not found",
             });
@@ -67,15 +74,22 @@ export const updateOrderStatus = async (req, res) => {
 
         const currentStatus = order.Orderstatus;
 
-        // Prevent duplicate record if status is unchanged
+        // Prevent duplicate status
         if (currentStatus === status) {
+            await session.abortTransaction();
+            session.endSession();
             return res.status(400).json({
                 message: `Order is already in ${status} status`,
             });
         }
 
         // Validate transition
-        if (!allowedTransitions[currentStatus] || !allowedTransitions[currentStatus].includes(status)) {
+        if (
+            !allowedTransitions[currentStatus] ||
+            !allowedTransitions[currentStatus].includes(status)
+        ) {
+            await session.abortTransaction();
+            session.endSession();
             return res.status(400).json({
                 message: `Cannot change order status from ${currentStatus} to ${status}`,
             });
@@ -87,15 +101,19 @@ export const updateOrderStatus = async (req, res) => {
         if (status === "Confirmed") {
             // Check stock for every product first
             for (const item of order.Products) {
-                const product = await Product.findById(item.productId);
+                const product = await Product.findById(item.productId).session(session);
 
                 if (!product) {
+                    await session.abortTransaction();
+                    session.endSession();
                     return res.status(404).json({
                         message: `Product not found: ${item.productId}`,
                     });
                 }
 
                 if (product.stock < item.quantity) {
+                    await session.abortTransaction();
+                    session.endSession();
                     return res.status(400).json({
                         message: `Not enough stock for ${product.name}`,
                     });
@@ -104,10 +122,10 @@ export const updateOrderStatus = async (req, res) => {
 
             // Deduct stock
             for (const item of order.Products) {
-                const product = await Product.findById(item.productId);
+                const product = await Product.findById(item.productId).session(session);
                 product.stock -= item.quantity;
                 product.isavailable = product.stock > 0;
-                await product.save();
+                await product.save({ session });
             }
         }
 
@@ -116,11 +134,11 @@ export const updateOrderStatus = async (req, res) => {
         // --------------------------------------------------
         if (status === "Cancelled" && currentStatus === "Confirmed") {
             for (const item of order.Products) {
-                const product = await Product.findById(item.productId);
+                const product = await Product.findById(item.productId).session(session);
                 if (product) {
                     product.stock += item.quantity;
                     product.isavailable = product.stock > 0;
-                    await product.save();
+                    await product.save({ session });
                 }
             }
         }
@@ -137,7 +155,10 @@ export const updateOrderStatus = async (req, res) => {
             changedAt: new Date(),
         });
 
-        await order.save();
+        await order.save({ session });
+
+        await session.commitTransaction();
+        session.endSession();
 
         return res.status(200).json({
             message: "Order status updated successfully",
@@ -145,6 +166,8 @@ export const updateOrderStatus = async (req, res) => {
         });
 
     } catch (error) {
+        await session.abortTransaction();
+        session.endSession();
         console.log("Update order status error:", error.message);
 
         return res.status(500).json({
