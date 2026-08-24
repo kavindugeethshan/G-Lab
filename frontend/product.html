@@ -4,15 +4,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>G Lab — Product Details</title>
+    <title>G Lab — Product Details & Reviews</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg-color: #060b18;
-            --card-bg: rgba(15, 23, 42, 0.75);
-            --card-border: rgba(59, 130, 246, 0.2);
+            --card-bg: rgba(15, 23, 42, 0.85);
+            --card-border: rgba(59, 130, 246, 0.25);
             --card-hover-border: rgba(99, 102, 241, 0.5);
             --accent-gradient: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
             --accent-color: #3b82f6;
@@ -162,21 +162,21 @@
 
         /* CONTAINER & DETAIL LAYOUT */
         .container {
-            max-width: 1050px;
+            max-width: 1080px;
             margin: 32px auto;
             padding: 0 24px;
         }
 
         .detail-card {
             background: var(--card-bg);
-            backdrop-filter: blur(16px);
+            backdrop-filter: blur(20px);
             border: 1px solid var(--card-border);
-            border-radius: 18px;
-            padding: 32px;
+            border-radius: 20px;
+            padding: 36px;
             display: grid;
             grid-template-columns: 1fr 1.2fr;
             gap: 36px;
-            margin-bottom: 30px;
+            margin-bottom: 32px;
             box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.5);
         }
 
@@ -240,7 +240,7 @@
 
         .title {
             font-family: 'Outfit', sans-serif;
-            font-size: 1.8rem;
+            font-size: 1.85rem;
             font-weight: 800;
             color: var(--text-main);
             margin: 10px 0 12px 0;
@@ -256,7 +256,7 @@
 
         .price-current {
             font-family: 'Outfit', sans-serif;
-            font-size: 1.8rem;
+            font-size: 1.85rem;
             font-weight: 800;
             color: var(--success-color);
         }
@@ -277,59 +277,78 @@
         /* REVIEWS SECTION */
         .review-section {
             background: var(--card-bg);
-            backdrop-filter: blur(16px);
+            backdrop-filter: blur(20px);
             border: 1px solid var(--card-border);
-            border-radius: 18px;
-            padding: 32px;
+            border-radius: 20px;
+            padding: 34px;
             box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.5);
         }
 
         .review-section h3 {
             font-family: 'Outfit', sans-serif;
-            font-size: 1.35rem;
+            font-size: 1.4rem;
             font-weight: 700;
             color: var(--text-main);
             margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         .review-card {
-            background: rgba(15, 23, 42, 0.6);
+            background: rgba(15, 23, 42, 0.65);
             border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 16px;
-            margin-bottom: 14px;
+            border-radius: 14px;
+            padding: 18px 22px;
+            margin-bottom: 16px;
+            transition: border-color 0.2s;
+        }
+
+        .review-card:hover {
+            border-color: rgba(59, 130, 246, 0.4);
         }
 
         .review-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
         }
 
         .review-author {
             font-weight: 700;
             color: var(--text-main);
-            font-size: 0.92rem;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
         .review-stars {
             color: #f59e0b;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
+            font-weight: 700;
+        }
+
+        .review-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
         }
 
         .form-group label {
             display: block;
-            font-size: 0.85rem;
+            font-size: 0.84rem;
             color: var(--text-muted);
             margin-bottom: 6px;
             font-weight: 600;
         }
 
         .form-group textarea,
-        .form-group select {
+        .form-group select,
+        .form-group input {
             width: 100%;
-            padding: 12px;
+            padding: 12px 14px;
             border-radius: 10px;
             border: 1px solid var(--border-color);
             background: rgba(15, 23, 42, 0.8);
@@ -342,7 +361,7 @@
         #message {
             padding: 16px;
             border-radius: 12px;
-            margin-bottom: 20px;
+            margin-bottom: 24px;
             display: none;
             font-size: 0.9rem;
         }
@@ -360,7 +379,7 @@
             <div class="logo-icon">G</div>
             <div class="logo-text">
                 <h1>G LAB</h1>
-                <span>Product Full Specifications</span>
+                <span>Product Specifications & Reviews</span>
             </div>
         </div>
         <div class="nav-actions">
@@ -372,7 +391,7 @@
     <div class="container">
         <div id="message"></div>
         <div id="productDetailContainer">
-            <p style="text-align: center; color: var(--text-muted); padding: 50px;">Loading product details...</p>
+            <p style="text-align: center; color: var(--text-muted); padding: 50px;">Loading product specifications...</p>
         </div>
     </div>
 
@@ -382,6 +401,16 @@
             : "http://localhost:3001";
 
         const token = localStorage.getItem("token");
+        const rawUser = localStorage.getItem("user");
+        let currentUserId = null;
+
+        if (rawUser) {
+            try {
+                const u = JSON.parse(rawUser);
+                currentUserId = u._id || u.id;
+            } catch (_) {}
+        }
+
         const urlParams = new URLSearchParams(window.location.search);
         const productId = urlParams.get("id");
 
@@ -397,11 +426,14 @@
             if (!text) { el.style.display = "none"; return; }
             el.textContent = text;
             el.className = type || "";
+            if (type === "success") {
+                setTimeout(() => { if (el.textContent === text) el.style.display = "none"; }, 4000);
+            }
         }
 
         async function loadProductDetail() {
             if (!productId) {
-                document.getElementById("productDetailContainer").innerHTML = `<p style="color: var(--error-color); text-align: center;">No Product ID provided in URL.</p>`;
+                document.getElementById("productDetailContainer").innerHTML = `<p style="color: var(--error-color); text-align: center;">No Product ID specified in URL.</p>`;
                 return;
             }
 
@@ -453,9 +485,9 @@
                         </div>
                         <p class="desc">${p.description || 'No description available for this product.'}</p>
                         
-                        <div style="background: rgba(15,23,42,0.6); padding: 16px; border-radius: 12px; border: 1px solid var(--border-color); margin-bottom: 20px;">
+                        <div style="background: rgba(15,23,42,0.6); padding: 16px; border-radius: 14px; border: 1px solid var(--border-color); margin-bottom: 20px;">
                             <div style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 6px;">Product ID: <strong style="color: var(--text-main); font-family: monospace;">${p._id}</strong></div>
-                            <div style="font-size: 0.88rem; color: var(--text-muted);">Average Customer Rating: <strong style="color: #f59e0b;" id="avgRatingVal">Loading...</strong></div>
+                            <div style="font-size: 0.88rem; color: var(--text-muted);">Overall Customer Rating: <strong style="color: #f59e0b;" id="avgRatingVal">Loading...</strong></div>
                         </div>
 
                         <div style="display: flex; gap: 12px; align-items: center;">
@@ -468,24 +500,27 @@
                 </div>
 
                 <div class="review-section">
-                    <h3>⭐ Customer Reviews & Ratings</h3>
+                    <h3>
+                        <span>⭐ Customer Reviews & Feedback</span>
+                        <span style="font-size: 0.88rem; font-weight: 500; color: var(--text-muted);" id="reviewCountHeader">0 Reviews</span>
+                    </h3>
                     
-                    <!-- Review Creation Form -->
-                    <div style="background: rgba(15,23,42,0.7); border: 1px solid var(--border-color); padding: 20px; border-radius: 14px; margin-bottom: 24px;">
-                        <h4 style="font-size: 1rem; margin-bottom: 12px;">Write a Product Review</h4>
+                    <!-- Review Submission Form -->
+                    <div style="background: rgba(15,23,42,0.75); border: 1px solid var(--border-color); padding: 22px; border-radius: 14px; margin-bottom: 26px;">
+                        <h4 style="font-size: 1.05rem; margin-bottom: 14px; font-family: 'Outfit', sans-serif;">Write a Review for this Product</h4>
                         <div class="form-group">
-                            <label>Rating (1 to 5 Stars)</label>
+                            <label>Rating (1 to 5 Stars) *</label>
                             <select id="newReviewRating">
-                                <option value="5">⭐⭐⭐⭐⭐ (5/5)</option>
-                                <option value="4">⭐⭐⭐⭐ (4/5)</option>
-                                <option value="3">⭐⭐⭐ (3/5)</option>
-                                <option value="2">⭐⭐ (2/5)</option>
-                                <option value="1">⭐ (1/5)</option>
+                                <option value="5">⭐⭐⭐⭐⭐ (5/5 Stars)</option>
+                                <option value="4">⭐⭐⭐⭐ (4/5 Stars)</option>
+                                <option value="3">⭐⭐⭐ (3/5 Stars)</option>
+                                <option value="2">⭐⭐ (2/5 Stars)</option>
+                                <option value="1">⭐ (1/5 Star)</option>
                             </select>
                         </div>
                         <div class="form-group">
-                            <label>Review Comment</label>
-                            <textarea id="newReviewComment" rows="3" placeholder="Share your opinion on this product..."></textarea>
+                            <label>Review Comment *</label>
+                            <textarea id="newReviewComment" rows="3" placeholder="Share your experience with this product..."></textarea>
                         </div>
                         <button type="button" class="btn btn-primary" onclick="submitReview()">Submit Review</button>
                     </div>
@@ -496,12 +531,16 @@
                 </div>
             `;
 
-            // Load Rating Average
+            // Load Rating Information (GET /products/:productId/rating)
             fetch(`${API_URL}/products/${p._id}/rating`)
                 .then(res => res.json())
                 .then(data => {
                     const el = document.getElementById("avgRatingVal");
-                    if (el) el.textContent = data.averageRating ? `${data.averageRating} / 5` : 'No ratings yet';
+                    if (el) {
+                        const avg = data.ratingAverage !== undefined ? data.ratingAverage : 0;
+                        const cnt = data.ratingCount !== undefined ? data.ratingCount : 0;
+                        el.textContent = `${avg} / 5 (${cnt} rating(s))`;
+                    }
                 }).catch(() => {});
         }
 
@@ -525,39 +564,89 @@
             }
         }
 
+        // 3. GET PRODUCT REVIEWS (GET /products/:productId/reviews)
         async function loadReviews() {
             try {
                 const res = await fetch(`${API_URL}/products/${productId}/reviews`);
                 const data = await res.json();
-                const reviews = data.reviews || data || [];
+                const reviews = data.reviews || [];
+
+                const countHeader = document.getElementById("reviewCountHeader");
+                if (countHeader) countHeader.textContent = `${reviews.length} Review(s)`;
 
                 const container = document.getElementById("reviewsList");
                 if (!reviews || reviews.length === 0) {
-                    container.innerHTML = `<p style="color: var(--text-muted);">No reviews written for this product yet. Be the first to write one!</p>`;
+                    container.innerHTML = `<p style="color: var(--text-muted); text-align: center; padding: 20px;">No customer reviews yet. Be the first to share your feedback!</p>`;
                     return;
                 }
 
-                container.innerHTML = reviews.map(r => `
-                    <div class="review-card">
-                        <div class="review-header">
-                            <span class="review-author">👤 ${r.user ? (r.user.firstname || r.user.name || 'Verified Buyer') : 'Anonymous'}</span>
-                            <span class="review-stars">⭐ ${r.rating} / 5</span>
+                container.innerHTML = reviews.map(r => {
+                    const reviewer = r.user || {};
+                    const reviewerId = reviewer._id || (typeof r.user === 'string' ? r.user : null);
+                    const isOwnReview = currentUserId && reviewerId && (currentUserId.toString() === reviewerId.toString());
+                    const reviewerName = `${reviewer.firstname || ''} ${reviewer.lastname || ''}`.trim() || reviewer.email || 'Verified Buyer';
+                    const reviewDate = r.createdAt ? new Date(r.createdAt).toLocaleDateString() : '';
+
+                    return `
+                        <div class="review-card" id="review-card-${r._id}">
+                            <div class="review-header">
+                                <span class="review-author">
+                                    👤 <strong>${reviewerName}</strong>
+                                    ${isOwnReview ? `<span style="font-size: 0.72rem; background: rgba(59,130,246,0.2); color: #60a5fa; padding: 2px 8px; border-radius: 6px;">Your Review</span>` : ''}
+                                </span>
+                                <div>
+                                    <span class="review-stars">⭐ ${r.rating} / 5</span>
+                                    <span style="font-size: 0.78rem; color: var(--text-muted); margin-left: 8px;">${reviewDate}</span>
+                                </div>
+                            </div>
+                            <p style="font-size: 0.92rem; color: var(--text-muted); line-height: 1.5;" id="review-comment-${r._id}">${r.comment || 'No text comment.'}</p>
+                            
+                            <!-- Inline Edit Box (hidden by default) -->
+                            <div id="edit-box-${r._id}" style="display: none; margin-top: 14px; background: rgba(15,23,42,0.8); padding: 14px; border-radius: 10px; border: 1px solid var(--border-color);">
+                                <label style="font-size: 0.8rem; color: var(--text-muted);">Update Rating:</label>
+                                <select id="edit-rating-${r._id}" style="margin-bottom: 8px;">
+                                    <option value="5" ${r.rating === 5 ? 'selected' : ''}>⭐⭐⭐⭐⭐ (5/5)</option>
+                                    <option value="4" ${r.rating === 4 ? 'selected' : ''}>⭐⭐⭐⭐ (4/5)</option>
+                                    <option value="3" ${r.rating === 3 ? 'selected' : ''}>⭐⭐⭐ (3/5)</option>
+                                    <option value="2" ${r.rating === 2 ? 'selected' : ''}>⭐⭐ (2/5)</option>
+                                    <option value="1" ${r.rating === 1 ? 'selected' : ''}>⭐ (1/5)</option>
+                                </select>
+                                <label style="font-size: 0.8rem; color: var(--text-muted);">Update Comment:</label>
+                                <textarea id="edit-comment-${r._id}" rows="2">${r.comment || ''}</textarea>
+                                <div style="display: flex; gap: 8px;">
+                                    <button class="btn btn-primary" style="padding: 6px 14px; font-size: 0.8rem;" onclick="submitUpdateReview('${r._id}')">Save Changes</button>
+                                    <button class="btn btn-outline" style="padding: 6px 14px; font-size: 0.8rem;" onclick="toggleEditBox('${r._id}')">Cancel</button>
+                                </div>
+                            </div>
+
+                            ${isOwnReview ? `
+                                <div class="review-actions">
+                                    <button type="button" class="btn btn-outline" style="padding: 4px 12px; font-size: 0.78rem;" onclick="toggleEditBox('${r._id}')">✏️ Edit</button>
+                                    <button type="button" class="btn btn-danger" style="padding: 4px 12px; font-size: 0.78rem;" onclick="deleteOwnReview('${r._id}')">🗑️ Delete</button>
+                                </div>
+                            ` : ''}
                         </div>
-                        <p style="font-size: 0.9rem; color: var(--text-muted);">${r.comment || 'No text comment provided.'}</p>
-                    </div>
-                `).join('');
+                    `;
+                }).join('');
+
             } catch (_) {
-                document.getElementById("reviewsList").innerHTML = `<p style="color: var(--text-muted);">No reviews found.</p>`;
+                document.getElementById("reviewsList").innerHTML = `<p style="color: var(--text-muted);">Failed to load reviews.</p>`;
             }
         }
 
+        // 1. CREATE REVIEW (POST /products/:productId/reviews)
         async function submitReview() {
             if (!token) { alert("Please log in to submit a review."); return; }
 
             const rating = Number(document.getElementById("newReviewRating").value);
             const comment = document.getElementById("newReviewComment").value.trim();
 
-            setMessage("Submitting review...", "loading");
+            if (!comment) {
+                setMessage("Please write a comment for your review.", "error");
+                return;
+            }
+
+            setMessage("Submitting your review...", "loading");
             try {
                 const res = await fetch(`${API_URL}/products/${productId}/reviews`, {
                     method: "POST",
@@ -567,17 +656,73 @@
                 const data = await res.json();
                 if (!res.ok) throw new Error(data.message || "Failed to submit review");
 
-                setMessage("Review submitted successfully! Thank you for your feedback.", "success");
+                setMessage("🎉 Review posted successfully! Rating updated.", "success");
                 document.getElementById("newReviewComment").value = "";
                 loadReviews();
+                loadProductDetail();
+
             } catch (err) {
-                setMessage(`Submit review failed: ${err.message}`, "error");
+                setMessage(`Submit failed: ${err.message}`, "error");
             }
         }
 
-        window.addEventListener("DOMContentLoaded", function () {
-            loadProductDetail();
-        });
+        function toggleEditBox(reviewId) {
+            const box = document.getElementById(`edit-box-${reviewId}`);
+            if (box) box.style.display = box.style.display === 'none' ? 'block' : 'none';
+        }
+
+        // 4. UPDATE OWN REVIEW (PUT /reviews/:id)
+        async function submitUpdateReview(reviewId) {
+            const rating = Number(document.getElementById(`edit-rating-${reviewId}`).value);
+            const comment = document.getElementById(`edit-comment-${reviewId}`).value.trim();
+
+            if (!comment) {
+                setMessage("Review comment cannot be empty.", "error");
+                return;
+            }
+
+            setMessage("Updating review...", "loading");
+            try {
+                const res = await fetch(`${API_URL}/reviews/${reviewId}`, {
+                    method: "PUT",
+                    headers: getHeaders(),
+                    body: JSON.stringify({ rating, comment })
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.message || "Update failed");
+
+                setMessage("Review updated successfully!", "success");
+                loadReviews();
+                loadProductDetail();
+
+            } catch (err) {
+                setMessage(`Update failed: ${err.message}`, "error");
+            }
+        }
+
+        // 5. DELETE OWN REVIEW (DELETE /reviews/:id)
+        async function deleteOwnReview(reviewId) {
+            if (!confirm("Are you sure you want to delete your review? The product's rating will be recalculated.")) return;
+
+            setMessage("Deleting review...", "loading");
+            try {
+                const res = await fetch(`${API_URL}/reviews/${reviewId}`, {
+                    method: "DELETE",
+                    headers: getHeaders()
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.message || "Delete failed");
+
+                setMessage("Review deleted successfully!", "success");
+                loadReviews();
+                loadProductDetail();
+
+            } catch (err) {
+                setMessage(`Delete failed: ${err.message}`, "error");
+            }
+        }
+
+        window.addEventListener("DOMContentLoaded", loadProductDetail);
     </script>
 </body>
 
