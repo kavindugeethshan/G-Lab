@@ -49,9 +49,16 @@ const productSchema = new mongoose.Schema(
       default: true,
     },
 
+    isActive: {
+      type: Boolean,
+      default: true,
+    },
+
     discount: {
       type: Number,
-      default: 0
+      default: 0,
+      min: 0,
+      max: 100
     },
 
     ratingAverage: {

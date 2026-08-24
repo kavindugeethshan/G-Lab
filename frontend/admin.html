@@ -7,16 +7,18 @@
     <title>G Lab - Admin Panel</title>
     <style>
         :root {
-            --bg-color: #0f172a;
+            --bg-color: #0b1329;
             --card-bg: #1e293b;
             --card-hover: #334155;
             --accent-color: #3b82f6;
             --accent-hover: #2563eb;
+            --accent-glow: rgba(59, 130, 246, 0.25);
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
             --border-color: #334155;
             --error-color: #ef4444;
             --success-color: #10b981;
+            --warning-color: #f59e0b;
             --admin-color: #8b5cf6;
         }
 
@@ -41,7 +43,9 @@
         }
 
         header {
-            background-color: var(--card-bg);
+            background-color: rgba(30, 41, 59, 0.95);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             border-bottom: 1px solid var(--border-color);
             padding: 15px 30px;
             display: flex;
@@ -52,6 +56,7 @@
             position: sticky;
             top: 0;
             z-index: 100;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
         }
 
         .logo-title h1 {
@@ -84,15 +89,51 @@
         }
 
         .container {
-            max-width: 1100px;
+            max-width: 1200px;
             margin: 30px auto;
             padding: 0 20px;
         }
 
+        /* Sidebar Navigation */
+        .admin-nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 25px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 12px 16px;
+        }
+
+        .admin-nav button {
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: 1px solid var(--border-color);
+            background: transparent;
+            color: var(--text-muted);
+            transition: all 0.2s;
+        }
+
+        .admin-nav button:hover {
+            background: var(--card-hover);
+            color: var(--text-main);
+        }
+
+        .admin-nav button.active {
+            background: var(--admin-color);
+            color: white;
+            border-color: var(--admin-color);
+        }
+
+        /* Stats Grid */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
             margin-bottom: 30px;
         }
 
@@ -100,43 +141,54 @@
             background-color: var(--card-bg);
             border: 1px solid var(--border-color);
             border-radius: 12px;
-            padding: 20px;
+            padding: 18px;
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 14px;
+            transition: border-color 0.2s, transform 0.2s;
+        }
+
+        .stat-card:hover {
+            border-color: var(--admin-color);
+            transform: translateY(-2px);
         }
 
         .stat-icon {
-            font-size: 2.2rem;
-            background-color: rgba(59, 130, 246, 0.15);
+            font-size: 2rem;
+            background-color: rgba(139, 92, 246, 0.12);
             padding: 12px;
             border-radius: 10px;
+            line-height: 1;
         }
 
         .stat-info h4 {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             color: var(--text-muted);
-            margin-bottom: 5px;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .stat-info div {
-            font-size: 1.4rem;
+            font-size: 1.35rem;
             font-weight: 700;
             color: var(--text-main);
         }
 
+        /* Section Cards */
         .section-card {
             background-color: var(--card-bg);
             border: 1px solid var(--border-color);
             border-radius: 12px;
             padding: 25px;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.3);
         }
 
         .section-card h3 {
             font-size: 1.2rem;
-            color: var(--accent-color);
-            margin-bottom: 20px;
+            color: var(--admin-color);
+            margin-bottom: 18px;
             display: flex;
             align-items: center;
             gap: 10px;
@@ -177,6 +229,12 @@
         textarea:focus {
             outline: none;
             border-color: var(--accent-color);
+        }
+
+        textarea {
+            font-family: 'Consolas', 'Courier New', monospace;
+            min-height: 120px;
+            resize: vertical;
         }
 
         .btn {
@@ -232,12 +290,40 @@
             color: white;
         }
 
+        .btn-success {
+            background-color: rgba(16, 185, 129, 0.15);
+            color: var(--success-color);
+            border-color: var(--success-color);
+        }
+
+        .btn-success:hover {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        .btn-warning {
+            background-color: rgba(245, 158, 11, 0.15);
+            color: var(--warning-color);
+            border-color: var(--warning-color);
+        }
+
+        .btn-warning:hover {
+            background-color: var(--warning-color);
+            color: white;
+        }
+
         #message {
             padding: 12px 16px;
             border-radius: 8px;
             margin-bottom: 20px;
             display: none;
             font-size: 0.95rem;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-6px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         #message.error {
@@ -261,28 +347,235 @@
             border: 1px solid var(--accent-color);
         }
 
-        .products-table {
+        /* Data Tables */
+        .data-table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 15px;
+            font-size: 0.88rem;
         }
 
-        .products-table th,
-        .products-table td {
-            padding: 12px 15px;
+        .data-table th,
+        .data-table td {
+            padding: 12px 14px;
             text-align: left;
             border-bottom: 1px solid var(--border-color);
         }
 
-        .products-table th {
-            background-color: #0f172a;
+        .data-table th {
+            background-color: #0b1329;
             color: var(--text-muted);
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
-        .products-table tr:hover {
+        .data-table tr:hover {
             background-color: rgba(255, 255, 255, 0.02);
+        }
+
+        .data-table-wrapper {
+            overflow-x: auto;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+        }
+
+        /* Status Badges */
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .user-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .badge-admin {
+            background: rgba(139, 92, 246, 0.2);
+            color: var(--admin-color);
+        }
+
+        .badge-blocked {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--error-color);
+        }
+
+        .badge-active {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--success-color);
+        }
+
+        /* Timeline */
+        .timeline {
+            position: relative;
+            padding-left: 24px;
+            margin: 14px 0 8px 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 7px;
+            top: 4px;
+            bottom: 4px;
+            width: 2px;
+            background: var(--border-color);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 10px;
+            font-size: 0.84rem;
+        }
+
+        .timeline-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: -21px;
+            top: 3px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            border: 2px solid var(--accent-color);
+            background: var(--bg-color);
+        }
+
+        .timeline-item:last-child .timeline-dot {
+            background: var(--accent-color);
+        }
+
+        .timeline-status {
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .timeline-date {
+            font-size: 0.76rem;
+            color: var(--text-muted);
+            margin-top: 1px;
+        }
+
+        /* Order Financials */
+        .order-financials {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px 20px;
+            font-size: 0.88rem;
+            padding: 10px 0;
+            border-top: 1px dashed var(--border-color);
+            margin-top: 10px;
+            max-width: 350px;
+        }
+
+        .order-financials .fin-label {
+            color: var(--text-muted);
+        }
+
+        .order-financials .fin-value {
+            text-align: right;
+            font-weight: 600;
+        }
+
+        /* Modal Overlay */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(4px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 200;
+            padding: 20px;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 28px;
+            max-width: 700px;
+            width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .modal-header h3 {
+            color: var(--admin-color);
+            margin-bottom: 0;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .modal-close:hover {
+            background: var(--card-hover);
+            color: var(--text-main);
+        }
+
+        /* Star Rating */
+        .stars {
+            color: var(--warning-color);
+            letter-spacing: 1px;
+        }
+
+        /* Section Visibility */
+        .admin-section {
+            display: none;
+        }
+
+        .admin-section.active {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .admin-nav {
+                gap: 6px;
+            }
+
+            .admin-nav button {
+                padding: 8px 12px;
+                font-size: 0.82rem;
+            }
         }
     </style>
 </head>
@@ -292,12 +585,11 @@
     <header>
         <div class="logo-title">
             <h1>G Lab Admin <span class="admin-badge">Admin Panel</span></h1>
-            <span>Product & System Management</span>
+            <span>System Management Console</span>
         </div>
         <div class="nav-actions">
             <span id="adminGreeting" style="font-size: 0.9rem; color: var(--text-muted);"></span>
-            <button type="button" class="btn btn-outline" onclick="window.location.href='home.html'">Customer
-                View</button>
+            <button type="button" class="btn btn-outline" onclick="window.location.href='home.html'">Customer View</button>
             <button type="button" class="btn btn-outline" onclick="window.location.href='profile.html'">Profile</button>
             <button type="button" class="btn btn-danger" onclick="logout()">Logout</button>
         </div>
@@ -306,128 +598,328 @@
     <div class="container">
         <div id="message"></div>
 
-        <!-- Stats Row -->
-        <div class="stats-grid">
+        <!-- Dashboard Statistics -->
+        <div class="stats-grid" id="statsGrid">
+            <div class="stat-card">
+                <div class="stat-icon">👥</div>
+                <div class="stat-info">
+                    <h4>Total Users</h4>
+                    <div id="statTotalUsers">—</div>
+                </div>
+            </div>
             <div class="stat-card">
                 <div class="stat-icon">📦</div>
                 <div class="stat-info">
                     <h4>Total Products</h4>
-                    <div id="totalProductsCount">0</div>
+                    <div id="statTotalProducts">—</div>
                 </div>
             </div>
             <div class="stat-card">
-                <div class="stat-icon">👤</div>
+                <div class="stat-icon">🧾</div>
                 <div class="stat-info">
-                    <h4>Logged Admin</h4>
-                    <div id="statAdminName" style="font-size: 1.1rem;">Admin</div>
+                    <h4>Total Orders</h4>
+                    <div id="statTotalOrders">—</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">💰</div>
+                <div class="stat-info">
+                    <h4>Total Revenue</h4>
+                    <div id="statTotalRevenue" style="color: var(--success-color);">—</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">⏳</div>
+                <div class="stat-info">
+                    <h4>Pending Orders</h4>
+                    <div id="statPendingOrders" style="color: var(--warning-color);">—</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">✅</div>
+                <div class="stat-info">
+                    <h4>Delivered Orders</h4>
+                    <div id="statDeliveredOrders" style="color: var(--success-color);">—</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">❌</div>
+                <div class="stat-info">
+                    <h4>Cancelled Orders</h4>
+                    <div id="statCancelledOrders" style="color: var(--error-color);">—</div>
                 </div>
             </div>
         </div>
 
-        <!-- Create Product Form (Admin Route) -->
-        <div class="section-card">
-            <h3>➕ Create New Product (Admin Route: POST /admin/products/create)</h3>
-            <form id="createProductForm">
-                <div class="grid-inputs">
+        <!-- Section Navigation -->
+        <div class="admin-nav">
+            <button type="button" class="active" onclick="switchSection('orders', this)">📋 Orders</button>
+            <button type="button" onclick="switchSection('products', this)">📦 Products</button>
+            <button type="button" onclick="switchSection('users', this)">👥 Users</button>
+            <button type="button" onclick="switchSection('reviews', this)">⭐ Reviews</button>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- SECTION: ORDER MANAGEMENT -->
+        <!-- ============================================== -->
+        <div id="section-orders" class="admin-section active">
+
+            <!-- Order Search & Filter Bar -->
+            <div class="section-card">
+                <h3>🔍 Search & Filter Orders</h3>
+                <div class="grid-inputs" style="grid-template-columns: 1fr 1fr 1fr auto;">
                     <div class="form-group">
-                        <label for="newName">Product Name*</label>
-                        <input type="text" id="newName" placeholder="e.g. AMD Ryzen 7 7800X3D" required>
+                        <label for="searchOrderId">Order ID</label>
+                        <input type="text" id="searchOrderId" placeholder="Enter Order ID...">
                     </div>
                     <div class="form-group">
-                        <label for="newCategory">Category*</label>
-                        <input type="text" id="newCategory" placeholder="e.g. CPU" required>
+                        <label for="searchUserId">User ID</label>
+                        <input type="text" id="searchUserId" placeholder="Enter User ID...">
                     </div>
                     <div class="form-group">
-                        <label for="newBrand">Brand</label>
-                        <input type="text" id="newBrand" placeholder="e.g. AMD">
+                        <label for="searchEmail">Customer Email</label>
+                        <input type="text" id="searchEmail" placeholder="Enter email...">
                     </div>
-                    <div class="form-group">
-                        <label for="newPrice">Price (Rs.)*</label>
-                        <input type="number" id="newPrice" placeholder="e.g. 125000" required min="0">
-                    </div>
-                    <div class="form-group">
-                        <label for="newStock">Stock Quantity</label>
-                        <input type="number" id="newStock" placeholder="e.g. 15" min="0">
-                    </div>
-                    <div class="form-group">
-                        <label for="newImage">Image Name / URL</label>
-                        <input type="text" id="newImage" placeholder="e.g. ryzen7.jpg">
-                    </div>
+                    <button type="button" class="btn btn-admin" style="height: 42px; margin-top: auto;" onclick="searchOrders()">Search</button>
                 </div>
+
+                <div style="display: flex; gap: 8px; align-items: center; margin-top: 10px; flex-wrap: wrap;">
+                    <span style="font-size: 0.85rem; color: var(--text-muted);">Filter by Status:</span>
+                    <button type="button" class="btn btn-outline" style="padding: 6px 14px; font-size: 0.82rem;" onclick="filterOrdersByStatus('')">All</button>
+                    <button type="button" class="btn btn-warning" style="padding: 6px 14px; font-size: 0.82rem;" onclick="filterOrdersByStatus('Pending')">Pending</button>
+                    <button type="button" class="btn btn-primary" style="padding: 6px 14px; font-size: 0.82rem;" onclick="filterOrdersByStatus('Confirmed')">Confirmed</button>
+                    <button type="button" class="btn btn-admin" style="padding: 6px 14px; font-size: 0.82rem;" onclick="filterOrdersByStatus('Shipped')">Shipped</button>
+                    <button type="button" class="btn btn-success" style="padding: 6px 14px; font-size: 0.82rem;" onclick="filterOrdersByStatus('Delivered')">Delivered</button>
+                    <button type="button" class="btn btn-danger" style="padding: 6px 14px; font-size: 0.82rem;" onclick="filterOrdersByStatus('Cancelled')">Cancelled</button>
+                </div>
+            </div>
+
+            <!-- Update Order Status -->
+            <div class="section-card">
+                <h3>🚚 Update Order Status</h3>
+                <p style="color: var(--text-muted); font-size: 0.88rem; margin-bottom: 14px;">
+                    Valid transitions: Pending → Confirmed → Shipped → Delivered | Pending/Confirmed → Cancelled
+                </p>
+                <div class="grid-inputs" style="grid-template-columns: 1fr auto auto;">
+                    <div class="form-group">
+                        <label for="updateOrderId">Order ID*</label>
+                        <input type="text" id="updateOrderId" placeholder="Enter Order ID (e.g. 64a1b2c3...)">
+                    </div>
+                    <div class="form-group">
+                        <label for="updateOrderStatus">New Status*</label>
+                        <select id="updateOrderStatus" style="height: 42px; padding: 0 12px;">
+                            <option value="Pending">Pending</option>
+                            <option value="Confirmed">Confirmed</option>
+                            <option value="Shipped">Shipped</option>
+                            <option value="Delivered">Delivered</option>
+                            <option value="Cancelled">Cancelled</option>
+                        </select>
+                    </div>
+                    <button type="button" class="btn btn-admin" style="height: 42px; margin-top: auto;" onclick="adminUpdateOrderStatus()">Update Status</button>
+                </div>
+            </div>
+
+            <!-- All Orders List -->
+            <div class="section-card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                    <h3 style="margin-bottom: 0;">📋 All Orders</h3>
+                    <button class="btn btn-outline" style="padding: 6px 14px; font-size: 0.82rem;" onclick="loadAllOrders()">🔄 Refresh</button>
+                </div>
+                <div class="data-table-wrapper">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Customer</th>
+                                <th>Status</th>
+                                <th>Total</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ordersTableBody">
+                            <tr><td colspan="6" style="text-align: center; color: var(--text-muted);">Loading orders...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- SECTION: PRODUCT MANAGEMENT -->
+        <!-- ============================================== -->
+        <div id="section-products" class="admin-section">
+
+            <!-- Create Single Product -->
+            <div class="section-card">
+                <h3>➕ Create New Product</h3>
+                <form id="createProductForm">
+                    <div class="grid-inputs">
+                        <div class="form-group">
+                            <label for="newName">Product Name*</label>
+                            <input type="text" id="newName" placeholder="e.g. AMD Ryzen 7 7800X3D" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="newCategory">Category*</label>
+                            <input type="text" id="newCategory" placeholder="e.g. CPU" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="newBrand">Brand</label>
+                            <input type="text" id="newBrand" placeholder="e.g. AMD">
+                        </div>
+                        <div class="form-group">
+                            <label for="newPrice">Price (Rs.)*</label>
+                            <input type="number" id="newPrice" placeholder="e.g. 125000" required min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="newStock">Stock Quantity</label>
+                            <input type="number" id="newStock" placeholder="e.g. 15" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="newDiscount">Discount (%)</label>
+                            <input type="number" id="newDiscount" placeholder="e.g. 10" min="0" max="100">
+                        </div>
+                        <div class="form-group">
+                            <label for="newImage">Image URL</label>
+                            <input type="text" id="newImage" placeholder="e.g. https://...">
+                        </div>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 15px;">
+                        <label for="newDescription">Description</label>
+                        <input type="text" id="newDescription" placeholder="Enter product description...">
+                    </div>
+                    <button type="submit" class="btn btn-admin">Create Product</button>
+                </form>
+            </div>
+
+            <!-- Bulk Product Creation -->
+            <div class="section-card">
+                <h3>📥 Bulk Create Products (JSON)</h3>
+                <p style="color: var(--text-muted); font-size: 0.88rem; margin-bottom: 14px;">
+                    Paste a JSON array of product objects. Each must have <code>name</code>, <code>category</code>, and <code>price</code>.
+                </p>
                 <div class="form-group" style="margin-bottom: 15px;">
-                    <label for="newDescription">Description</label>
-                    <input type="text" id="newDescription" placeholder="Enter product description...">
+                    <label for="bulkProductsJson">Products JSON Array</label>
+                    <textarea id="bulkProductsJson" placeholder='[
+  { "name": "Product 1", "category": "CPU", "brand": "AMD", "price": 50000, "stock": 10 },
+  { "name": "Product 2", "category": "GPU", "brand": "NVIDIA", "price": 120000, "stock": 5 }
+]'></textarea>
                 </div>
-                <button type="submit" class="btn btn-admin">Create Product</button>
-            </form>
+                <button type="button" class="btn btn-admin" onclick="bulkCreateProducts()">Bulk Create Products</button>
+            </div>
+
+            <!-- Manage Products Table -->
+            <div class="section-card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                    <h3 style="margin-bottom: 0;">🛠️ Manage Products</h3>
+                    <button class="btn btn-outline" style="padding: 6px 14px; font-size: 0.82rem;" onclick="loadProducts()">🔄 Refresh</button>
+                </div>
+                <div class="data-table-wrapper">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Category</th>
+                                <th>Brand</th>
+                                <th>Price</th>
+                                <th>Stock</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="productsTableBody">
+                            <tr><td colspan="7" style="text-align: center; color: var(--text-muted);">Loading products...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
 
-        <!-- Update Order Status (Admin Route: PATCH /admin/orders/:id/status) -->
-        <div class="section-card">
-            <h3>🚚 Update Order Status (Admin Route: PATCH /admin/orders/:id/status)</h3>
-            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 15px;">Search an Order by ID or enter Order ID to update its fulfillment status.</p>
-
-            <div class="grid-inputs" style="grid-template-columns: 1fr auto auto;">
-                <div class="form-group">
-                    <label for="adminOrderId">Order ID*</label>
-                    <input type="text" id="adminOrderId" placeholder="Enter Order ID (e.g. 64a1b2c3...)">
+        <!-- ============================================== -->
+        <!-- SECTION: USER MANAGEMENT -->
+        <!-- ============================================== -->
+        <div id="section-users" class="admin-section">
+            <div class="section-card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                    <h3 style="margin-bottom: 0;">👥 All Registered Users</h3>
+                    <button class="btn btn-outline" style="padding: 6px 14px; font-size: 0.82rem;" onclick="loadAllUsers()">🔄 Refresh</button>
                 </div>
-                <div class="form-group">
-                    <label for="adminOrderStatus">New Status*</label>
-                    <select id="adminOrderStatus" style="height: 42px; padding: 0 12px; background: #0f172a; border: 1px solid var(--border-color); color: var(--text-main); border-radius: 6px;">
-                        <option value="Pending">Pending</option>
-                        <option value="Confirmed">Confirmed</option>
-                        <option value="Shipped">Shipped</option>
-                        <option value="Delivered">Delivered</option>
-                        <option value="Cancelled">Cancelled</option>
-                    </select>
+                <div class="data-table-wrapper">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>User ID</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTableBody">
+                            <tr><td colspan="6" style="text-align: center; color: var(--text-muted);">Loading users...</td></tr>
+                        </tbody>
+                    </table>
                 </div>
-                <button type="button" class="btn btn-admin" style="height: 42px; margin-top: auto;" onclick="adminUpdateOrderStatus()">Update Status</button>
             </div>
-
-            <div style="margin-top: 15px;">
-                <button type="button" class="btn btn-outline" onclick="searchOrderByIdAdmin()">Find Order Details</button>
-            </div>
-
-            <div id="adminOrderDetailCard" style="margin-top: 15px; display: none; padding: 15px; border: 1px solid var(--border-color); border-radius: 8px; background: #0f172a;"></div>
         </div>
 
-        <!-- Manage Existing Products -->
-        <div class="section-card">
-            <h3>🛠️ Manage Products (Admin Operations)</h3>
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                <p style="color: var(--text-muted); font-size: 0.9rem;">View, update prices, or delete products using
-                    admin protected endpoints.</p>
-                <button class="btn btn-outline" onclick="loadProducts()">Refresh List</button>
-            </div>
-
-            <div style="overflow-x: auto;">
-                <table class="products-table">
-                    <thead>
-                        <tr>
-                            <th>Product ID</th>
-                            <th>Name</th>
-                            <th>Category</th>
-                            <th>Brand</th>
-                            <th>Price (Rs.)</th>
-                            <th>Stock</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="productsTableBody">
-                        <tr>
-                            <td colspan="7" style="text-align: center; color: var(--text-muted);">Loading products...
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+        <!-- ============================================== -->
+        <!-- SECTION: REVIEW MANAGEMENT -->
+        <!-- ============================================== -->
+        <div id="section-reviews" class="admin-section">
+            <div class="section-card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                    <h3 style="margin-bottom: 0;">⭐ All Product Reviews</h3>
+                    <button class="btn btn-outline" style="padding: 6px 14px; font-size: 0.82rem;" onclick="loadAllReviews()">🔄 Refresh</button>
+                </div>
+                <div class="data-table-wrapper">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Review ID</th>
+                                <th>Product</th>
+                                <th>User</th>
+                                <th>Rating</th>
+                                <th>Comment</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="reviewsTableBody">
+                            <tr><td colspan="7" style="text-align: center; color: var(--text-muted);">Loading reviews...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
 
+    <!-- Order Detail Modal -->
+    <div class="modal-overlay" id="orderDetailModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>📋 Order Details</h3>
+                <button class="modal-close" onclick="closeOrderModal()">&times;</button>
+            </div>
+            <div id="orderDetailContent">Loading...</div>
+        </div>
+    </div>
+
+    <!-- User Detail Modal -->
+    <div class="modal-overlay" id="userDetailModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>👤 User Details</h3>
+                <button class="modal-close" onclick="closeUserModal()">&times;</button>
+            </div>
+            <div id="userDetailContent">Loading...</div>
+        </div>
+    </div>
+
     <script>
-        const API_URL = (window.location.protocol.startsWith('http')) 
-            ? `${window.location.protocol}//${window.location.hostname}:3001` 
+        const API_URL = (window.location.protocol.startsWith('http'))
+            ? `${window.location.protocol}//${window.location.hostname}:3001`
             : "http://localhost:3001";
         const token = localStorage.getItem("token");
         const rawUser = localStorage.getItem("user");
@@ -448,7 +940,6 @@
         }
 
         document.getElementById("adminGreeting").textContent = `Admin: ${user.firstname ? user.firstname : (user.email || 'Admin')}`;
-        document.getElementById("statAdminName").textContent = user.firstname ? `${user.firstname} ${user.lastname || ''}` : (user.email || 'Admin');
 
         function getHeaders() {
             return {
@@ -465,9 +956,124 @@
             }
             el.textContent = text;
             el.className = type || "";
+            if (type === "success") {
+                setTimeout(() => {
+                    if (el.textContent === text) el.style.display = "none";
+                }, 4000);
+            }
         }
 
-        // Verify admin access via GET /admin/dashboard
+        // ============================================
+        // SECTION NAVIGATION
+        // ============================================
+        function switchSection(sectionName, btnEl) {
+            document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.admin-nav button').forEach(b => b.classList.remove('active'));
+            document.getElementById(`section-${sectionName}`).classList.add('active');
+            if (btnEl) btnEl.classList.add('active');
+
+            // Load data on switch
+            if (sectionName === 'orders') loadAllOrders();
+            if (sectionName === 'products') loadProducts();
+            if (sectionName === 'users') loadAllUsers();
+            if (sectionName === 'reviews') loadAllReviews();
+        }
+
+        // ============================================
+        // HELPERS
+        // ============================================
+        function getStatusBadgeStyle(status) {
+            switch (status) {
+                case "Confirmed": return { bg: "rgba(59, 130, 246, 0.2)", text: "#3b82f6" };
+                case "Shipped": return { bg: "rgba(168, 85, 247, 0.2)", text: "#a855f7" };
+                case "Delivered": return { bg: "rgba(16, 185, 129, 0.2)", text: "#10b981" };
+                case "Cancelled": return { bg: "rgba(239, 68, 68, 0.2)", text: "#ef4444" };
+                default: return { bg: "rgba(245, 158, 11, 0.2)", text: "#f59e0b" };
+            }
+        }
+
+        function renderStatusTimeline(statusHistory) {
+            if (!statusHistory || statusHistory.length === 0) return '<span style="color: var(--text-muted); font-size: 0.85rem;">No history available</span>';
+            let html = '<div class="timeline">';
+            statusHistory.forEach(entry => {
+                const dt = new Date(entry.changedAt).toLocaleString();
+                const sc = getStatusBadgeStyle(entry.status);
+                html += `
+                    <div class="timeline-item">
+                        <div class="timeline-dot" style="border-color: ${sc.text};"></div>
+                        <div class="timeline-status" style="color: ${sc.text};">${entry.status}</div>
+                        <div class="timeline-date">${dt}</div>
+                    </div>
+                `;
+            });
+            html += '</div>';
+            return html;
+        }
+
+        function renderOrderFinancials(order) {
+            const subtotal = order.Subtotal;
+            const discount = order.TotalDiscount;
+            const shipping = order.ShippingFee;
+            const finalTotal = order.FinalTotal;
+
+            if (subtotal === undefined && finalTotal === undefined) {
+                return `<div style="font-size: 0.95rem; font-weight: 700; color: var(--success-color);">Total: Rs. ${(order.Total || 0).toLocaleString()}</div>`;
+            }
+
+            return `
+                <div class="order-financials">
+                    <span class="fin-label">Subtotal:</span>
+                    <span class="fin-value">Rs. ${(subtotal || 0).toLocaleString()}</span>
+                    <span class="fin-label">Discount:</span>
+                    <span class="fin-value" style="color: var(--success-color);">- Rs. ${(discount || 0).toLocaleString()}</span>
+                    <span class="fin-label">Shipping Fee:</span>
+                    <span class="fin-value" style="color: var(--warning-color);">Rs. ${(shipping || 0).toLocaleString()}</span>
+                    <span class="fin-label" style="font-weight:700; color: var(--text-main);">Final Total:</span>
+                    <span class="fin-value" style="font-size: 1.05rem; color: var(--success-color);">Rs. ${(finalTotal || 0).toLocaleString()}</span>
+                </div>
+            `;
+        }
+
+        function getStarsHtml(rating) {
+            let stars = '';
+            for (let i = 1; i <= 5; i++) {
+                stars += i <= rating ? '★' : '☆';
+            }
+            return `<span class="stars">${stars}</span>`;
+        }
+
+        // ============================================
+        // DASHBOARD STATISTICS
+        // ============================================
+        async function loadDashboardStatistics() {
+            try {
+                const res = await fetch(`${API_URL}/admin/statistics`, {
+                    headers: getHeaders()
+                });
+                const data = await res.json();
+
+                if (!res.ok) {
+                    console.warn("Statistics load error:", data.message);
+                    return;
+                }
+
+                const s = data.statistics || {};
+                document.getElementById("statTotalUsers").textContent = s.totalUsers !== undefined ? s.totalUsers : '—';
+                document.getElementById("statTotalProducts").textContent = s.totalProducts !== undefined ? s.totalProducts : '—';
+                document.getElementById("statTotalOrders").textContent = s.totalOrders !== undefined ? s.totalOrders : '—';
+                document.getElementById("statTotalRevenue").textContent = s.totalRevenue !== undefined ? `Rs. ${s.totalRevenue.toLocaleString()}` : '—';
+                document.getElementById("statPendingOrders").textContent = s.pendingOrders !== undefined ? s.pendingOrders : '—';
+                document.getElementById("statDeliveredOrders").textContent = s.deliveredOrders !== undefined ? s.deliveredOrders : '—';
+                document.getElementById("statCancelledOrders").textContent = s.cancelledOrders !== undefined ? s.cancelledOrders : '—';
+
+            } catch (e) {
+                console.error("Statistics error:", e);
+            }
+        }
+
+        // ============================================
+        // ADMIN DASHBOARD CHECK
+        // ============================================
         async function checkAdminDashboard() {
             try {
                 const res = await fetch(`${API_URL}/admin/dashboard`, {
@@ -484,8 +1090,223 @@
             }
         }
 
+        // ============================================
+        // ORDER MANAGEMENT
+        // ============================================
+        function renderOrdersTable(orders) {
+            const tbody = document.getElementById("ordersTableBody");
+
+            if (!orders || orders.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--text-muted);">No orders found.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = orders.map(order => {
+                const status = order.Orderstatus || "Pending";
+                const sc = getStatusBadgeStyle(status);
+                const orderDate = new Date(order.createdAt || Date.now()).toLocaleDateString();
+                const userInfo = order.User;
+                let customerName = '—';
+                if (userInfo && typeof userInfo === 'object') {
+                    customerName = `${userInfo.firstname || ''} ${userInfo.lastname || ''}`.trim() || userInfo.email || '—';
+                }
+                const total = order.FinalTotal || order.Total || 0;
+
+                return `
+                    <tr>
+                        <td style="font-family: monospace; font-size: 0.82rem;">${order._id}</td>
+                        <td>${customerName}</td>
+                        <td><span class="status-badge" style="background: ${sc.bg}; color: ${sc.text};">${status}</span></td>
+                        <td style="color: var(--success-color); font-weight: 600;">Rs. ${total.toLocaleString()}</td>
+                        <td style="font-size: 0.85rem; color: var(--text-muted);">${orderDate}</td>
+                        <td>
+                            <button class="btn btn-outline" style="padding: 4px 10px; font-size: 0.75rem;" onclick="viewOrderDetails('${order._id}')">View Details</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        async function loadAllOrders() {
+            setMessage("Loading all orders...", "loading");
+            try {
+                const res = await fetch(`${API_URL}/admin/orders`, {
+                    headers: getHeaders()
+                });
+                const data = await res.json();
+
+                if (!res.ok) throw new Error(data.message || `Failed (${res.status})`);
+
+                renderOrdersTable(data.orders || []);
+                setMessage(`Loaded ${(data.orders || []).length} order(s).`, "success");
+
+            } catch (err) {
+                console.error("loadAllOrders error:", err);
+                setMessage(`Failed to load orders: ${err.message}`, "error");
+            }
+        }
+
+        async function searchOrders() {
+            const orderId = document.getElementById("searchOrderId").value.trim();
+            const userId = document.getElementById("searchUserId").value.trim();
+            const email = document.getElementById("searchEmail").value.trim();
+
+            if (!orderId && !userId && !email) {
+                setMessage("Please provide at least one search criteria.", "error");
+                return;
+            }
+
+            setMessage("Searching orders...", "loading");
+
+            try {
+                const params = new URLSearchParams();
+                if (orderId) params.set("orderId", orderId);
+                if (userId) params.set("userId", userId);
+                if (email) params.set("email", email);
+
+                const res = await fetch(`${API_URL}/admin/orders/search?${params.toString()}`, {
+                    headers: getHeaders()
+                });
+                const data = await res.json();
+
+                if (!res.ok) throw new Error(data.message || `Search failed (${res.status})`);
+
+                renderOrdersTable(data.orders || []);
+                setMessage(`Found ${(data.orders || []).length} order(s).`, "success");
+
+            } catch (err) {
+                console.error("searchOrders error:", err);
+                setMessage(`Search failed: ${err.message}`, "error");
+            }
+        }
+
+        async function filterOrdersByStatus(status) {
+            if (!status) {
+                loadAllOrders();
+                return;
+            }
+
+            setMessage(`Filtering orders by "${status}"...`, "loading");
+
+            try {
+                const res = await fetch(`${API_URL}/admin/orders/filter?status=${status}`, {
+                    headers: getHeaders()
+                });
+                const data = await res.json();
+
+                if (!res.ok) throw new Error(data.message || `Filter failed (${res.status})`);
+
+                renderOrdersTable(data.orders || []);
+                setMessage(`Found ${(data.orders || []).length} ${status} order(s).`, "success");
+
+            } catch (err) {
+                console.error("filterOrdersByStatus error:", err);
+                setMessage(`Filter failed: ${err.message}`, "error");
+            }
+        }
+
+        async function viewOrderDetails(orderId) {
+            const modal = document.getElementById("orderDetailModal");
+            const content = document.getElementById("orderDetailContent");
+            modal.classList.add("active");
+            content.innerHTML = '<p style="text-align: center; color: var(--text-muted);">Loading order details...</p>';
+
+            try {
+                const res = await fetch(`${API_URL}/admin/orders/${orderId}`, {
+                    headers: getHeaders()
+                });
+                const data = await res.json();
+
+                if (!res.ok) throw new Error(data.message || `Failed (${res.status})`);
+
+                const order = data.order || data;
+                const status = order.Orderstatus || "Pending";
+                const sc = getStatusBadgeStyle(status);
+                const orderDate = new Date(order.createdAt || Date.now()).toLocaleString();
+                const addr = order.Diliveryaddress || {};
+                const addressStr = [addr.addressLine, addr.city, addr.district, addr.postalCode].filter(Boolean).join(", ") || "No address";
+
+                const userInfo = order.User;
+                let customerHtml = '';
+                if (userInfo && typeof userInfo === 'object') {
+                    customerHtml = `<p style="font-size: 0.9rem; margin-bottom: 8px;">
+                        👤 <strong>Customer:</strong> ${userInfo.firstname || ''} ${userInfo.lastname || ''} (${userInfo.email || 'N/A'})
+                    </p>`;
+                }
+
+                content.innerHTML = `
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                        <div>
+                            <strong style="color: var(--admin-color); font-size: 1.1rem;">Order #${order._id}</strong>
+                            <div style="font-size: 0.82rem; color: var(--text-muted);">${orderDate}</div>
+                        </div>
+                        <span class="status-badge" style="background: ${sc.bg}; color: ${sc.text}; font-size: 0.88rem;">${status}</span>
+                    </div>
+                    ${customerHtml}
+                    <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 14px;">
+                        📍 <strong>Delivery:</strong> ${addressStr}
+                    </p>
+                    <div style="margin-bottom: 14px;">
+                        <strong style="font-size: 0.92rem;">Products:</strong>
+                        <ul style="margin-left: 20px; margin-top: 6px; font-size: 0.88rem;">
+                            ${(order.Products || []).map(p => `<li><strong style="color: var(--text-main);">${p.name}</strong> (x${p.quantity}) — <span style="color: var(--success-color);">Rs. ${(p.price * p.quantity).toLocaleString()}</span></li>`).join('')}
+                        </ul>
+                    </div>
+                    ${renderOrderFinancials(order)}
+                    <div style="margin-top: 16px;">
+                        <strong style="font-size: 0.9rem; color: var(--text-muted);">📋 Status History:</strong>
+                        ${renderStatusTimeline(order.statusHistory)}
+                    </div>
+                `;
+
+            } catch (err) {
+                console.error("viewOrderDetails error:", err);
+                content.innerHTML = `<p style="color: var(--error-color);">Error: ${err.message}</p>`;
+            }
+        }
+
+        function closeOrderModal() {
+            document.getElementById("orderDetailModal").classList.remove("active");
+        }
+
+        async function adminUpdateOrderStatus() {
+            const orderId = document.getElementById("updateOrderId").value.trim();
+            const status = document.getElementById("updateOrderStatus").value;
+
+            if (!orderId) {
+                setMessage("Please enter an Order ID to update.", "error");
+                return;
+            }
+
+            setMessage(`Updating order status to "${status}"...`, "loading");
+
+            try {
+                const res = await fetch(`${API_URL}/admin/orders/${orderId}/status`, {
+                    method: "PATCH",
+                    headers: getHeaders(),
+                    body: JSON.stringify({ status })
+                });
+
+                const data = await res.json();
+
+                if (!res.ok) {
+                    throw new Error(data.message || `Status update failed (${res.status})`);
+                }
+
+                setMessage(`Order #${orderId} status updated to "${status}" successfully!`, "success");
+                loadAllOrders();
+                loadDashboardStatistics();
+
+            } catch (err) {
+                console.error("adminUpdateOrderStatus error:", err);
+                setMessage(`Update failed: ${err.message}`, "error");
+            }
+        }
+
+        // ============================================
+        // PRODUCT MANAGEMENT
+        // ============================================
         async function loadProducts() {
-            setMessage("Loading products...", "loading");
             try {
                 const res = await fetch(`${API_URL}/products`);
                 const data = await res.json();
@@ -495,33 +1316,28 @@
                 else if (data.products && Array.isArray(data.products)) products = data.products;
                 else if (data.data && Array.isArray(data.data)) products = data.data;
 
-                document.getElementById("totalProductsCount").textContent = products.length;
-
                 const tbody = document.getElementById("productsTableBody");
                 if (products.length === 0) {
                     tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--text-muted);">No products found.</td></tr>`;
-                    setMessage("Loaded 0 products.", "success");
                     return;
                 }
 
                 tbody.innerHTML = products.map(p => `
-                <tr>
-                    <td style="font-family: monospace; font-size: 0.85rem;">${p._id || p.id}</td>
-                    <td><strong>${p.name || 'Unnamed'}</strong></td>
-                    <td>${p.category || '-'}</td>
-                    <td>${p.brand || '-'}</td>
-                    <td style="color: var(--success-color); font-weight: 600;">Rs. ${p.price !== undefined ? p.price : '-'}</td>
-                    <td>${p.stock !== undefined ? p.stock : '-'}</td>
-                    <td>
-                        <div style="display: flex; gap: 6px;">
-                            <button class="btn btn-outline" style="padding: 4px 10px; font-size: 0.75rem;" onclick="adminUpdateProduct('${p._id || p.id}')">Update</button>
-                            <button class="btn btn-danger" style="padding: 4px 10px; font-size: 0.75rem;" onclick="adminDeleteProduct('${p._id || p.id}')">Delete</button>
-                        </div>
-                    </td>
-                </tr>
-            `).join('');
-
-                setMessage(`Loaded ${products.length} product(s).`, "success");
+                    <tr>
+                        <td style="font-family: monospace; font-size: 0.82rem;">${p._id || p.id}</td>
+                        <td><strong>${p.name || 'Unnamed'}</strong></td>
+                        <td>${p.category || '-'}</td>
+                        <td>${p.brand || '-'}</td>
+                        <td style="color: var(--success-color); font-weight: 600;">Rs. ${p.price !== undefined ? p.price.toLocaleString() : '-'}</td>
+                        <td>${p.stock !== undefined ? p.stock : '-'}</td>
+                        <td>
+                            <div style="display: flex; gap: 6px;">
+                                <button class="btn btn-outline" style="padding: 4px 10px; font-size: 0.75rem;" onclick="adminUpdateProduct('${p._id || p.id}')">Update</button>
+                                <button class="btn btn-danger" style="padding: 4px 10px; font-size: 0.75rem;" onclick="adminDeleteProduct('${p._id || p.id}')">Delete</button>
+                            </div>
+                        </td>
+                    </tr>
+                `).join('');
 
             } catch (err) {
                 console.error("Load products error:", err);
@@ -540,10 +1356,11 @@
                 brand: document.getElementById("newBrand").value.trim(),
                 price: Number(document.getElementById("newPrice").value),
                 stock: Number(document.getElementById("newStock").value),
+                discount: Number(document.getElementById("newDiscount").value) || 0,
                 Image: document.getElementById("newImage").value.trim()
             };
 
-            setMessage("Creating product via admin route...", "loading");
+            setMessage("Creating product...", "loading");
 
             try {
                 const res = await fetch(`${API_URL}/admin/products/create`, {
@@ -557,15 +1374,62 @@
                     throw new Error(data.message || `Failed to create product (${res.status})`);
                 }
 
-                setMessage("Product created successfully via Admin API!", "success");
+                setMessage("Product created successfully!", "success");
                 document.getElementById("createProductForm").reset();
                 loadProducts();
+                loadDashboardStatistics();
 
             } catch (err) {
                 console.error("Admin create product error:", err);
                 setMessage(`Create failed: ${err.message}`, "error");
             }
         });
+
+        // Bulk Create Products (POST /admin/products/bulk)
+        async function bulkCreateProducts() {
+            const jsonText = document.getElementById("bulkProductsJson").value.trim();
+
+            if (!jsonText) {
+                setMessage("Please paste a JSON array of products.", "error");
+                return;
+            }
+
+            let productsArray;
+            try {
+                productsArray = JSON.parse(jsonText);
+                if (!Array.isArray(productsArray)) {
+                    throw new Error("Input must be a JSON array.");
+                }
+            } catch (parseErr) {
+                setMessage(`Invalid JSON: ${parseErr.message}`, "error");
+                return;
+            }
+
+            setMessage(`Creating ${productsArray.length} product(s)...`, "loading");
+
+            try {
+                const res = await fetch(`${API_URL}/admin/products/bulk`, {
+                    method: "POST",
+                    headers: getHeaders(),
+                    body: JSON.stringify({ products: productsArray })
+                });
+
+                const data = await res.json();
+
+                if (!res.ok) {
+                    throw new Error(data.message || `Bulk create failed (${res.status})`);
+                }
+
+                setMessage(`Bulk creation successful! ${data.count || productsArray.length} product(s) created.`, "success");
+                document.getElementById("bulkProductsJson").value = "";
+                loadProducts();
+                loadDashboardStatistics();
+
+            } catch (err) {
+                console.error("Bulk create error:", err);
+                setMessage(`Bulk create failed: ${err.message}`, "error");
+            }
+        }
 
         // Update Product (PUT /admin/products/update/:id)
         async function adminUpdateProduct(id) {
@@ -579,7 +1443,7 @@
 
             if (Object.keys(body).length === 0) return;
 
-            setMessage("Updating product via admin route...", "loading");
+            setMessage("Updating product...", "loading");
 
             try {
                 const res = await fetch(`${API_URL}/admin/products/update/${id}`, {
@@ -607,7 +1471,7 @@
             if (!id) return;
             if (!confirm("Are you sure you want to delete this product?")) return;
 
-            setMessage("Deleting product via admin route...", "loading");
+            setMessage("Deleting product...", "loading");
 
             try {
                 const res = await fetch(`${API_URL}/admin/products/${id}`, {
@@ -620,8 +1484,9 @@
                     throw new Error(data.message || `Delete failed (${res.status})`);
                 }
 
-                setMessage("Product deleted successfully via Admin API!", "success");
+                setMessage("Product deleted successfully!", "success");
                 loadProducts();
+                loadDashboardStatistics();
 
             } catch (err) {
                 console.error("Admin delete product error:", err);
@@ -629,101 +1494,272 @@
             }
         }
 
-        // Search Order Details by ID (GET /order/:id)
-        async function searchOrderByIdAdmin() {
-            const orderId = document.getElementById("adminOrderId").value.trim();
-            if (!orderId) {
-                setMessage("Please enter a valid Order ID to search.", "error");
-                return;
-            }
-
-            setMessage("Fetching order details...", "loading");
-
+        // ============================================
+        // USER MANAGEMENT
+        // ============================================
+        async function loadAllUsers() {
             try {
-                const res = await fetch(`${API_URL}/order/${orderId}`, {
+                const res = await fetch(`${API_URL}/admin/users`, {
                     headers: getHeaders()
                 });
                 const data = await res.json();
 
-                if (!res.ok) {
-                    throw new Error(data.message || `Order not found (${res.status})`);
+                if (!res.ok) throw new Error(data.message || `Failed (${res.status})`);
+
+                const users = data.users || [];
+                const tbody = document.getElementById("usersTableBody");
+
+                if (users.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--text-muted);">No users found.</td></tr>`;
+                    return;
                 }
 
-                const order = data.order || data;
-                const card = document.getElementById("adminOrderDetailCard");
-                card.style.display = "block";
+                tbody.innerHTML = users.map(u => {
+                    const fullName = `${u.firstname || ''} ${u.lastname || ''}`.trim() || '—';
+                    const isAdmin = u.isadmin;
+                    const isBlocked = u.isblocked;
 
-                const addr = order.Diliveryaddress || {};
-                const addressStr = [addr.addressLine, addr.city, addr.district, addr.postalCode].filter(Boolean).join(", ") || "No address specified";
+                    let roleBadge = isAdmin
+                        ? '<span class="user-badge badge-admin">Admin</span>'
+                        : '<span class="user-badge" style="background: rgba(59, 130, 246, 0.2); color: #3b82f6;">Customer</span>';
 
-                card.innerHTML = `
-                    <h4 style="color: var(--accent-color); margin-bottom: 8px;">Order #${order._id}</h4>
-                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 6px;">📍 <strong>Delivery Address:</strong> ${addressStr}</p>
-                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 6px;">🏷️ <strong>Current Status:</strong> <span style="color: var(--success-color); font-weight: 600;">${order.Orderstatus || 'Pending'}</span></p>
-                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 6px;">💰 <strong>Total Amount:</strong> Rs. ${(order.Total || 0).toLocaleString()}</p>
-                    <div style="font-size: 0.85rem; margin-top: 8px;">
-                        <strong>Products:</strong>
-                        <ul style="margin-left: 20px; margin-top: 4px;">
-                            ${(order.Products || []).map(p => `<li>${p.name} (x${p.quantity}) — Rs. ${(p.price * p.quantity).toLocaleString()}</li>`).join('')}
-                        </ul>
+                    let statusBadge = isBlocked
+                        ? '<span class="user-badge badge-blocked">Blocked</span>'
+                        : '<span class="user-badge badge-active">Active</span>';
+
+                    let actions = `<button class="btn btn-outline" style="padding: 4px 10px; font-size: 0.75rem;" onclick="viewUserDetails('${u._id}')">Details</button>`;
+
+                    if (!isAdmin) {
+                        if (isBlocked) {
+                            actions += ` <button class="btn btn-success" style="padding: 4px 10px; font-size: 0.75rem;" onclick="unblockUser('${u._id}')">Unblock</button>`;
+                        } else {
+                            actions += ` <button class="btn btn-warning" style="padding: 4px 10px; font-size: 0.75rem;" onclick="blockUser('${u._id}')">Block</button>`;
+                        }
+                        actions += ` <button class="btn btn-danger" style="padding: 4px 10px; font-size: 0.75rem;" onclick="deleteUser('${u._id}')">Delete</button>`;
+                    }
+
+                    return `
+                        <tr>
+                            <td style="font-family: monospace; font-size: 0.82rem;">${u._id}</td>
+                            <td><strong>${fullName}</strong></td>
+                            <td>${u.email || '—'}</td>
+                            <td>${roleBadge}</td>
+                            <td>${statusBadge}</td>
+                            <td><div style="display: flex; gap: 6px; flex-wrap: wrap;">${actions}</div></td>
+                        </tr>
+                    `;
+                }).join('');
+
+            } catch (err) {
+                console.error("loadAllUsers error:", err);
+                setMessage(`Failed to load users: ${err.message}`, "error");
+            }
+        }
+
+        async function viewUserDetails(userId) {
+            const modal = document.getElementById("userDetailModal");
+            const content = document.getElementById("userDetailContent");
+            modal.classList.add("active");
+            content.innerHTML = '<p style="text-align: center; color: var(--text-muted);">Loading user details...</p>';
+
+            try {
+                const res = await fetch(`${API_URL}/admin/users/${userId}`, {
+                    headers: getHeaders()
+                });
+                const data = await res.json();
+
+                if (!res.ok) throw new Error(data.message || `Failed (${res.status})`);
+
+                const u = data.user || data;
+                const fullName = `${u.firstname || ''} ${u.lastname || ''}`.trim() || '—';
+                const addr = u.address || {};
+                const addressStr = [addr.addressLine, addr.city, addr.district, addr.postalCode].filter(Boolean).join(", ") || "Not provided";
+
+                content.innerHTML = `
+                    <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 20px;">
+                        <img src="${u.Image || u.image || 'https://via.placeholder.com/70?text=User'}" 
+                             alt="Avatar" 
+                             style="width: 70px; height: 70px; border-radius: 50%; border: 2px solid var(--admin-color); object-fit: cover; background: #0f172a;"
+                             onerror="this.src='https://via.placeholder.com/70?text=User'">
+                        <div>
+                            <strong style="font-size: 1.15rem; color: var(--text-main);">${fullName}</strong>
+                            <div style="font-size: 0.85rem; color: var(--text-muted);">${u.email || '—'}</div>
+                            ${u.isadmin ? '<span class="user-badge badge-admin" style="margin-top: 4px;">Admin</span>' : ''}
+                            ${u.isblocked ? '<span class="user-badge badge-blocked" style="margin-top: 4px;">Blocked</span>' : '<span class="user-badge badge-active" style="margin-top: 4px;">Active</span>'}
+                        </div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; font-size: 0.9rem;">
+                        <div><span style="color: var(--text-muted);">User ID:</span><br><span style="font-family: monospace; font-size: 0.82rem;">${u._id}</span></div>
+                        <div><span style="color: var(--text-muted);">First Name:</span><br><strong>${u.firstname || '—'}</strong></div>
+                        <div><span style="color: var(--text-muted);">Last Name:</span><br><strong>${u.lastname || '—'}</strong></div>
+                        <div><span style="color: var(--text-muted);">Email:</span><br><strong>${u.email || '—'}</strong></div>
+                        <div style="grid-column: span 2;"><span style="color: var(--text-muted);">Delivery Address:</span><br><strong>${addressStr}</strong></div>
+                        <div><span style="color: var(--text-muted);">Account Created:</span><br><strong>${u.createdAt ? new Date(u.createdAt).toLocaleString() : '—'}</strong></div>
                     </div>
                 `;
 
-                if (order.Orderstatus) {
-                    document.getElementById("adminOrderStatus").value = order.Orderstatus;
-                }
-
-                setMessage(`Order details loaded for #${order._id}`, "success");
-
             } catch (err) {
-                console.error("searchOrderByIdAdmin error:", err);
-                setMessage(`Search failed: ${err.message}`, "error");
+                console.error("viewUserDetails error:", err);
+                content.innerHTML = `<p style="color: var(--error-color);">Error: ${err.message}</p>`;
             }
         }
 
-        // Update Order Status (PATCH /admin/orders/:id/status)
-        async function adminUpdateOrderStatus() {
-            const orderId = document.getElementById("adminOrderId").value.trim();
-            const status = document.getElementById("adminOrderStatus").value;
+        function closeUserModal() {
+            document.getElementById("userDetailModal").classList.remove("active");
+        }
 
-            if (!orderId) {
-                setMessage("Please enter an Order ID to update.", "error");
-                return;
-            }
+        async function blockUser(userId) {
+            if (!confirm("Are you sure you want to block this user? They will no longer be able to log in.")) return;
 
-            setMessage(`Updating order status to "${status}"...`, "loading");
-
+            setMessage("Blocking user...", "loading");
             try {
-                const res = await fetch(`${API_URL}/admin/orders/${orderId}/status`, {
+                const res = await fetch(`${API_URL}/admin/users/${userId}/block`, {
                     method: "PATCH",
-                    headers: getHeaders(),
-                    body: JSON.stringify({ status })
+                    headers: getHeaders()
                 });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.message || `Block failed (${res.status})`);
 
+                setMessage("User blocked successfully!", "success");
+                loadAllUsers();
+                loadDashboardStatistics();
+
+            } catch (err) {
+                console.error("blockUser error:", err);
+                setMessage(`Block failed: ${err.message}`, "error");
+            }
+        }
+
+        async function unblockUser(userId) {
+            if (!confirm("Are you sure you want to unblock this user?")) return;
+
+            setMessage("Unblocking user...", "loading");
+            try {
+                const res = await fetch(`${API_URL}/admin/users/${userId}/unblock`, {
+                    method: "PATCH",
+                    headers: getHeaders()
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.message || `Unblock failed (${res.status})`);
+
+                setMessage("User unblocked successfully!", "success");
+                loadAllUsers();
+
+            } catch (err) {
+                console.error("unblockUser error:", err);
+                setMessage(`Unblock failed: ${err.message}`, "error");
+            }
+        }
+
+        async function deleteUser(userId) {
+            if (!confirm("Are you sure you want to PERMANENTLY delete this user?\n\nThis action cannot be undone!")) return;
+
+            setMessage("Deleting user...", "loading");
+            try {
+                const res = await fetch(`${API_URL}/admin/users/${userId}`, {
+                    method: "DELETE",
+                    headers: getHeaders()
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.message || `Delete failed (${res.status})`);
+
+                setMessage("User deleted successfully!", "success");
+                loadAllUsers();
+                loadDashboardStatistics();
+
+            } catch (err) {
+                console.error("deleteUser error:", err);
+                setMessage(`Delete failed: ${err.message}`, "error");
+            }
+        }
+
+        // ============================================
+        // REVIEW MANAGEMENT
+        // ============================================
+        async function loadAllReviews() {
+            try {
+                const res = await fetch(`${API_URL}/admin/reviews`, {
+                    headers: getHeaders()
+                });
                 const data = await res.json();
 
-                if (!res.ok) {
-                    throw new Error(data.message || `Status update failed (${res.status})`);
+                if (!res.ok) throw new Error(data.message || `Failed (${res.status})`);
+
+                const reviews = data.reviews || [];
+                const tbody = document.getElementById("reviewsTableBody");
+
+                if (reviews.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--text-muted);">No reviews found.</td></tr>`;
+                    return;
                 }
 
-                setMessage(`Order #${orderId} status updated to "${status}" successfully!`, "success");
-                searchOrderByIdAdmin();
+                tbody.innerHTML = reviews.map(r => {
+                    const product = r.product || {};
+                    const reviewer = r.user || {};
+                    const productName = product.name || (typeof r.product === 'string' ? r.product : '—');
+                    const reviewerName = `${reviewer.firstname || ''} ${reviewer.lastname || ''}`.trim() || reviewer.email || '—';
+                    const reviewDate = r.createdAt ? new Date(r.createdAt).toLocaleDateString() : '—';
+                    const comment = r.comment || '—';
+                    const truncComment = comment.length > 60 ? comment.substring(0, 60) + '...' : comment;
+
+                    return `
+                        <tr>
+                            <td style="font-family: monospace; font-size: 0.82rem;">${r._id}</td>
+                            <td><strong>${productName}</strong></td>
+                            <td>${reviewerName}</td>
+                            <td>${getStarsHtml(r.rating || 0)} <span style="color: var(--text-muted); font-size: 0.82rem;">(${r.rating})</span></td>
+                            <td style="font-size: 0.85rem; color: var(--text-muted);" title="${comment}">${truncComment}</td>
+                            <td style="font-size: 0.85rem; color: var(--text-muted);">${reviewDate}</td>
+                            <td>
+                                <button class="btn btn-danger" style="padding: 4px 10px; font-size: 0.75rem;" onclick="adminDeleteReview('${r._id}')">Delete</button>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
 
             } catch (err) {
-                console.error("adminUpdateOrderStatus error:", err);
-                setMessage(`Update failed: ${err.message}`, "error");
+                console.error("loadAllReviews error:", err);
+                setMessage(`Failed to load reviews: ${err.message}`, "error");
             }
         }
 
+        async function adminDeleteReview(reviewId) {
+            if (!confirm("Are you sure you want to delete this review? The product's rating will be recalculated.")) return;
+
+            setMessage("Deleting review...", "loading");
+            try {
+                const res = await fetch(`${API_URL}/admin/reviews/${reviewId}`, {
+                    method: "DELETE",
+                    headers: getHeaders()
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.message || `Delete failed (${res.status})`);
+
+                setMessage("Review deleted successfully! Product rating recalculated.", "success");
+                loadAllReviews();
+
+            } catch (err) {
+                console.error("adminDeleteReview error:", err);
+                setMessage(`Delete failed: ${err.message}`, "error");
+            }
+        }
+
+        // ============================================
+        // LOGOUT
+        // ============================================
         function logout() {
             localStorage.removeItem("token");
             localStorage.removeItem("user");
             window.location.href = "First login page.html";
         }
 
+        // ============================================
+        // INIT
+        // ============================================
         window.addEventListener("DOMContentLoaded", function () {
             checkAdminDashboard();
-            loadProducts();
+            loadDashboardStatistics();
+            loadAllOrders();
         });
     </script>
 

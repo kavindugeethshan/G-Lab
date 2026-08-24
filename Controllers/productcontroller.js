@@ -1,12 +1,19 @@
 import mongoose from "mongoose";
 import Product from "../models/Productmodel.js";
-
-//create product function
+// Create Product Function
 export const createProduct = async (req, res) => {
   try {
     // Get product details from request body
-    const { name, description, category, brand, price, stock, image } =
-      req.body;
+    const {
+      name,
+      description,
+      category,
+      brand,
+      price,
+      stock,
+      image,
+      discount = 0,
+    } = req.body;
 
     // Validate product name
     if (!name || typeof name !== "string") {
@@ -37,7 +44,11 @@ export const createProduct = async (req, res) => {
     }
 
     // Validate product price
-    if (price === undefined || price === null || typeof price !== "number") {
+    if (
+      price === undefined ||
+      price === null ||
+      typeof price !== "number"
+    ) {
       return res.status(400).json({
         message: "Valid product price is required",
       });
@@ -51,7 +62,11 @@ export const createProduct = async (req, res) => {
     }
 
     // Validate product stock quantity
-    if (stock === undefined || stock === null || typeof stock !== "number") {
+    if (
+      stock === undefined ||
+      stock === null ||
+      typeof stock !== "number"
+    ) {
       return res.status(400).json({
         message: "Valid product stock quantity is required",
       });
@@ -64,7 +79,30 @@ export const createProduct = async (req, res) => {
       });
     }
 
-    //create new product in mongoDB
+    // Validate discount
+    if (
+      typeof discount !== "number" ||
+      discount < 0 ||
+      discount > 100
+    ) {
+      return res.status(400).json({
+        message: "Discount must be between 0 and 100",
+      });
+    }
+
+    // Check for duplicate product
+    const existingProduct = await Product.findOne({
+      name: name.trim(),
+      brand: brand.trim(),
+      category: category.trim(),
+    });
+
+    if (existingProduct) {
+      return res.status(409).json({
+        message: "Product already exists",
+      });
+    }
+    // Create new product in MongoDB
     const createdProduct = await Product.create({
       name: name.trim(),
       description: description.trim(),
@@ -73,6 +111,7 @@ export const createProduct = async (req, res) => {
       price,
       stock,
       image,
+      discount,
       isavailable: stock > 0,
     });
 
@@ -81,13 +120,13 @@ export const createProduct = async (req, res) => {
       message: "Product created successfully",
       product: createdProduct,
     });
+
   } catch (error) {
     res.status(500).json({
       message: error.message,
     });
   }
-}; 
-
+};
 //-----------------------------------------------------------------------------------------
 //create many product function
 export const createManyProducts = async (req, res) => {
@@ -185,6 +224,20 @@ export const createManyProducts = async (req, res) => {
       isavailable: product.stock > 0,
     }));
 
+    // Check for duplicate products
+    for (const product of productsToCreate) {
+      const existingProduct = await Product.findOne({
+        name: product.name,
+        brand: product.brand,
+        category: product.category,
+      });
+
+      if (existingProduct) {
+        return res.status(409).json({
+          message: `Product already exists: ${product.name}`,
+        });
+      }
+    }
     // Insert all products into MongoDB
     const createdProducts = await Product.insertMany(productsToCreate);
 
@@ -201,117 +254,29 @@ export const createManyProducts = async (req, res) => {
     });
   }
 };
-//-----------------------------------------------------------------------------------------
-// //Getall product function
-// export const getallProducts = async (req, res) => {
-//   try {
-//     const product = await Product.find();
-//     res.status(200).json({
-//       message: "Products retrieved successfully",
-//       products: product,
-//     });
-//   } catch (error) {
-//     res.status(500).json({
-//       message: error.message,
-//     });
-//   }
-// };
-
-// //Getall product by search function
-// export const getallProducts = async (req, res) => {
-//   try {
-//     // Get the search value from the URL query
-//     const { search } = req.query;
-
-//     // Create an empty filter object
-//     const filter = {};
-
-//     // Check whether a search value was provided
-//     if (search) {
-//       // Search product name, category, or brand
-//       filter.$or = [
-//         { name: { $regex: search, $options: "i" } },
-//         { category: { $regex: search, $options: "i" } },
-//         { brand: { $regex: search, $options: "i" } },
-//       ];
-//     }
-
-//     // Find products using the filter
-//     const products = await Product.find(filter);
-
-//     // Send successful response
-//     res.status(200).json({
-//       message: "Products retrieved successfully",
-//       count: products.length,
-//       products: products,
-//     });
-//   } catch (error) {
-//     // Handle server/database errors
-//     res.status(500).json({
-//       message: error.message,
-//     });
-//   }
-// };
-
-// Getall product by filter  function
-// export const getallProducts = async (req, res) => {
-//   try {
-//     // Get search and category values from the URL query
-//     const { search, category } = req.query;
-
-//     // Create an empty filter object
-//     const filter = {};
-
-//     // Search by product name, category, or brand
-//     if (search) {
-//       filter.$or = [
-//         { name: { $regex: search, $options: "i" } },
-//         { category: { $regex: search, $options: "i" } },
-//         { brand: { $regex: search, $options: "i" } },
-//       ];
-//     }
-
-//     // Filter products by category
-//     if (category) {
-//       filter.category = {
-//         $regex: `^${category}$`,
-//         $options: "i",
-//       };
-//     }
-
-//     // Find products using the generated filter
-//     const products = await Product.find(filter);
-
-//     // Send successful response
-//     res.status(200).json({
-//       message: "Products retrieved successfully",
-//       count: products.length,
-//       products: products,
-//     });
-//   } catch (error) {
-//     // Handle server/database errors
-//     res.status(500).json({
-//       message: error.message,
-//     });
-//   }
-// };
 
 //Get all product Brand Filter + Price Filter
 export const getallProducts = async (req, res) => {
   try {
-    // Get filter values from the URL query
     const {
       search,
       category,
       brand,
       minPrice,
       maxPrice,
+      page,
+      limit,
+      sort,
     } = req.query;
 
-    // Create an empty MongoDB filter object
+    // Pagination
+    const currentPage = Number(page) || 1;
+    const itemsPerPage = Number(limit) || 10;
+    const skip = (currentPage - 1) * itemsPerPage;
+
     const filter = {};
 
-    // Search by product name, category, or brand
+    // Search
     if (search) {
       filter.$or = [
         { name: { $regex: search, $options: "i" } },
@@ -320,27 +285,35 @@ export const getallProducts = async (req, res) => {
       ];
     }
 
-    // Filter by category
+    // Filter by multiple categories
     if (category) {
+      const categories = category
+        .split(",")
+        .map((item) => item.trim())
+        .filter(Boolean);
+
       filter.category = {
-        $regex: `^${category}$`,
-        $options: "i",
+        $in: categories.map((item) => new RegExp(`^${item}$`, "i")),
       };
     }
 
-    // Filter by brand
+    // Filter by multiple brands
     if (brand) {
+      const brands = brand
+        .split(",")
+        .map((item) => item.trim())
+        .filter(Boolean);
+
       filter.brand = {
-        $regex: `^${brand}$`,
-        $options: "i",
+        $in: brands.map((item) => new RegExp(`^${item}$`, "i")),
       };
     }
 
-    // Filter by minimum price
+
+    // Minimum price
     if (minPrice !== undefined) {
       const minimumPrice = Number(minPrice);
 
-      // Check whether minPrice is a valid number
       if (Number.isNaN(minimumPrice) || minimumPrice < 0) {
         return res.status(400).json({
           message: "Invalid minimum price",
@@ -353,11 +326,10 @@ export const getallProducts = async (req, res) => {
       };
     }
 
-    // Filter by maximum price
+    // Maximum price
     if (maxPrice !== undefined) {
       const maximumPrice = Number(maxPrice);
 
-      // Check whether maxPrice is a valid number
       if (Number.isNaN(maximumPrice) || maximumPrice < 0) {
         return res.status(400).json({
           message: "Invalid maximum price",
@@ -370,7 +342,7 @@ export const getallProducts = async (req, res) => {
       };
     }
 
-    // Check whether minimum price is greater than maximum price
+    // Validate price range
     if (
       minPrice !== undefined &&
       maxPrice !== undefined &&
@@ -381,17 +353,60 @@ export const getallProducts = async (req, res) => {
       });
     }
 
-    // Find products using the generated filter
-    const products = await Product.find(filter);
+    // Total products
+    const totalProducts = await Product.countDocuments(filter);
+    const totalPages = Math.ceil(totalProducts / itemsPerPage);
 
-    // Send successful response
+    // Sorting
+    let sortOption = {};
+
+    if (sort === "price_asc") {
+      sortOption.price = 1;
+    } else if (sort === "price_desc") {
+      sortOption.price = -1;
+    } else if (sort === "newest") {
+      sortOption.createdAt = -1;
+    } else if (sort === "rating") {
+      sortOption.ratingAverage = -1;
+    }
+
+    const products = await Product.find(filter)
+      .sort(sortOption)
+      .skip(skip)
+      .limit(itemsPerPage);
+
+    const productsWithDiscount = products.map((product) => {
+      const productData = product.toObject();
+
+      const discountAmount =
+        (productData.price * productData.discount) / 100;
+
+      productData.discountAmount = discountAmount;
+
+      productData.discountedPrice =
+        productData.price - discountAmount;
+
+      // Stock status
+      if (productData.stock === 0) {
+        productData.stockStatus = "Out of Stock";
+      } else if (productData.stock <= 5) {
+        productData.stockStatus = "Low Stock";
+      } else {
+        productData.stockStatus = "In Stock";
+      }
+
+      return productData;
+    });
     res.status(200).json({
       message: "Products retrieved successfully",
       count: products.length,
+      totalProducts,
+      currentPage,
+      totalPages,
       products,
     });
+
   } catch (error) {
-    // Handle server/database errors
     res.status(500).json({
       message: error.message,
     });
@@ -492,11 +507,15 @@ export const deleteProduct = async (req, res) => {
       });
     }
 
-    const deletedProduct = await Product.findByIdAndDelete(id);
+    const deletedProduct = await Product.findByIdAndUpdate(
+      id,
+      { isActive: false },
+      { new: true }
+    );
 
     if (!deletedProduct) {
       return res.status(404).json({
-        message: "Product not found",
+        message: "Product deactivated successfully",
       });
     }
 

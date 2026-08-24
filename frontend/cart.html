@@ -457,6 +457,101 @@
             margin-bottom: 15px;
             opacity: 0.6;
         }
+
+        /* Status History Timeline */
+        .timeline {
+            position: relative;
+            padding-left: 24px;
+            margin: 14px 0 8px 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 7px;
+            top: 4px;
+            bottom: 4px;
+            width: 2px;
+            background: var(--border-color);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 10px;
+            font-size: 0.84rem;
+        }
+
+        .timeline-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: -21px;
+            top: 3px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            border: 2px solid var(--accent-color);
+            background: var(--bg-color);
+        }
+
+        .timeline-item:last-child .timeline-dot {
+            background: var(--accent-color);
+        }
+
+        .timeline-status {
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .timeline-date {
+            font-size: 0.76rem;
+            color: var(--text-muted);
+            margin-top: 1px;
+        }
+
+        .order-financials {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px 20px;
+            font-size: 0.88rem;
+            padding: 10px 0;
+            border-top: 1px dashed var(--border-color);
+            margin-top: 10px;
+        }
+
+        .order-financials .fin-label {
+            color: var(--text-muted);
+        }
+
+        .order-financials .fin-value {
+            text-align: right;
+            font-weight: 600;
+        }
+
+        .btn-cancel-order {
+            background: rgba(239, 68, 68, 0.12);
+            color: var(--error-color);
+            border: 1px solid rgba(239, 68, 68, 0.35);
+            padding: 7px 16px;
+            border-radius: 6px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 10px;
+        }
+
+        .btn-cancel-order:hover {
+            background: var(--error-color);
+            color: white;
+        }
+
+        .btn-cancel-order:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
     </style>
 </head>
 
@@ -520,6 +615,10 @@
                 <div class="summary-row">
                     <span>Total Discount Savings:</span>
                     <span style="color: var(--success-color); font-weight: 600;" id="cartTotalDiscount">- Rs. 0</span>
+                </div>
+                <div class="summary-row">
+                    <span>Shipping Fee:</span>
+                    <span style="font-weight: 600; color: var(--warning-color);" id="cartShippingFee">Rs. 500</span>
                 </div>
                 <div class="summary-row total-row">
                     <span>Final Payable Amount:</span>
@@ -682,9 +781,12 @@
             cartMetricsBar.style.display = "grid";
 
             // Update Financial Summary
+            const shippingFee = 500;
+            const finalPayable = subtotal - totalDiscount + shippingFee;
             document.getElementById("cartSubtotal").textContent = `Rs. ${subtotal.toLocaleString()}`;
             document.getElementById("cartTotalDiscount").textContent = `- Rs. ${totalDiscount.toLocaleString()}`;
-            document.getElementById("cartGrandTotal").textContent = `Rs. ${total.toLocaleString()}`;
+            document.getElementById("cartShippingFee").textContent = `Rs. ${shippingFee.toLocaleString()}`;
+            document.getElementById("cartGrandTotal").textContent = `Rs. ${finalPayable.toLocaleString()}`;
             cartSummary.style.display = "flex";
 
             let html = `
@@ -918,6 +1020,49 @@
         // ----------------------------------------------------
         // 3. GET MY ORDERS
         // ----------------------------------------------------
+        function renderStatusTimeline(statusHistory) {
+            if (!statusHistory || statusHistory.length === 0) return '';
+            let html = '<div class="timeline">';
+            statusHistory.forEach(entry => {
+                const dt = new Date(entry.changedAt).toLocaleString();
+                const sc = getStatusBadgeStyle(entry.status);
+                html += `
+                    <div class="timeline-item">
+                        <div class="timeline-dot" style="border-color: ${sc.text};"></div>
+                        <div class="timeline-status" style="color: ${sc.text};">${entry.status}</div>
+                        <div class="timeline-date">${dt}</div>
+                    </div>
+                `;
+            });
+            html += '</div>';
+            return html;
+        }
+
+        function renderOrderFinancials(order) {
+            const subtotal = order.Subtotal;
+            const discount = order.TotalDiscount;
+            const shipping = order.ShippingFee;
+            const finalTotal = order.FinalTotal;
+
+            if (subtotal === undefined && finalTotal === undefined) {
+                // Legacy order — show old Total field
+                return `<div style="text-align: right; font-size: 1.1rem; font-weight: 700; color: var(--success-color); border-top: 1px dashed var(--border-color); padding-top: 10px;">Total Paid: Rs. ${(order.Total || 0).toLocaleString()}</div>`;
+            }
+
+            return `
+                <div class="order-financials">
+                    <span class="fin-label">Subtotal:</span>
+                    <span class="fin-value">Rs. ${(subtotal || 0).toLocaleString()}</span>
+                    <span class="fin-label">Discount:</span>
+                    <span class="fin-value" style="color: var(--success-color);">- Rs. ${(discount || 0).toLocaleString()}</span>
+                    <span class="fin-label">Shipping Fee:</span>
+                    <span class="fin-value" style="color: var(--warning-color);">Rs. ${(shipping || 0).toLocaleString()}</span>
+                    <span class="fin-label" style="font-weight:700; color: var(--text-main);">Final Total:</span>
+                    <span class="fin-value" style="font-size: 1.1rem; color: var(--success-color);">Rs. ${(finalTotal || 0).toLocaleString()}</span>
+                </div>
+            `;
+        }
+
         async function loadMyOrders() {
             const container = document.getElementById("myOrdersContainer");
             container.innerHTML = `<p style="text-align: center; color: var(--text-muted); padding: 20px;">Loading your order history...</p>`;
@@ -948,6 +1093,7 @@
                     const statusColor = getStatusBadgeStyle(status);
                     const addr = order.Diliveryaddress || {};
                     const addressStr = [addr.addressLine, addr.city, addr.district, addr.postalCode].filter(Boolean).join(", ") || "No address provided";
+                    const canCancel = (status === "Pending" || status === "Confirmed");
 
                     html += `
                         <div class="order-card">
@@ -969,9 +1115,12 @@
                                     ${(order.Products || []).map(p => `<li><strong style="color: var(--text-main);">${p.name}</strong> (x${p.quantity}) — <span style="color: var(--success-color);">Rs. ${(p.price * p.quantity).toLocaleString()}</span></li>`).join('')}
                                 </ul>
                             </div>
-                            <div style="text-align: right; font-size: 1.15rem; font-weight: 700; color: var(--success-color); border-top: 1px dashed var(--border-color); padding-top: 10px;">
-                                Total Amount Paid: Rs. ${(order.Total || 0).toLocaleString()}
+                            ${renderOrderFinancials(order)}
+                            <div style="margin-top: 14px;">
+                                <strong style="font-size: 0.88rem; color: var(--text-muted);">📋 Status History:</strong>
+                                ${renderStatusTimeline(order.statusHistory)}
                             </div>
+                            ${canCancel ? `<button class="btn-cancel-order" onclick="cancelOwnOrder('${order._id}')">❌ Cancel This Order</button>` : ''}
                         </div>
                     `;
                 });
@@ -997,6 +1146,32 @@
         // ----------------------------------------------------
         // 4. GET ORDER BY ID
         // ----------------------------------------------------
+        async function cancelOwnOrder(orderId) {
+            if (!confirm(`Are you sure you want to cancel Order #${orderId}?\n\nThis action cannot be undone.`)) return;
+
+            setMessage("Cancelling order...", "loading");
+
+            try {
+                const response = await fetch(`${API_URL}/order/${orderId}/cancel`, {
+                    method: "PATCH",
+                    headers: getHeaders()
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.message || `Cancel failed (${response.status})`);
+                }
+
+                setMessage(`Order #${orderId} cancelled successfully!`, "success");
+                loadMyOrders();
+
+            } catch (err) {
+                console.error("cancelOwnOrder error:", err);
+                setMessage(`Cancel failed: ${err.message}`, "error");
+            }
+        }
+
         async function searchOrderById() {
             const orderId = document.getElementById("searchOrderId").value.trim();
 
@@ -1028,6 +1203,7 @@
                 const statusColor = getStatusBadgeStyle(status);
                 const addr = order.Diliveryaddress || {};
                 const addressStr = [addr.addressLine, addr.city, addr.district, addr.postalCode].filter(Boolean).join(", ") || "No address provided";
+                const canCancel = (status === "Pending" || status === "Confirmed");
 
                 resultDiv.innerHTML = `
                     <div class="order-card" style="border-color: var(--accent-color);">
@@ -1046,12 +1222,15 @@
                         <div style="margin-bottom: 12px;">
                             <strong style="font-size: 0.95rem;">Products Included:</strong>
                             <ul style="margin-left: 20px; font-size: 0.9rem; margin-top: 6px;">
-                                ${(order.Products || []).map(p => `<li>${p.name} (x${p.quantity}) — Rs. ${(p.price * p.quantity).toLocaleString()}</li>`).join('')}
+                                ${(order.Products || []).map(p => `<li><strong style="color: var(--text-main);">${p.name}</strong> (x${p.quantity}) — <span style="color: var(--success-color);">Rs. ${(p.price * p.quantity).toLocaleString()}</span></li>`).join('')}
                             </ul>
                         </div>
-                        <div style="text-align: right; font-size: 1.2rem; font-weight: 700; color: var(--success-color);">
-                            Total Paid: Rs. ${(order.Total || 0).toLocaleString()}
+                        ${renderOrderFinancials(order)}
+                        <div style="margin-top: 14px;">
+                            <strong style="font-size: 0.88rem; color: var(--text-muted);">📋 Status History:</strong>
+                            ${renderStatusTimeline(order.statusHistory)}
                         </div>
+                        ${canCancel ? `<button class="btn-cancel-order" onclick="cancelOwnOrder('${order._id}')">❌ Cancel This Order</button>` : ''}
                     </div>
                 `;
 
