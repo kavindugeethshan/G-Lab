@@ -2,318 +2,286 @@
 <html lang="en">
 
 <head>
-  <meta charset="utf-8" />
-  <title>G Lab — My Profile</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <style>
-    :root {
-      --bg-color: #0f172a;
-      --card-bg: #1e293b;
-      --accent-color: #3b82f6;
-      --accent-hover: #2563eb;
-      --text-main: #f8fafc;
-      --text-muted: #94a3b8;
-      --border-color: #334155;
-      --error-color: #ef4444;
-    }
+    <meta charset="utf-8" />
+    <title>G Lab — User Profile</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #060b18;
+            --card-bg: rgba(15, 23, 42, 0.85);
+            --card-border: rgba(59, 130, 246, 0.25);
+            --accent-gradient: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
+            --accent-color: #3b82f6;
+            --accent-glow: rgba(59, 130, 246, 0.35);
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --error-color: #ef4444;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: rgba(51, 65, 85, 0.7);
+        }
 
-    html {
-      overflow-y: scroll;
-      scroll-behavior: smooth;
-    }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-color);
+            background-image: 
+                radial-gradient(circle at 20% 20%, rgba(59, 130, 246, 0.12) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(99, 102, 241, 0.12) 0%, transparent 50%);
+            background-attachment: fixed;
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
 
-    body {
-      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-      background-color: var(--bg-color);
-      color: var(--text-main);
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 20px;
-      overflow-x: hidden;
-    }
+        .profile-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--card-border);
+            border-radius: 24px;
+            padding: 38px;
+            width: 100%;
+            max-width: 520px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+        }
 
-    .profile-card {
-      background-color: var(--card-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 12px;
-      padding: 35px;
-      width: 100%;
-      max-width: 480px;
-      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
-    }
+        .profile-header {
+            text-align: center;
+            margin-bottom: 28px;
+        }
 
-    .profile-header {
-      text-align: center;
-      margin-bottom: 25px;
-    }
+        .avatar {
+            width: 95px;
+            height: 95px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--accent-color);
+            margin-bottom: 12px;
+            background-color: #0f172a;
+            box-shadow: 0 8px 25px var(--accent-glow);
+        }
 
-    .avatar {
-      width: 100px;
-      height: 100px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 3px solid var(--accent-color);
-      margin-bottom: 12px;
-      background-color: #0f172a;
-    }
+        .profile-header h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--text-main);
+        }
 
-    .profile-header h2 {
-      font-size: 1.5rem;
-      color: var(--text-main);
-    }
+        .badge-role {
+            display: inline-block;
+            margin-top: 6px;
+            padding: 4px 12px;
+            background: rgba(59, 130, 246, 0.2);
+            color: #60a5fa;
+            border-radius: 14px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            border: 1px solid rgba(59, 130, 246, 0.4);
+        }
 
-    .profile-header span {
-      display: inline-block;
-      margin-top: 4px;
-      padding: 3px 10px;
-      background-color: #334155;
-      color: var(--accent-color);
-      border-radius: 12px;
-      font-size: 0.8rem;
-      font-weight: 600;
-    }
+        .badge-admin {
+            background: rgba(168, 85, 247, 0.2);
+            color: #c084fc;
+            border-color: rgba(168, 85, 247, 0.4);
+        }
 
-    .info-group {
-      margin-bottom: 16px;
-      border-bottom: 1px solid var(--border-color);
-      padding-bottom: 10px;
-    }
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 26px;
+            background: rgba(15, 23, 42, 0.6);
+            padding: 20px;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+        }
 
-    .info-group:last-of-type {
-      border-bottom: none;
-    }
+        .info-group {
+            display: flex;
+            flex-direction: column;
+        }
 
-    .info-label {
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 4px;
-    }
+        .info-label {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
 
-    .info-value {
-      font-size: 1rem;
-      color: var(--text-main);
-      font-weight: 500;
-    }
+        .info-value {
+            font-size: 0.95rem;
+            color: var(--text-main);
+            font-weight: 600;
+        }
 
-    .action-buttons {
-      display: flex;
-      gap: 10px;
-      margin-top: 25px;
-      flex-wrap: wrap;
-    }
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
 
-    .btn {
-      flex: 1;
-      padding: 10px 14px;
-      border-radius: 6px;
-      font-size: 0.9rem;
-      font-weight: 600;
-      cursor: pointer;
-      border: 1px solid transparent;
-      text-align: center;
-      transition: all 0.2s;
-    }
+        .btn {
+            padding: 12px 18px;
+            border-radius: 12px;
+            font-size: 0.92rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: 1px solid transparent;
+            text-align: center;
+            transition: all 0.25s ease;
+            font-family: inherit;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
 
-    .btn-primary {
-      background-color: var(--accent-color);
-      color: white;
-    }
+        .btn-primary {
+            background: var(--accent-gradient);
+            color: white;
+            box-shadow: 0 4px 18px var(--accent-glow);
+        }
 
-    .btn-primary:hover {
-      background-color: var(--accent-hover);
-    }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px var(--accent-glow);
+            filter: brightness(1.1);
+        }
 
-    .btn-outline {
-      background: none;
-      border-color: var(--border-color);
-      color: var(--text-main);
-    }
+        .btn-outline {
+            background: rgba(30, 41, 59, 0.6);
+            border-color: var(--border-color);
+            color: var(--text-main);
+        }
 
-    .btn-outline:hover {
-      background-color: #334155;
-    }
+        .btn-outline:hover {
+            background: rgba(51, 65, 85, 0.8);
+        }
 
-    .btn-danger {
-      background-color: rgba(239, 68, 68, 0.15);
-      color: var(--error-color);
-      border-color: var(--error-color);
-    }
+        .btn-danger {
+            background: rgba(239, 68, 68, 0.12);
+            color: #fca5a5;
+            border: 1px solid rgba(239, 68, 68, 0.35);
+        }
 
-    .btn-danger:hover {
-      background-color: var(--error-color);
-      color: white;
-    }
-  </style>
+        .btn-danger:hover {
+            background: var(--error-color);
+            color: white;
+        }
+    </style>
 </head>
 
 <body>
-  <div class="profile-card">
-    <div class="profile-header">
-      <img id="profilePic" class="avatar" src="https://via.placeholder.com/100?text=User" alt="Profile Picture">
-      <h2 id="userName">User Profile</h2>
-      <span id="userRole">Customer</span>
+
+    <div class="profile-card">
+        <div class="profile-header">
+            <img id="userAvatar" class="avatar" src="https://via.placeholder.com/95?text=User" alt="User Avatar" onerror="this.src='https://via.placeholder.com/95?text=User'">
+            <h2 id="userName">Loading profile...</h2>
+            <span class="badge-role" id="userRole">Customer</span>
+        </div>
+
+        <div class="info-grid">
+            <div class="info-group">
+                <span class="info-label">First Name</span>
+                <span class="info-value" id="infoFirstName">—</span>
+            </div>
+            <div class="info-group">
+                <span class="info-label">Last Name</span>
+                <span class="info-value" id="infoLastName">—</span>
+            </div>
+            <div class="info-group" style="grid-column: span 2;">
+                <span class="info-label">Email Address</span>
+                <span class="info-value" id="infoEmail">—</span>
+            </div>
+            <div class="info-group" style="grid-column: span 2;">
+                <span class="info-label">Delivery Address</span>
+                <span class="info-value" id="infoAddress">Not provided</span>
+            </div>
+            <div class="info-group" style="grid-column: span 2;">
+                <span class="info-label">Account Created</span>
+                <span class="info-value" id="infoCreatedAt">—</span>
+            </div>
+        </div>
+
+        <div class="action-buttons">
+            <button type="button" class="btn btn-primary" onclick="window.location.href='edit profile.html'">✏️ Edit Profile & Address</button>
+            <button type="button" class="btn btn-outline" onclick="window.location.href='home.html'">🏠 Back to Store</button>
+            <button type="button" class="btn btn-danger" onclick="logout()">Logout Account</button>
+        </div>
     </div>
 
-    <div class="info-group">
-      <div class="info-label">First Name</div>
-      <div class="info-value" id="userFirstName">-</div>
-    </div>
+    <script>
+        const API_URL = (window.location.protocol.startsWith('http')) 
+            ? `${window.location.protocol}//${window.location.hostname}:3001` 
+            : "http://localhost:3001";
 
-    <div class="info-group">
-      <div class="info-label">Last Name</div>
-      <div class="info-value" id="userLastName">-</div>
-    </div>
+        const token = localStorage.getItem("token");
+        if (!token) window.location.href = "First login page.html";
 
-    <div class="info-group">
-      <div class="info-label">Email Address</div>
-      <div class="info-value" id="userEmail">-</div>
-    </div>
+        async function fetchProfile() {
+            try {
+                const res = await fetch(`${API_URL}/users/profile`, {
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}`
+                    }
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.message || "Failed to load profile");
 
-    <div class="info-group">
-      <div class="info-label">Address</div>
-      <div class="info-value" id="userAddress">Not provided</div>
-    </div>
+                const u = data.user || data;
+                document.getElementById("userName").textContent = `${u.firstname || ''} ${u.lastname || ''}`.trim() || u.email;
+                document.getElementById("infoFirstName").textContent = u.firstname || '—';
+                document.getElementById("infoLastName").textContent = u.lastname || '—';
+                document.getElementById("infoEmail").textContent = u.email || '—';
 
-    <div class="action-buttons">
-      <button type="button" class="btn btn-outline" onclick="window.location.href='home.html'">Products</button>
-      <button type="button" class="btn btn-outline" onclick="window.location.href='cart.html'">🛒 Cart & Orders</button>
-      <button type="button" class="btn btn-primary" onclick="window.location.href='edit profile.html'">Edit
-        Profile</button>
-      <button type="button" class="btn btn-outline" id="adminProfileBtn"
-        style="display: none; border-color: var(--accent-color); color: var(--accent-color);"
-        onclick="window.location.href='admin.html'">Admin Panel</button>
-      <button type="button" class="btn btn-outline" onclick="logout()">Log Out</button>
-    </div>
+                const avatarEl = document.getElementById("userAvatar");
+                if (u.Image || u.image) avatarEl.src = u.Image || u.image;
 
-    <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 30px 0 20px 0;">
+                const roleEl = document.getElementById("userRole");
+                if (u.isadmin) {
+                    roleEl.textContent = "Administrator";
+                    roleEl.className = "badge-role badge-admin";
+                } else {
+                    roleEl.textContent = "Customer Account";
+                }
 
-    <div class="danger-section" style="text-align: center;">
-      <h3 style="font-size: 0.95rem; color: var(--error-color); margin-bottom: 8px;">⚠️ Delete Account</h3>
-      <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 15px;">Permanently delete your account and
-        all associated data.</p>
-      <button type="button" class="btn btn-danger" style="width: 100%;" onclick="deleteAccount()">Delete
-        Account</button>
-    </div>
-  </div>
+                const addr = u.address || {};
+                const addrStr = [addr.addressLine, addr.city, addr.district, addr.postalCode].filter(Boolean).join(", ");
+                document.getElementById("infoAddress").textContent = addrStr || "No address provided (Edit profile to add address)";
+                document.getElementById("infoCreatedAt").textContent = u.createdAt ? new Date(u.createdAt).toLocaleString() : '—';
 
-  <script>
-    const API_URL = (window.location.protocol.startsWith('http')) 
-        ? `${window.location.protocol}//${window.location.hostname}:3001` 
-        : "http://localhost:3001";
-    const token = localStorage.getItem("token");
-    if (!token) {
-      window.location.href = "First login page.html";
-    }
+                localStorage.setItem("user", JSON.stringify(u));
 
-    async function loadUserProfile() {
-      try {
-        const response = await fetch(`${API_URL}/users/profile`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
-          }
-        });
-
-        const data = await response.json();
-
-        if (response.ok && data.user) {
-          localStorage.setItem("user", JSON.stringify(data.user));
-          renderProfile(data.user);
-        } else {
-          loadFromLocalStorage();
-        }
-      } catch (err) {
-        console.error("Error fetching profile from server:", err);
-        loadFromLocalStorage();
-      }
-    }
-
-    function loadFromLocalStorage() {
-      try {
-        const rawUser = localStorage.getItem("user");
-        if (rawUser) {
-          renderProfile(JSON.parse(rawUser));
-        }
-      } catch (e) {
-        console.error("Error loading local user:", e);
-      }
-    }
-
-    function renderProfile(user) {
-      const fullName = `${user.firstname || ''} ${user.lastname || ''}`.trim() || user.email || 'User Profile';
-      document.getElementById("userName").textContent = fullName;
-      document.getElementById("userFirstName").textContent = user.firstname || "-";
-      document.getElementById("userLastName").textContent = user.lastname || "-";
-      document.getElementById("userEmail").textContent = user.email || "-";
-      document.getElementById("userRole").textContent = user.isadmin ? "Admin" : "Customer";
-
-      const addr = user.address || {};
-      const fullAddress = [addr.addressLine, addr.city, addr.district, addr.postalCode].filter(Boolean).join(", ");
-      document.getElementById("userAddress").textContent = fullAddress || "Not provided";
-
-      if (user.isadmin) {
-        const btn = document.getElementById("adminProfileBtn");
-        if (btn) btn.style.display = "inline-block";
-      }
-
-      const pic = document.getElementById("profilePic");
-      const imgUrl = user.Image || user.image || user.avatar || user.profilePic;
-      if (imgUrl) {
-        pic.src = imgUrl;
-      } else {
-        pic.src = "https://via.placeholder.com/100?text=User";
-      }
-    }
-
-    async function deleteAccount() {
-      const confirmDelete = confirm("Are you sure you want to delete your account? This action is permanent and cannot be undone.");
-      if (!confirmDelete) return;
-
-      try {
-        const response = await fetch(`${API_URL}/users/delete-account`, {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
-          }
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-          throw new Error(data.message || `Failed to delete account (${response.status})`);
+            } catch (err) {
+                console.error("fetchProfile error:", err);
+                alert(`Session error: ${err.message}`);
+                logout();
+            }
         }
 
-        alert("Your account has been deleted successfully.");
-        localStorage.removeItem("token");
-        localStorage.removeItem("user");
-        window.location.href = "First login page.html";
+        function logout() {
+            localStorage.removeItem("token");
+            localStorage.removeItem("user");
+            window.location.href = "First login page.html";
+        }
 
-      } catch (err) {
-        console.error("Delete account error:", err);
-        alert(`Error deleting account: ${err.message}`);
-      }
-    }
-
-    function logout() {
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
-      window.location.href = "First login page.html";
-    }
-
-    window.addEventListener("DOMContentLoaded", loadUserProfile);
-  </script>
+        window.addEventListener("DOMContentLoaded", fetchProfile);
+    </script>
 </body>
 
 </html>

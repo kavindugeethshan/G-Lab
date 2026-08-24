@@ -2,471 +2,431 @@
 <html lang="en">
 
 <head>
-  <meta charset="utf-8" />
-  <title>G Lab — Edit Profile</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <style>
-    :root {
-      --bg-color: #0f172a;
-      --card-bg: #1e293b;
-      --accent-color: #3b82f6;
-      --accent-hover: #2563eb;
-      --text-main: #f8fafc;
-      --text-muted: #94a3b8;
-      --border-color: #334155;
-      --error-color: #ef4444;
-      --success-color: #10b981;
-    }
+    <meta charset="utf-8" />
+    <title>G Lab — Edit Account & Profile</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #060b18;
+            --card-bg: rgba(15, 23, 42, 0.85);
+            --card-border: rgba(59, 130, 246, 0.25);
+            --accent-gradient: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
+            --accent-color: #3b82f6;
+            --accent-glow: rgba(59, 130, 246, 0.35);
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --error-color: #ef4444;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: rgba(51, 65, 85, 0.7);
+        }
 
-    html {
-      overflow-y: scroll;
-      scroll-behavior: smooth;
-    }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-color);
+            background-image: 
+                radial-gradient(circle at 20% 20%, rgba(59, 130, 246, 0.12) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(99, 102, 241, 0.12) 0%, transparent 50%);
+            background-attachment: fixed;
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 30px 20px;
+        }
 
-    body {
-      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-      background-color: var(--bg-color);
-      color: var(--text-main);
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 20px;
-      overflow-x: hidden;
-    }
+        .edit-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--card-border);
+            border-radius: 24px;
+            padding: 38px;
+            width: 100%;
+            max-width: 580px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+        }
 
-    .edit-card {
-      background-color: var(--card-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 12px;
-      padding: 35px;
-      width: 100%;
-      max-width: 480px;
-      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
-    }
+        .edit-card h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--text-main);
+            margin-bottom: 24px;
+            text-align: center;
+        }
 
-    .edit-card h2 {
-      font-size: 1.5rem;
-      color: var(--accent-color);
-      margin-bottom: 20px;
-      text-align: center;
-    }
+        .section-box {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 22px;
+            margin-bottom: 22px;
+        }
 
-    .form-group {
-      margin-bottom: 18px;
-    }
+        .section-box h3 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--accent-color);
+            margin-bottom: 16px;
+        }
 
-    label {
-      display: block;
-      font-size: 0.85rem;
-      color: var(--text-muted);
-      font-weight: 500;
-      margin-bottom: 6px;
-    }
+        .form-group {
+            margin-bottom: 16px;
+        }
 
-    input,
-    textarea {
-      width: 100%;
-      padding: 10px 12px;
-      background-color: #0f172a;
-      border: 1px solid var(--border-color);
-      border-radius: 6px;
-      color: var(--text-main);
-      font-size: 0.95rem;
-    }
+        label {
+            display: block;
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+        }
 
-    input:focus,
-    textarea:focus {
-      outline: none;
-      border-color: var(--accent-color);
-    }
+        input, textarea {
+            width: 100%;
+            padding: 12px 14px;
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            color: var(--text-main);
+            font-size: 0.92rem;
+            font-family: inherit;
+            transition: border-color 0.2s;
+        }
 
-    .preview-avatar {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 2px solid var(--accent-color);
-      margin-bottom: 10px;
-      display: block;
-    }
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px var(--accent-glow);
+        }
 
-    .action-buttons {
-      display: flex;
-      gap: 10px;
-      margin-top: 25px;
-    }
+        .btn {
+            padding: 12px 18px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: 1px solid transparent;
+            text-align: center;
+            transition: all 0.25s ease;
+            font-family: inherit;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
 
-    .btn {
-      flex: 1;
-      padding: 12px;
-      border-radius: 6px;
-      font-size: 0.95rem;
-      font-weight: 600;
-      cursor: pointer;
-      border: 1px solid transparent;
-      text-align: center;
-      transition: all 0.2s;
-    }
+        .btn-primary {
+            background: var(--accent-gradient);
+            color: white;
+            box-shadow: 0 4px 18px var(--accent-glow);
+        }
 
-    .btn-primary {
-      background-color: var(--accent-color);
-      color: white;
-    }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px var(--accent-glow);
+            filter: brightness(1.1);
+        }
 
-    .btn-primary:hover {
-      background-color: var(--accent-hover);
-    }
+        .btn-outline {
+            background: rgba(30, 41, 59, 0.6);
+            border-color: var(--border-color);
+            color: var(--text-main);
+        }
 
-    .btn-outline {
-      background: none;
-      border-color: var(--border-color);
-      color: var(--text-main);
-    }
+        .btn-outline:hover {
+            background: rgba(51, 65, 85, 0.8);
+        }
 
-    .btn-outline:hover {
-      background-color: #334155;
-    }
+        .btn-danger {
+            background: rgba(239, 68, 68, 0.12);
+            color: #fca5a5;
+            border: 1px solid rgba(239, 68, 68, 0.35);
+        }
 
-    #msg {
-      margin-top: 15px;
-      padding: 10px;
-      border-radius: 6px;
-      font-size: 0.9rem;
-      text-align: center;
-      display: none;
-    }
+        .btn-danger:hover {
+            background: var(--error-color);
+            color: white;
+        }
 
-    .msg {
-      margin-top: 15px;
-      padding: 10px;
-      border-radius: 6px;
-      font-size: 0.9rem;
-      text-align: center;
-      display: none;
-    }
+        #message {
+            margin-top: 16px;
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            display: none;
+        }
 
-    .msg.success {
-      display: block;
-      background-color: rgba(16, 185, 129, 0.15);
-      color: var(--success-color);
-      border: 1px solid var(--success-color);
-    }
-
-    .msg.error {
-      display: block;
-      background-color: rgba(239, 68, 68, 0.15);
-      color: var(--error-color);
-      border: 1px solid var(--error-color);
-    }
-
-    .msg.loading {
-      display: block;
-      background-color: rgba(59, 130, 246, 0.15);
-      color: var(--accent-color);
-      border: 1px solid var(--accent-color);
-    }
-  </style>
+        #message.error { display: block; background: rgba(239, 68, 68, 0.15); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.4); }
+        #message.success { display: block; background: rgba(16, 185, 129, 0.15); color: #6ee7b7; border: 1px solid rgba(16, 185, 129, 0.4); }
+        #message.loading { display: block; background: rgba(59, 130, 246, 0.15); color: #93c5fd; border: 1px solid rgba(59, 130, 246, 0.4); }
+    </style>
 </head>
 
 <body>
-  <div class="edit-card">
-    <h2>Edit Profile</h2>
 
-    <form id="editProfileForm">
-      <div class="form-group">
-        <label for="firstname">First Name</label>
-        <input type="text" id="firstname" name="firstname" placeholder="First Name" required>
-      </div>
+    <div class="edit-card">
+        <h2>✏️ Account Settings</h2>
+        <div id="message"></div>
 
-      <div class="form-group">
-        <label for="lastname">Last Name</label>
-        <input type="text" id="lastname" name="lastname" placeholder="Last Name" required>
-      </div>
+        <!-- 1. PERSONAL INFORMATION (PUT /users/profile) -->
+        <div class="section-box">
+            <h3>👤 Personal Profile Information</h3>
+            <form id="profileForm" onsubmit="updateProfileInfo(event)">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                    <div class="form-group">
+                        <label for="firstname">First Name *</label>
+                        <input type="text" id="firstname" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="lastname">Last Name *</label>
+                        <input type="text" id="lastname" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email Address *</label>
+                    <input type="email" id="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="image">Avatar Image URL</label>
+                    <input type="url" id="image" placeholder="https://example.com/avatar.jpg">
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Save Personal Details</button>
+            </form>
+        </div>
 
-      <div class="form-group">
-        <label for="Email">Email Address</label>
-        <input type="email" id="Email" name="Email" placeholder="email@example.com" required>
-      </div>
+        <!-- 2. DELIVERY ADDRESS (PUT /users/address) -->
+        <div class="section-box">
+            <h3>📍 Delivery Address</h3>
+            <form id="addressForm" onsubmit="updateAddressInfo(event)">
+                <div class="form-group">
+                    <label for="addressLine">Street Address / Line *</label>
+                    <input type="text" id="addressLine" required placeholder="123 Tech Street, Suite 4">
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                    <div class="form-group">
+                        <label for="city">City *</label>
+                        <input type="text" id="city" required placeholder="Colombo">
+                    </div>
+                    <div class="form-group">
+                        <label for="district">District *</label>
+                        <input type="text" id="district" required placeholder="Colombo">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="postalCode">Postal Code *</label>
+                    <input type="text" id="postalCode" required placeholder="00100">
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Save Delivery Address</button>
+            </form>
+        </div>
 
-      <div class="form-group">
-        <label for="avatar">Profile Picture URL</label>
-        <input type="text" id="avatar" name="avatar" placeholder="https://example.com/image.jpg">
-      </div>
+        <!-- 3. CHANGE PASSWORD (PUT /users/change-password) -->
+        <div class="section-box">
+            <h3>🔑 Security & Password</h3>
+            <form id="passwordForm" onsubmit="changeUserPassword(event)">
+                <div class="form-group">
+                    <label for="currentPassword">Current Password *</label>
+                    <input type="password" id="currentPassword" required placeholder="••••••••">
+                </div>
+                <div class="form-group">
+                    <label for="newPassword">New Password *</label>
+                    <input type="password" id="newPassword" required placeholder="••••••••">
+                </div>
+                <button type="submit" class="btn btn-outline" style="width: 100%;">Update Password</button>
+            </form>
+        </div>
 
-      <div id="profileMsg" class="msg"></div>
+        <!-- 4. DELETE OWN ACCOUNT (DELETE /users/profile) -->
+        <div class="section-box" style="border-color: rgba(239, 68, 68, 0.4); background: rgba(239, 68, 68, 0.05);">
+            <h3 style="color: #fca5a5;">⚠️ Danger Zone</h3>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 14px;">
+                Permanently delete your account and all associated order data. This action cannot be undone.
+            </p>
+            <button type="button" class="btn btn-danger" style="width: 100%;" onclick="deleteAccount()">Delete My Account</button>
+        </div>
 
-      <div class="action-buttons">
-        <button type="button" class="btn btn-outline" onclick="window.location.href='profile.html'">Cancel</button>
-        <button type="submit" class="btn btn-primary" id="saveProfileBtn">Save Profile</button>
-      </div>
-    </form>
+        <div style="display: flex; gap: 12px;">
+            <button type="button" class="btn btn-outline" style="flex: 1;" onclick="window.location.href='profile.html'">← Back to Profile</button>
+            <button type="button" class="btn btn-outline" style="flex: 1;" onclick="window.location.href='cart.html'">🛒 Go to Cart</button>
+        </div>
+    </div>
 
-    <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 30px 0 25px 0;">
+    <script>
+        const API_URL = (window.location.protocol.startsWith('http')) 
+            ? `${window.location.protocol}//${window.location.hostname}:3001` 
+            : "http://localhost:3001";
 
-    <form id="updateAddressForm">
-      <h3 style="font-size: 1.1rem; color: var(--text-main); margin-bottom: 18px; text-align: center;">📍 Shipping
-        Address</h3>
+        const token = localStorage.getItem("token");
+        if (!token) window.location.href = "First login page.html";
 
-      <div class="form-group">
-        <label for="addressLine">Address Line</label>
-        <input type="text" id="addressLine" name="addressLine" placeholder="e.g. 123 Main Street">
-      </div>
-
-      <div class="form-group">
-        <label for="city">City</label>
-        <input type="text" id="city" name="city" placeholder="e.g. Colombo">
-      </div>
-
-      <div class="form-group">
-        <label for="district">District</label>
-        <input type="text" id="district" name="district" placeholder="e.g. Colombo">
-      </div>
-
-      <div class="form-group">
-        <label for="postalCode">Postal Code</label>
-        <input type="text" id="postalCode" name="postalCode" placeholder="e.g. 00100">
-      </div>
-
-      <div id="addressMsg" class="msg"></div>
-
-      <div class="action-buttons" style="margin-top: 15px;">
-        <button type="submit" class="btn btn-primary" id="saveAddressBtn">Save Address</button>
-      </div>
-    </form>
-
-    <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 30px 0 25px 0;">
-
-    <form id="changePasswordForm">
-      <h3 style="font-size: 1.1rem; color: var(--text-main); margin-bottom: 18px; text-align: center;">🔒 Change
-        Password</h3>
-
-      <div class="form-group">
-        <label for="currentPassword">Current Password</label>
-        <input type="password" id="currentPassword" name="currentPassword" placeholder="Enter current password"
-          required>
-      </div>
-
-      <div class="form-group">
-        <label for="newPassword">New Password</label>
-        <input type="password" id="newPassword" name="newPassword" placeholder="Enter new password" required>
-      </div>
-
-      <div id="passwordMsg" class="msg"></div>
-
-      <div class="action-buttons" style="margin-top: 15px;">
-        <button type="submit" class="btn btn-primary" id="changePassBtn">Update Password</button>
-      </div>
-    </form>
-  </div>
-
-  <script>
-    const API_URL = (window.location.protocol.startsWith('http')) 
-        ? `${window.location.protocol}//${window.location.hostname}:3001` 
-        : "http://localhost:3001";
-    const token = localStorage.getItem("token");
-    if (!token) {
-      window.location.href = "First login page.html";
-    }
-
-    async function loadProfileForEdit() {
-      try {
-        const response = await fetch(`${API_URL}/users/profile`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
-          }
-        });
-
-        const data = await response.json();
-        if (response.ok && data.user) {
-          populateFields(data.user);
-          localStorage.setItem("user", JSON.stringify(data.user));
-        } else {
-          loadFromLocal();
-        }
-      } catch (err) {
-        console.error("Error fetching profile for edit:", err);
-        loadFromLocal();
-      }
-    }
-
-    function loadFromLocal() {
-      try {
-        const rawUser = localStorage.getItem("user");
-        if (rawUser) {
-          populateFields(JSON.parse(rawUser));
-        }
-      } catch (e) { }
-    }
-
-    function populateFields(user) {
-      document.getElementById("firstname").value = user.firstname || "";
-      document.getElementById("lastname").value = user.lastname || "";
-      document.getElementById("Email").value = user.email || "";
-      document.getElementById("avatar").value = user.Image || user.image || user.avatar || user.profilePic || "";
-
-      const addr = user.address || {};
-      document.getElementById("addressLine").value = addr.addressLine || "";
-      document.getElementById("city").value = addr.city || "";
-      document.getElementById("district").value = addr.district || "";
-      document.getElementById("postalCode").value = addr.postalCode || "";
-    }
-
-    function showMsg(elemId, text, type) {
-      const msg = document.getElementById(elemId);
-      if (!msg) return;
-      msg.textContent = text;
-      msg.className = `msg ${type}`;
-    }
-
-    // Handle Edit Profile submission (PUT /users/profile)
-    document.getElementById("editProfileForm").addEventListener("submit", async function (e) {
-      e.preventDefault();
-
-      const firstname = document.getElementById("firstname").value.trim();
-      const lastname = document.getElementById("lastname").value.trim();
-      const email = document.getElementById("Email").value.trim();
-      const image = document.getElementById("avatar").value.trim();
-
-      const saveBtn = document.getElementById("saveProfileBtn");
-      saveBtn.disabled = true;
-      showMsg("profileMsg", "Saving profile...", "loading");
-
-      try {
-        const response = await fetch(`${API_URL}/users/profile`, {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
-          },
-          body: JSON.stringify({ firstname, lastname, email, image })
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-          throw new Error(data.message || `Update failed (${response.status})`);
+        function getHeaders() {
+            return {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            };
         }
 
-        if (data.user) {
-          localStorage.setItem("user", JSON.stringify(data.user));
+        function setMessage(text, type) {
+            const el = document.getElementById("message");
+            if (!text) { el.style.display = "none"; return; }
+            el.textContent = text;
+            el.className = type || "";
+            if (type === "success") {
+                setTimeout(() => { if (el.textContent === text) el.style.display = "none"; }, 4000);
+            }
         }
 
-        showMsg("profileMsg", "Profile updated successfully! Redirecting...", "success");
+        async function loadCurrentUserData() {
+            try {
+                const res = await fetch(`${API_URL}/users/profile`, { headers: getHeaders() });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.message || "Failed to load profile");
 
-        setTimeout(() => {
-          window.location.href = "profile.html";
-        }, 800);
+                const u = data.user || data;
+                document.getElementById("firstname").value = u.firstname || "";
+                document.getElementById("lastname").value = u.lastname || "";
+                document.getElementById("email").value = u.email || "";
+                document.getElementById("image").value = u.Image || u.image || "";
 
-      } catch (err) {
-        console.error("Update profile error:", err);
-        showMsg("profileMsg", `Error: ${err.message}`, "error");
-        saveBtn.disabled = false;
-      }
-    });
+                const addr = u.address || {};
+                document.getElementById("addressLine").value = addr.addressLine || "";
+                document.getElementById("city").value = addr.city || "";
+                document.getElementById("district").value = addr.district || "";
+                document.getElementById("postalCode").value = addr.postalCode || "";
 
-    // Handle Update Address submission (PUT /users/address)
-    document.getElementById("updateAddressForm").addEventListener("submit", async function (e) {
-      e.preventDefault();
-
-      const addressLine = document.getElementById("addressLine").value.trim();
-      const city = document.getElementById("city").value.trim();
-      const district = document.getElementById("district").value.trim();
-      const postalCode = document.getElementById("postalCode").value.trim();
-
-      const saveBtn = document.getElementById("saveAddressBtn");
-      saveBtn.disabled = true;
-      showMsg("addressMsg", "Saving address...", "loading");
-
-      try {
-        const response = await fetch(`${API_URL}/users/address`, {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
-          },
-          body: JSON.stringify({ addressLine, city, district, postalCode })
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-          throw new Error(data.message || `Address update failed (${response.status})`);
+            } catch (err) {
+                console.error("loadCurrentUserData error:", err);
+                setMessage(`Failed to load profile data: ${err.message}`, "error");
+            }
         }
 
-        // Update local user object address property
-        try {
-          const rawUser = localStorage.getItem("user");
-          if (rawUser) {
-            const u = JSON.parse(rawUser);
-            u.address = data.address || { addressLine, city, district, postalCode };
-            localStorage.setItem("user", JSON.stringify(u));
-          }
-        } catch (e) { }
+        // 1. UPDATE PROFILE INFO
+        async function updateProfileInfo(e) {
+            e.preventDefault();
+            const body = {
+                firstname: document.getElementById("firstname").value.trim(),
+                lastname: document.getElementById("lastname").value.trim(),
+                email: document.getElementById("email").value.trim().toLowerCase(),
+                Image: document.getElementById("image").value.trim()
+            };
 
-        showMsg("addressMsg", "Address updated successfully!", "success");
+            setMessage("Updating profile information...", "loading");
+            try {
+                const res = await fetch(`${API_URL}/users/profile`, {
+                    method: "PUT",
+                    headers: getHeaders(),
+                    body: JSON.stringify(body)
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.message || "Update failed");
 
-      } catch (err) {
-        console.error("Update address error:", err);
-        showMsg("addressMsg", `Error: ${err.message}`, "error");
-      } finally {
-        saveBtn.disabled = false;
-      }
-    });
+                setMessage("Personal profile updated successfully!", "success");
+                if (data.user) localStorage.setItem("user", JSON.stringify(data.user));
 
-    // Handle Change Password submission (PUT /users/change-password)
-    document.getElementById("changePasswordForm").addEventListener("submit", async function (e) {
-      e.preventDefault();
-
-      const currentPassword = document.getElementById("currentPassword").value.trim();
-      const newPassword = document.getElementById("newPassword").value.trim();
-      const passBtn = document.getElementById("changePassBtn");
-
-      if (!currentPassword || !newPassword) {
-        showMsg("passwordMsg", "Current password and new password are required", "error");
-        return;
-      }
-
-      passBtn.disabled = true;
-      showMsg("passwordMsg", "Updating password...", "loading");
-
-      try {
-        const response = await fetch(`${API_URL}/users/change-password`, {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
-          },
-          body: JSON.stringify({ currentPassword, newPassword })
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-          throw new Error(data.message || `Password update failed (${response.status})`);
+            } catch (err) {
+                console.error("updateProfile error:", err);
+                setMessage(`Update failed: ${err.message}`, "error");
+            }
         }
 
-        showMsg("passwordMsg", "Password changed successfully!", "success");
-        document.getElementById("changePasswordForm").reset();
+        // 2. UPDATE DELIVERY ADDRESS
+        async function updateAddressInfo(e) {
+            e.preventDefault();
+            const address = {
+                addressLine: document.getElementById("addressLine").value.trim(),
+                city: document.getElementById("city").value.trim(),
+                district: document.getElementById("district").value.trim(),
+                postalCode: document.getElementById("postalCode").value.trim()
+            };
 
-      } catch (err) {
-        console.error("Change password error:", err);
-        showMsg("passwordMsg", err.message, "error");
-      } finally {
-        passBtn.disabled = false;
-      }
-    });
+            setMessage("Updating delivery address...", "loading");
+            try {
+                const res = await fetch(`${API_URL}/users/address`, {
+                    method: "PUT",
+                    headers: getHeaders(),
+                    body: JSON.stringify({ address })
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.message || "Address update failed");
 
-    window.addEventListener("DOMContentLoaded", loadProfileForEdit);
-  </script>
+                setMessage("Delivery address saved successfully!", "success");
+                if (data.user) localStorage.setItem("user", JSON.stringify(data.user));
+
+            } catch (err) {
+                console.error("updateAddress error:", err);
+                setMessage(`Address update failed: ${err.message}`, "error");
+            }
+        }
+
+        // 3. CHANGE PASSWORD
+        async function changeUserPassword(e) {
+            e.preventDefault();
+            const currentPassword = document.getElementById("currentPassword").value;
+            const newPassword = document.getElementById("newPassword").value;
+
+            if (newPassword.length < 6) {
+                setMessage("New password must be at least 6 characters long.", "error");
+                return;
+            }
+
+            setMessage("Changing password...", "loading");
+            try {
+                const res = await fetch(`${API_URL}/users/change-password`, {
+                    method: "PUT",
+                    headers: getHeaders(),
+                    body: JSON.stringify({ currentPassword, newPassword })
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.message || "Password change failed");
+
+                setMessage("Password changed successfully!", "success");
+                document.getElementById("currentPassword").value = "";
+                document.getElementById("newPassword").value = "";
+
+            } catch (err) {
+                console.error("changePassword error:", err);
+                setMessage(`Password change failed: ${err.message}`, "error");
+            }
+        }
+
+        // 4. DELETE ACCOUNT
+        async function deleteAccount() {
+            if (!confirm("Are you sure you want to PERMANENTLY delete your account?\n\nThis cannot be undone!")) return;
+
+            setMessage("Deleting account...", "loading");
+            try {
+                const res = await fetch(`${API_URL}/users/profile`, {
+                    method: "DELETE",
+                    headers: getHeaders()
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.message || "Account deletion failed");
+
+                alert("Your account has been deleted successfully.");
+                localStorage.removeItem("token");
+                localStorage.removeItem("user");
+                window.location.href = "First login page.html";
+
+            } catch (err) {
+                console.error("deleteAccount error:", err);
+                setMessage(`Account deletion failed: ${err.message}`, "error");
+            }
+        }
+
+        window.addEventListener("DOMContentLoaded", loadCurrentUserData);
+    </script>
 </body>
 
 </html>
