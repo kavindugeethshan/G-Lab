@@ -694,6 +694,18 @@
             color: white;
             box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
         }
+
+        .order-item-chip {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--border-color);
+            padding: 10px 14px;
+            border-radius: 10px;
+            margin-top: 8px;
+            font-size: 0.88rem;
+        }
     </style>
 </head>
 
@@ -782,11 +794,21 @@
             </div>
         </div>
 
-        <!-- SECTION 2: MY ORDERS HISTORY -->
+        <!-- SECTION 2: MY ORDERS HISTORY & FILTERING -->
         <div class="section-card">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
                 <h2>📦 My Order History</h2>
-                <button type="button" class="btn btn-outline" style="padding: 8px 16px; font-size: 0.85rem;" onclick="loadMyOrders()">🔄 Refresh History</button>
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <select id="orderStatusFilter" onchange="filterUserOrders()" style="padding: 8px 14px; border-radius: 8px; border: 1px solid var(--border-color); background: rgba(15, 23, 42, 0.8); color: white; font-size: 0.88rem;">
+                        <option value="ALL">All Order Statuses</option>
+                        <option value="Pending">Pending</option>
+                        <option value="Confirmed">Confirmed</option>
+                        <option value="Shipped">Shipped</option>
+                        <option value="Delivered">Delivered</option>
+                        <option value="Cancelled">Cancelled</option>
+                    </select>
+                    <button type="button" class="btn btn-outline" style="padding: 8px 16px; font-size: 0.85rem;" onclick="loadMyOrders()">🔄 Refresh</button>
+                </div>
             </div>
             <div id="myOrdersContainer">
                 <p style="text-align: center; color: var(--text-muted); padding: 25px;">Loading your past orders...</p>
@@ -818,6 +840,8 @@
         if (!token) {
             window.location.href = "First login page.html";
         }
+
+        let userOrdersList = [];
 
         async function safeFetch(url, options = {}) {
             const response = await fetch(url, options);
@@ -1127,7 +1151,7 @@
             }
         }
 
-        // 2. CREATE ORDER FROM CART
+        // 2. CREATE ORDER FROM CART LOGIC
         async function createOrderFromCart() {
             if (!confirm("Proceed to checkout and place your order?")) return;
 
@@ -1162,7 +1186,7 @@
             }
         }
 
-        // 3. GET MY ORDERS LOGIC
+        // 3. GET MY ORDERS & SNAPSHOT DISPLAY LOGIC
         function renderStatusTimeline(statusHistory) {
             if (!statusHistory || statusHistory.length === 0) return '';
             let html = '<div class="timeline">';
@@ -1193,9 +1217,9 @@
 
             return `
                 <div class="order-financials">
-                    <span class="fin-label">Subtotal:</span>
+                    <span class="fin-label">Order Subtotal:</span>
                     <span class="fin-value">Rs. ${(subtotal || 0).toLocaleString()}</span>
-                    <span class="fin-label">Discount:</span>
+                    <span class="fin-label">Discount Savings:</span>
                     <span class="fin-value" style="color: var(--success-color);">- Rs. ${(discount || 0).toLocaleString()}</span>
                     <span class="fin-label">Shipping Fee:</span>
                     <span class="fin-value" style="color: var(--warning-color);">Rs. ${(shipping || 0).toLocaleString()}</span>
@@ -1221,58 +1245,91 @@
                     throw new Error(data.message || `Failed to fetch orders (${response.status})`);
                 }
 
-                const orders = data.orders || [];
-
-                if (orders.length === 0) {
-                    container.innerHTML = `<p style="text-align: center; color: var(--text-muted); padding: 30px 0;">You have not placed any orders yet.</p>`;
-                    return;
-                }
-
-                let html = "";
-                orders.forEach(order => {
-                    const orderDate = new Date(order.createdAt || Date.now()).toLocaleString();
-                    const status = order.Orderstatus || "Pending";
-                    const statusColor = getStatusBadgeStyle(status);
-                    const addr = order.Diliveryaddress || {};
-                    const addressStr = [addr.addressLine, addr.city, addr.district, addr.postalCode].filter(Boolean).join(", ") || "No address provided";
-                    const canCancel = (status === "Pending" || status === "Confirmed");
-
-                    html += `
-                        <div class="order-card">
-                            <div class="order-header">
-                                <div>
-                                    <strong style="color: var(--accent-color); font-size: 1.1rem; font-family: 'Outfit', sans-serif;">Order #${order._id}</strong>
-                                    <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 2px;">Placed on: ${orderDate}</div>
-                                </div>
-                                <div>
-                                    <span class="status-badge" style="background: ${statusColor.bg}; color: ${statusColor.text};">${status}</span>
-                                </div>
-                            </div>
-                            <div style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 14px;">
-                                📍 <strong>Delivery Address:</strong> ${addressStr}
-                            </div>
-                            <div style="margin-bottom: 14px;">
-                                <strong style="font-size: 0.92rem; color: var(--text-main);">Items Purchased:</strong>
-                                <ul style="margin-left: 20px; font-size: 0.88rem; margin-top: 6px; color: var(--text-muted);">
-                                    ${(order.Products || []).map(p => `<li><strong style="color: var(--text-main);">${p.name}</strong> (x${p.quantity}) — <span style="color: var(--success-color);">Rs. ${(p.price * p.quantity).toLocaleString()}</span></li>`).join('')}
-                                </ul>
-                            </div>
-                            ${renderOrderFinancials(order)}
-                            <div style="margin-top: 16px;">
-                                <strong style="font-size: 0.88rem; color: var(--text-muted);">📋 Status History:</strong>
-                                ${renderStatusTimeline(order.statusHistory)}
-                            </div>
-                            ${canCancel ? `<button class="btn-cancel-order" onclick="cancelOwnOrder('${order._id}')">❌ Cancel This Order</button>` : ''}
-                        </div>
-                    `;
-                });
-
-                container.innerHTML = html;
+                userOrdersList = data.orders || [];
+                filterUserOrders();
 
             } catch (err) {
                 console.error("loadMyOrders error:", err);
                 container.innerHTML = `<p style="color: var(--error-color); text-align: center;">Error loading orders: ${err.message}</p>`;
             }
+        }
+
+        function filterUserOrders() {
+            const container = document.getElementById("myOrdersContainer");
+            const filterVal = document.getElementById("orderStatusFilter").value;
+
+            let filtered = userOrdersList;
+            if (filterVal !== "ALL") {
+                filtered = userOrdersList.filter(o => (o.Orderstatus || "Pending") === filterVal);
+            }
+
+            if (!filtered || filtered.length === 0) {
+                container.innerHTML = `<p style="text-align: center; color: var(--text-muted); padding: 30px 0;">No orders found matching filter "${filterVal}".</p>`;
+                return;
+            }
+
+            let html = "";
+            filtered.forEach(order => {
+                const orderDate = new Date(order.createdAt || Date.now()).toLocaleString();
+                const status = order.Orderstatus || "Pending";
+                const statusColor = getStatusBadgeStyle(status);
+                const addr = order.Diliveryaddress || {};
+                const addressStr = [addr.addressLine, addr.city, addr.district, addr.postalCode].filter(Boolean).join(", ") || "No address provided";
+                const canCancel = (status === "Pending" || status === "Confirmed");
+                const totalItemUnits = (order.Products || []).reduce((s, p) => s + (p.quantity || 1), 0);
+
+                html += `
+                    <div class="order-card">
+                        <div class="order-header">
+                            <div>
+                                <strong style="color: var(--accent-color); font-size: 1.1rem; font-family: 'Outfit', sans-serif;">Order #${order._id}</strong>
+                                <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 2px;">Placed on: ${orderDate}</div>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <span style="font-size: 0.78rem; background: rgba(51, 65, 85, 0.6); padding: 4px 10px; border-radius: 12px; color: var(--text-muted);">${totalItemUnits} unit(s)</span>
+                                <span class="status-badge" style="background: ${statusColor.bg}; color: ${statusColor.text};">${status}</span>
+                            </div>
+                        </div>
+                        <div style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 14px;">
+                            📍 <strong>Delivery Address Snapshot:</strong> ${addressStr}
+                        </div>
+                        <div style="margin-bottom: 14px;">
+                            <strong style="font-size: 0.92rem; color: var(--text-main);">Product Snapshot List:</strong>
+                            <div style="margin-top: 8px;">
+                                ${(order.Products || []).map(p => `
+                                    <div class="order-item-chip">
+                                        <div>
+                                            <strong style="color: var(--text-main);">${p.name || 'Product'}</strong>
+                                            ${p.brand ? `<span style="font-size: 0.75rem; background: #334155; padding: 2px 6px; border-radius: 4px; color: var(--text-muted); margin-left: 6px;">${p.brand}</span>` : ''}
+                                            ${p.discount > 0 ? `<span class="discount-tag">-${p.discount}% OFF</span>` : ''}
+                                        </div>
+                                        <div>
+                                            <span style="color: var(--text-muted); margin-right: 12px;">x${p.quantity}</span>
+                                            <strong style="color: var(--success-color);">Rs. ${(p.price * p.quantity).toLocaleString()}</strong>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                        ${renderOrderFinancials(order)}
+                        <div style="margin-top: 16px;">
+                            <strong style="font-size: 0.88rem; color: var(--text-muted);">📋 Status History Timeline:</strong>
+                            ${renderStatusTimeline(order.statusHistory)}
+                        </div>
+                        <div style="margin-top: 14px; display: flex; justify-content: space-between; align-items: center;">
+                            ${canCancel 
+                                ? `<button class="btn-cancel-order" onclick="cancelOwnOrder('${order._id}')">❌ Cancel Order</button>` 
+                                : (status === "Cancelled" 
+                                    ? `<span style="font-size: 0.82rem; color: var(--error-color); font-weight: 600;">🚫 Order Cancelled</span>` 
+                                    : `<span style="font-size: 0.82rem; color: var(--success-color); font-weight: 600;">🔒 Shipped/Delivered (Cancellation Locked)</span>`
+                                  )
+                            }
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
         }
 
         function getStatusBadgeStyle(status) {
@@ -1281,11 +1338,11 @@
                 case "Shipped": return { bg: "rgba(168, 85, 247, 0.2)", text: "#c084fc" };
                 case "Delivered": return { bg: "rgba(16, 185, 129, 0.2)", text: "#34d399" };
                 case "Cancelled": return { bg: "rgba(239, 68, 68, 0.2)", text: "#fca5a5" };
-                default: return { bg: "rgba(245, 158, 11, 0.2)", text: "#fbbf24" }; // Pending
+                default: return { bg: "rgba(245, 158, 11, 0.2)", text: "#fbbf24" };
             }
         }
 
-        // 4. GET ORDER BY ID SEARCH
+        // 4. GET ORDER BY ID SEARCH LOGIC
         async function cancelOwnOrder(orderId) {
             if (!confirm(`Are you sure you want to cancel Order #${orderId}?\n\nThis action cannot be undone.`)) return;
 
@@ -1344,6 +1401,7 @@
                 const addr = order.Diliveryaddress || {};
                 const addressStr = [addr.addressLine, addr.city, addr.district, addr.postalCode].filter(Boolean).join(", ") || "No address provided";
                 const canCancel = (status === "Pending" || status === "Confirmed");
+                const totalItemUnits = (order.Products || []).reduce((s, p) => s + (p.quantity || 1), 0);
 
                 resultDiv.innerHTML = `
                     <div class="order-card" style="border-color: var(--accent-color);">
@@ -1352,25 +1410,46 @@
                                 <strong style="color: var(--accent-color); font-size: 1.15rem; font-family: 'Outfit', sans-serif;">Order #${order._id}</strong>
                                 <div style="font-size: 0.8rem; color: var(--text-muted);">${orderDate}</div>
                             </div>
-                            <div>
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <span style="font-size: 0.78rem; background: rgba(51, 65, 85, 0.6); padding: 4px 10px; border-radius: 12px; color: var(--text-muted);">${totalItemUnits} unit(s)</span>
                                 <span class="status-badge" style="background: ${statusColor.bg}; color: ${statusColor.text};">${status}</span>
                             </div>
                         </div>
                         <div style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 12px;">
-                            📍 <strong>Delivery Address:</strong> ${addressStr}
+                            📍 <strong>Delivery Address Snapshot:</strong> ${addressStr}
                         </div>
                         <div style="margin-bottom: 14px;">
-                            <strong style="font-size: 0.95rem;">Products Included:</strong>
-                            <ul style="margin-left: 20px; font-size: 0.9rem; margin-top: 6px;">
-                                ${(order.Products || []).map(p => `<li><strong style="color: var(--text-main);">${p.name}</strong> (x${p.quantity}) — <span style="color: var(--success-color);">Rs. ${(p.price * p.quantity).toLocaleString()}</span></li>`).join('')}
-                            </ul>
+                            <strong style="font-size: 0.95rem;">Product Snapshot List:</strong>
+                            <div style="margin-top: 8px;">
+                                ${(order.Products || []).map(p => `
+                                    <div class="order-item-chip">
+                                        <div>
+                                            <strong style="color: var(--text-main);">${p.name || 'Product'}</strong>
+                                            ${p.brand ? `<span style="font-size: 0.75rem; background: #334155; padding: 2px 6px; border-radius: 4px; color: var(--text-muted); margin-left: 6px;">${p.brand}</span>` : ''}
+                                            ${p.discount > 0 ? `<span class="discount-tag">-${p.discount}% OFF</span>` : ''}
+                                        </div>
+                                        <div>
+                                            <span style="color: var(--text-muted); margin-right: 12px;">x${p.quantity}</span>
+                                            <strong style="color: var(--success-color);">Rs. ${(p.price * p.quantity).toLocaleString()}</strong>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
                         </div>
                         ${renderOrderFinancials(order)}
                         <div style="margin-top: 16px;">
-                            <strong style="font-size: 0.88rem; color: var(--text-muted);">📋 Status History:</strong>
+                            <strong style="font-size: 0.88rem; color: var(--text-muted);">📋 Status History Timeline:</strong>
                             ${renderStatusTimeline(order.statusHistory)}
                         </div>
-                        ${canCancel ? `<button class="btn-cancel-order" onclick="cancelOwnOrder('${order._id}')">❌ Cancel This Order</button>` : ''}
+                        <div style="margin-top: 14px;">
+                            ${canCancel 
+                                ? `<button class="btn-cancel-order" onclick="cancelOwnOrder('${order._id}')">❌ Cancel Order</button>` 
+                                : (status === "Cancelled" 
+                                    ? `<span style="font-size: 0.82rem; color: var(--error-color); font-weight: 600;">🚫 Order Cancelled</span>` 
+                                    : `<span style="font-size: 0.82rem; color: var(--success-color); font-weight: 600;">🔒 Shipped/Delivered (Cancellation Locked)</span>`
+                                  )
+                            }
+                        </div>
                     </div>
                 `;
 
