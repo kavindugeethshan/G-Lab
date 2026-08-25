@@ -191,6 +191,8 @@ export const handlePayHereNotify = async (req, res) => {
             md5sig,
         } = req.body;
 
+        console.log(`[PayHere Webhook Received] payment_id: ${payment_id}, order_id: ${order_id}, status_code: ${status_code}`);
+
         // 1. Verify PayHere notification MD5 signature
         const isValidSignature = verifyPayHereNotifyHash(
             merchant_id,
