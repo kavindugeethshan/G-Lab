@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import Order from "../models/OrderModel.js";
+import Order from "../models/Ordermodel.js";
 import Payment from "../models/PaymentModel.js";
 import { generatePayHereHash } from "../utils/payhere.js";
 
