@@ -308,7 +308,7 @@
             <!-- PROFILE IMAGE URL (register only) -->
             <div class="form-group hidden" id="fgImage">
                 <label for="image">Avatar Image URL (Optional)</label>
-                <input type="url" id="image" placeholder="https://example.com/avatar.jpg">
+                <input type="text" id="image" placeholder="https://example.com/avatar.jpg">
             </div>
 
             <!-- RESET TOKEN (forgot reset mode) -->
@@ -328,7 +328,7 @@
             ? "https://hosted-protection-participant-wishing.trycloudflare.com"
             : (window.location.protocol.startsWith("http"))
                 ? `${window.location.protocol}//${window.location.hostname}:3001`
-                : "http://localhost:3001";
+                : "http://192.168.1.43:3001";
 
         let currentMode = "login"; // "login" | "register" | "forgot" | "reset"
 
@@ -439,27 +439,38 @@
                 const confirmPassword = document.getElementById("confirmPassword").value;
                 const Image = document.getElementById("image").value.trim();
 
-                if (!firstname || !lastname || !email || !password) {
-                    setMessage("Please fill in all required fields.", "error");
+                if (!firstname) {
+                    setMessage("First name is required.", "error");
                     return;
                 }
-
                 if (firstname.length < 2 || firstname.length > 50) {
                     setMessage("First name must be between 2 and 50 characters.", "error");
                     return;
                 }
 
+                if (!lastname) {
+                    setMessage("Last name is required.", "error");
+                    return;
+                }
                 if (lastname.length < 2 || lastname.length > 50) {
                     setMessage("Last name must be between 2 and 50 characters.", "error");
                     return;
                 }
 
+                if (!email) {
+                    setMessage("Email address is required.", "error");
+                    return;
+                }
                 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
                 if (!emailRegex.test(email)) {
                     setMessage("Please enter a valid email address.", "error");
                     return;
                 }
 
+                if (!password) {
+                    setMessage("Password is required.", "error");
+                    return;
+                }
                 const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
                 if (!passwordRegex.test(password)) {
                     setMessage("Password must be at least 8 characters long and contain uppercase, lowercase, and a number.", "error");
@@ -473,32 +484,59 @@
 
                 const btnSubmit = document.getElementById("btnSubmit");
                 btnSubmit.disabled = true;
-                setMessage("Creating your account...", "loading");
+                btnSubmit.textContent = "Creating account...";
+                setMessage("Creating account...", "loading");
 
                 try {
                     const res = await fetch(`${API_URL}/users/create`, {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ firstname, lastname, email, password, Image })
+                        body: JSON.stringify({
+                            firstname,
+                            lastname,
+                            email,
+                            password,
+                            ...(Image ? { Image } : {})
+                        })
                     });
 
-                    let data;
-                    try {
-                        data = await res.json();
-                    } catch (e) {
-                        data = { message: `Server returned non-JSON response (${res.status})` };
+                    let data = null;
+                    const contentType = res.headers.get("content-type");
+                    if (contentType && contentType.includes("application/json")) {
+                        try {
+                            data = await res.json();
+                        } catch (e) {
+                            data = null;
+                        }
                     }
 
-                    if (!res.ok) throw new Error(data.message || `Registration failed (${res.status})`);
+                    if (!res.ok) {
+                        if (res.status === 409) {
+                            throw new Error((data && data.message) || "User already exists");
+                        } else if (res.status === 400) {
+                            throw new Error((data && data.message) || "Invalid registration data.");
+                        } else if (res.status === 502 || res.status === 504) {
+                            throw new Error(`Server unavailable (Cloudflare ${res.status}). Please try again later.`);
+                        } else if (res.status >= 500) {
+                            throw new Error((data && data.message) || `Server error (${res.status}). Please try again later.`);
+                        } else {
+                            throw new Error((data && data.message) || `Registration failed (${res.status}).`);
+                        }
+                    }
 
-                    setMessage("🎉 Account created successfully! Please log in now.", "success");
+                    setMessage("Account created successfully", "success");
                     document.getElementById("authForm").reset();
                     setTimeout(() => switchMode("login"), 1800);
 
                 } catch (err) {
-                    setMessage(`Registration failed: ${err.message}`, "error");
+                    let errText = err.message || "Registration failed.";
+                    if (err.name === "TypeError" || errText.includes("Failed to fetch")) {
+                        errText = "Network failure: Unable to connect to server.";
+                    }
+                    setMessage(errText, "error");
                 } finally {
                     btnSubmit.disabled = false;
+                    btnSubmit.textContent = currentMode === "register" ? "Create Account" : "Sign In";
                 }
             }
 
