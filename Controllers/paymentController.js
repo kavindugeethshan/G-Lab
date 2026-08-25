@@ -1,7 +1,8 @@
 import mongoose from "mongoose";
 import Order from "../models/Ordermodel.js";
 import Payment from "../models/Paymentmodel.js";
-import { generatePayHereHash } from "../utils/payhere.js";
+import { generatePayHereHash, verifyPayHereNotifyHash } from "../utils/payhere.js";
+
 
 
 export const createPayment = async (req, res) => {
@@ -177,4 +178,79 @@ export const getPaymentDetails = async (req, res) => {
         return res.status(500).json({ message: "Failed to fetch payment details" });
     }
 };
+
+export const handlePayHereNotify = async (req, res) => {
+    try {
+        const {
+            merchant_id,
+            order_id,
+            payment_id,
+            payhere_amount,
+            payhere_currency,
+            status_code,
+            md5sig,
+        } = req.body;
+
+        // 1. Verify PayHere notification MD5 signature
+        const isValidSignature = verifyPayHereNotifyHash(
+            merchant_id,
+            order_id,
+            payhere_amount,
+            payhere_currency,
+            status_code,
+            process.env.PAYHERE_MERCHANT_SECRET,
+            md5sig
+        );
+
+        if (!isValidSignature) {
+            console.error("PayHere notification signature mismatch");
+            return res.status(400).send("Invalid signature");
+        }
+
+        // 2. Find associated Order and Payment records
+        if (!order_id || !mongoose.Types.ObjectId.isValid(order_id)) {
+            return res.status(400).send("Invalid order ID format");
+        }
+
+        const order = await Order.findById(order_id);
+        if (!order) {
+            return res.status(404).send("Order not found");
+        }
+
+        const payment = await Payment.findOne({ Order: order._id });
+        if (!payment) {
+            return res.status(404).send("Payment not found");
+        }
+
+        // 3. Update status based on PayHere status_code (2 = Success, 0 = Pending, -1 = Canceled, -2 = Failed)
+        if (status_code === "2") {
+            payment.status = "Paid";
+            payment.paidAt = new Date();
+            if (payment_id) {
+                payment.transactionId = payment_id;
+            }
+            await payment.save();
+
+            order.paymentStatus = "Paid";
+            order.Orderstatus = "Confirmed";
+            order.statusHistory.push({
+                status: "Confirmed",
+                changedAt: new Date(),
+            });
+            await order.save();
+        } else if (status_code === "-1" || status_code === "-2" || status_code === "-3") {
+            payment.status = "Failed";
+            await payment.save();
+
+            order.paymentStatus = "Failed";
+            await order.save();
+        }
+
+        return res.status(200).send("OK");
+    } catch (error) {
+        console.error("PayHere notify error:", error);
+        return res.status(500).send("Internal server error");
+    }
+};
+
 
