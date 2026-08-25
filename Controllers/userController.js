@@ -376,7 +376,9 @@ export const deleteOwnAccount = async (req, res) => {
 //// Update user address
 export const updateAddress = async (req, res) => {
   try {
-    const { addressLine, city, district, postalCode } = req.body;
+    const addressData = req.body.address || req.body;
+    const { addressLine, city, district, postalCode } = addressData;
+
 
     // Find logged-in user
     const user = await User.findById(req.user.userId);

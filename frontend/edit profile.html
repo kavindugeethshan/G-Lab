@@ -356,7 +356,7 @@
                 const res = await fetch(`${API_URL}/users/address`, {
                     method: "PUT",
                     headers: getHeaders(),
-                    body: JSON.stringify({ address })
+                    body: JSON.stringify(address)
                 });
                 const data = await res.json();
                 if (!res.ok) throw new Error(data.message || "Address update failed");
