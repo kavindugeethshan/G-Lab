@@ -1,7 +1,8 @@
 import mongoose from "mongoose";
 import Order from "../models/Ordermodel.js";
-import Payment from "../models/PaymentModel.js";
+import Payment from "../models/Paymentmodel.js";
 import { generatePayHereHash } from "../utils/payhere.js";
+
 
 export const createPayment = async (req, res) => {
     try {
