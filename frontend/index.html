@@ -323,12 +323,13 @@
         <div id="message"></div>
     </div>
 
+    <script src="api-config.js"></script>
     <script>
-        const API_URL = window.location.hostname.includes("trycloudflare.com")
-            ? "https://hosted-protection-participant-wishing.trycloudflare.com"
-            : (window.location.protocol.startsWith("http"))
-                ? `${window.location.protocol}//${window.location.hostname}:3001`
-                : "http://192.168.1.43:3001";
+        const API_URL = window.API_URL || (
+            (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+                ? 'http://localhost:3001'
+                : window.location.origin
+        );
 
         let currentMode = "login"; // "login" | "register" | "forgot" | "reset"
 
