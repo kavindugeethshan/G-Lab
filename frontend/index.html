@@ -217,10 +217,13 @@
     </div>
 
     <script>
-        const BASE_URL = (window.location.protocol.startsWith('http')) 
-            ? `${window.location.protocol}//${window.location.hostname}:3001` 
-            : "http://localhost:3001";
+        const BASE_URL = (window.location.hostname.includes('trycloudflare.com'))
+            ? "https://hosted-protection-participant-wishing.trycloudflare.com"
+            : (window.location.protocol.startsWith('http')) 
+                ? `${window.location.protocol}//${window.location.hostname}:3001` 
+                : "http://localhost:3001";
         let currentMode = "login";
+
 
         function switchMode(mode) {
             currentMode = mode;
@@ -312,12 +315,12 @@
 
                 } catch (error) {
                     console.error("Login error:", error);
-                    showMessage("Cannot connect to the server (http://192.168.1.43:3001).", "error");
+                    showMessage(`Cannot connect to the server (${BASE_URL}).`, "error");
                 }
             } else {
                 // Register mode
-                const firstname = document.getElementById("firstname").value.trim();
-                const lastname = document.getElementById("lastname").value.trim();
+                const firstname = document.getElementById("firstname"].value.trim();
+                const lastname = document.getElementById("lastname"].value.trim();
 
                 showMessage("Creating account...", "info");
                 try {
@@ -341,7 +344,7 @@
 
                 } catch (error) {
                     console.error("Registration error:", error);
-                    showMessage("Cannot connect to the server (http://192.168.1.43:3001).", "error");
+                    showMessage(`Cannot connect to the server (${BASE_URL}).`, "error");
                 }
             }
         });
