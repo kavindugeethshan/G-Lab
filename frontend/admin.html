@@ -629,6 +629,81 @@
         .modal-close:hover {
             color: var(--text-main);
         }
+
+        /* RESPONSIVE BREAKPOINTS */
+        @media (max-width: 768px) {
+            header {
+                padding: 12px 16px;
+                flex-wrap: wrap;
+                gap: 12px;
+            }
+
+            .logo-text h1 {
+                font-size: 1.2rem;
+            }
+
+            .nav-actions {
+                width: 100%;
+                justify-content: space-between;
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+
+            .user-greeting {
+                display: none;
+            }
+
+            .btn {
+                padding: 8px 12px;
+                font-size: 0.82rem;
+            }
+
+            .container {
+                padding: 0 14px;
+                margin: 20px auto;
+            }
+
+            .section-card {
+                padding: 18px;
+            }
+
+            .admin-table th,
+            .admin-table td {
+                padding: 12px 10px;
+                font-size: 0.82rem;
+            }
+
+            .admin-tabs {
+                padding: 6px;
+                gap: 6px;
+            }
+
+            .admin-tabs button {
+                padding: 8px 14px;
+                font-size: 0.82rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            header {
+                padding: 10px 12px;
+            }
+
+            .logo-icon {
+                width: 36px;
+                height: 36px;
+                font-size: 1.1rem;
+            }
+
+            .modal-content {
+                padding: 18px;
+                width: 95%;
+            }
+
+            .table-responsive {
+                -webkit-overflow-scrolling: touch;
+            }
+        }
     </style>
 </head>
 
@@ -965,7 +1040,7 @@
         const token = localStorage.getItem("token");
 
         if (!token) {
-            window.location.href = "First login page.html";
+            window.location.href = "index.html";
         }
 
         let orderStatusChartInstance = null;
@@ -1632,7 +1707,7 @@
         function logout() {
             localStorage.removeItem("token");
             localStorage.removeItem("user");
-            window.location.href = "First login page.html";
+            window.location.href = "index.html";
         }
 
         window.addEventListener("DOMContentLoaded", function () {

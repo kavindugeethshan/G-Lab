@@ -440,6 +440,76 @@
             border-radius: 12px;
             margin-left: 4px;
         }
+
+        /* RESPONSIVE BREAKPOINTS */
+        @media (max-width: 768px) {
+            header {
+                padding: 12px 16px;
+                flex-wrap: wrap;
+                gap: 12px;
+            }
+
+            .logo-text h1 {
+                font-size: 1.25rem;
+            }
+
+            .nav-actions {
+                width: 100%;
+                justify-content: space-between;
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+
+            .user-greeting {
+                display: none;
+            }
+
+            .btn {
+                padding: 8px 14px;
+                font-size: 0.82rem;
+            }
+
+            .container {
+                padding: 0 14px;
+                margin: 20px auto;
+            }
+
+            .section-card {
+                padding: 18px;
+            }
+
+            .grid-inputs {
+                grid-template-columns: 1fr;
+            }
+
+            .product-grid {
+                grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+                gap: 16px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            header {
+                padding: 10px 12px;
+            }
+
+            .logo-icon {
+                width: 36px;
+                height: 36px;
+                font-size: 1.1rem;
+            }
+
+            .product-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .pagination-bar {
+                flex-direction: column;
+                justify-content: center;
+                gap: 12px;
+                text-align: center;
+            }
+        }
     </style>
 </head>
 
@@ -537,7 +607,7 @@
             : "http://localhost:3001";
 
         const token = localStorage.getItem("token");
-        if (!token) window.location.href = "First login page.html";
+        if (!token) window.location.href = "index.html";
 
         let currentPage = 1;
         let itemsPerPage = 10;
@@ -783,7 +853,7 @@
         function logout() {
             localStorage.removeItem("token");
             localStorage.removeItem("user");
-            window.location.href = "First login page.html";
+            window.location.href = "index.html";
         }
 
         window.addEventListener("DOMContentLoaded", function () {

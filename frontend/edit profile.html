@@ -171,6 +171,26 @@
         #message.error { display: block; background: rgba(239, 68, 68, 0.15); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.4); }
         #message.success { display: block; background: rgba(16, 185, 129, 0.15); color: #6ee7b7; border: 1px solid rgba(16, 185, 129, 0.4); }
         #message.loading { display: block; background: rgba(59, 130, 246, 0.15); color: #93c5fd; border: 1px solid rgba(59, 130, 246, 0.4); }
+
+        /* RESPONSIVE BREAKPOINTS */
+        @media (max-width: 576px) {
+            body {
+                padding: 16px 12px;
+            }
+
+            .edit-card {
+                padding: 24px 18px;
+                border-radius: 18px;
+            }
+
+            .section-box {
+                padding: 16px;
+            }
+
+            .section-box div[style*="grid-template-columns"] {
+                grid-template-columns: 1fr !important;
+            }
+        }
     </style>
 </head>
 
@@ -269,7 +289,7 @@
             : "http://localhost:3001";
 
         const token = localStorage.getItem("token");
-        if (!token) window.location.href = "First login page.html";
+        if (!token) window.location.href = "index.html";
 
         function getHeaders() {
             return {
@@ -417,7 +437,7 @@
                 alert("Your account has been deleted successfully.");
                 localStorage.removeItem("token");
                 localStorage.removeItem("user");
-                window.location.href = "First login page.html";
+                window.location.href = "index.html";
 
             } catch (err) {
                 console.error("deleteAccount error:", err);

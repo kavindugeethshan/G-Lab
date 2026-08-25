@@ -215,6 +215,45 @@
             margin-left: 6px;
             letter-spacing: 0.5px;
         }
+
+        .detail-value {
+            word-break: break-all;
+        }
+
+        /* RESPONSIVE BREAKPOINTS */
+        @media (max-width: 480px) {
+            body {
+                padding: 16px 12px;
+            }
+
+            .checkout-card {
+                padding: 24px 18px;
+                border-radius: 18px;
+            }
+
+            .brand-header h1 {
+                font-size: 1.45rem;
+            }
+
+            .detail-row {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 4px;
+            }
+
+            .total-amount-box {
+                padding: 12px 14px;
+            }
+
+            .total-value {
+                font-size: 1.35rem;
+            }
+
+            .btn-payhere {
+                padding: 14px;
+                font-size: 0.95rem;
+            }
+        }
     </style>
 </head>
 
@@ -273,7 +312,7 @@
         async function loadPaymentInfo() {
             if (!token) {
                 setMessage("Authentication required. Redirecting to login...", "error");
-                setTimeout(() => window.location.href = "First login page.html", 1500);
+                setTimeout(() => window.location.href = "index.html", 1500);
                 return;
             }
 
