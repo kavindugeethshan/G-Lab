@@ -15,7 +15,7 @@ import reviewRouter from "./routers/reviewRouter.js";
 import adminRouter from "./routers/adminRouter.js";
 import cartRouter from "./routers/CartRouters.js";
 import orderRouter from "./routers/orderRouter.js";
-
+import paymentRouter from "./routers/PaymentRouter.js";
 
 const app = express();
 // cors error handling 
@@ -55,6 +55,7 @@ app.use("/", reviewRouter);
 app.use("/admin", adminRouter);
 app.use("/cart", cartRouter);
 app.use("/order", orderRouter);
+app.use("/payments", paymentRouter);
 
 const PORT = process.env.PORT || 3001;
 server.listen(PORT, () => {

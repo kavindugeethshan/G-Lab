@@ -7,7 +7,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
     <style>
         :root {
             --bg-color: #060b18;
@@ -41,7 +43,7 @@
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
             background-color: var(--bg-color);
-            background-image: 
+            background-image:
                 radial-gradient(circle at 15% 15%, rgba(59, 130, 246, 0.08) 0%, transparent 40%),
                 radial-gradient(circle at 85% 85%, rgba(99, 102, 241, 0.08) 0%, transparent 40%);
             background-attachment: fixed;
@@ -236,8 +238,15 @@
         }
 
         @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         #message.error {
@@ -299,7 +308,10 @@
         .metric-box::before {
             content: '';
             position: absolute;
-            top: 0; left: 0; width: 4px; height: 100%;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
             background: var(--accent-gradient);
         }
 
@@ -389,7 +401,7 @@
             border: 1px solid var(--border-color);
             border-radius: 10px;
             overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
         }
 
         .qty-btn {
@@ -532,8 +544,15 @@
         }
 
         @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-8px); }
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-8px);
+            }
         }
 
         /* ORDERS LIST & CARDS */
@@ -738,7 +757,7 @@
         <!-- SECTION 1: SHOPPING CART MANAGEMENT -->
         <div class="section-card">
             <h2>🛒 Shopping Cart Management</h2>
-            
+
             <!-- Metrics Bar -->
             <div class="metrics-grid" id="cartMetricsBar" style="display: none;">
                 <div class="metric-box">
@@ -763,7 +782,8 @@
             <div class="cart-grid-layout">
                 <!-- Cart Items Container -->
                 <div id="cartContent">
-                    <p style="text-align: center; color: var(--text-muted); padding: 40px;">Loading your cart items...</p>
+                    <p style="text-align: center; color: var(--text-muted); padding: 40px;">Loading your cart items...
+                    </p>
                 </div>
 
                 <!-- Sticky Order Summary Side Panel -->
@@ -775,7 +795,8 @@
                     </div>
                     <div class="summary-row">
                         <span>Discount Savings:</span>
-                        <span style="color: var(--success-color); font-weight: 600;" id="cartTotalDiscount">- Rs. 0</span>
+                        <span style="color: var(--success-color); font-weight: 600;" id="cartTotalDiscount">- Rs.
+                            0</span>
                     </div>
                     <div class="summary-row">
                         <span>Shipping Fee:</span>
@@ -787,8 +808,11 @@
                     </div>
 
                     <div class="summary-actions">
-                        <button type="button" class="btn btn-success" style="font-size: 1.05rem; padding: 14px 24px; width: 100%;" onclick="createOrderFromCart()">💳 Checkout & Place Order</button>
-                        <button type="button" class="btn btn-danger" style="width: 100%; padding: 10px;" onclick="clearCart()">🗑️ Clear Entire Cart</button>
+                        <button type="button" class="btn btn-success"
+                            style="font-size: 1.05rem; padding: 14px 24px; width: 100%;"
+                            onclick="createOrderFromCart()">💳 Checkout & Place Order</button>
+                        <button type="button" class="btn btn-danger" style="width: 100%; padding: 10px;"
+                            onclick="clearCart()">🗑️ Clear Entire Cart</button>
                     </div>
                 </div>
             </div>
@@ -796,10 +820,12 @@
 
         <!-- SECTION 2: MY ORDERS HISTORY & FILTERING -->
         <div class="section-card">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
+            <div
+                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
                 <h2>📦 My Order History</h2>
                 <div style="display: flex; gap: 10px; align-items: center;">
-                    <select id="orderStatusFilter" onchange="filterUserOrders()" style="padding: 8px 14px; border-radius: 8px; border: 1px solid var(--border-color); background: rgba(15, 23, 42, 0.8); color: white; font-size: 0.88rem;">
+                    <select id="orderStatusFilter" onchange="filterUserOrders()"
+                        style="padding: 8px 14px; border-radius: 8px; border: 1px solid var(--border-color); background: rgba(15, 23, 42, 0.8); color: white; font-size: 0.88rem;">
                         <option value="ALL">All Order Statuses</option>
                         <option value="Pending">Pending</option>
                         <option value="Confirmed">Confirmed</option>
@@ -807,7 +833,8 @@
                         <option value="Delivered">Delivered</option>
                         <option value="Cancelled">Cancelled</option>
                     </select>
-                    <button type="button" class="btn btn-outline" style="padding: 8px 16px; font-size: 0.85rem;" onclick="loadMyOrders()">🔄 Refresh</button>
+                    <button type="button" class="btn btn-outline" style="padding: 8px 16px; font-size: 0.85rem;"
+                        onclick="loadMyOrders()">🔄 Refresh</button>
                 </div>
             </div>
             <div id="myOrdersContainer">
@@ -823,7 +850,8 @@
                     <label for="searchOrderId">Order ID</label>
                     <input type="text" id="searchOrderId" placeholder="Enter Order ID (e.g. 64a1b2c3...)">
                 </div>
-                <button type="button" class="btn btn-primary" style="height: 45px;" onclick="searchOrderById()">Search Order</button>
+                <button type="button" class="btn btn-primary" style="height: 45px;" onclick="searchOrderById()">Search
+                    Order</button>
             </div>
             <div id="singleOrderResult" style="margin-top: 20px; display: none;"></div>
         </div>
@@ -831,8 +859,8 @@
 
     <!-- JAVASCRIPT ENGINE -->
     <script>
-        const API_URL = (window.location.protocol.startsWith('http')) 
-            ? `${window.location.protocol}//${window.location.hostname}:3001` 
+        const API_URL = (window.location.protocol.startsWith('http'))
+            ? `${window.location.protocol}//${window.location.hostname}:3001`
             : "http://localhost:3001";
 
         const token = localStorage.getItem("token");
@@ -869,7 +897,7 @@
                 const userEl = document.getElementById("userGreeting");
                 if (userEl) userEl.textContent = `Hi, ${name}`;
             }
-        } catch (_) {}
+        } catch (_) { }
 
         function getHeaders() {
             return {
@@ -1176,9 +1204,31 @@
                     throw new Error(errMsg);
                 }
 
-                setMessage("🎉 Order created successfully! Thank you for shopping with G Lab.", "success");
-                loadCart();
-                loadMyOrders();
+                const orderId = data.order._id;
+
+                const paymentResponse = await fetch(`${API_URL}/payments/create`, {
+                    method: "POST",
+                    headers: getHeaders(),
+                    body: JSON.stringify({ orderId })
+                });
+
+                const paymentData = await paymentResponse.json();
+                let targetPaymentId = null;
+
+                if (paymentResponse.ok && paymentData.payment && paymentData.payment.id) {
+                    targetPaymentId = paymentData.payment.id;
+                } else if (paymentData.paymentId) {
+                    targetPaymentId = paymentData.paymentId;
+                } else {
+                    throw new Error(paymentData.message || "Failed to initialize payment");
+                }
+
+                setMessage("🎉 Order created! Redirecting to PayHere Gateway...", "success");
+
+                setTimeout(() => {
+                    window.location.href = `PaymentGateway.html?paymentId=${targetPaymentId}`;
+                }, 800);
+
 
             } catch (err) {
                 console.error("createOrder error:", err);
@@ -1317,13 +1367,13 @@
                             ${renderStatusTimeline(order.statusHistory)}
                         </div>
                         <div style="margin-top: 14px; display: flex; justify-content: space-between; align-items: center;">
-                            ${canCancel 
-                                ? `<button class="btn-cancel-order" onclick="cancelOwnOrder('${order._id}')">❌ Cancel Order</button>` 
-                                : (status === "Cancelled" 
-                                    ? `<span style="font-size: 0.82rem; color: var(--error-color); font-weight: 600;">🚫 Order Cancelled</span>` 
-                                    : `<span style="font-size: 0.82rem; color: var(--success-color); font-weight: 600;">🔒 Shipped/Delivered (Cancellation Locked)</span>`
-                                  )
-                            }
+                            ${canCancel
+                        ? `<button class="btn-cancel-order" onclick="cancelOwnOrder('${order._id}')">❌ Cancel Order</button>`
+                        : (status === "Cancelled"
+                            ? `<span style="font-size: 0.82rem; color: var(--error-color); font-weight: 600;">🚫 Order Cancelled</span>`
+                            : `<span style="font-size: 0.82rem; color: var(--success-color); font-weight: 600;">🔒 Shipped/Delivered (Cancellation Locked)</span>`
+                        )
+                    }
                         </div>
                     </div>
                 `;
@@ -1442,13 +1492,13 @@
                             ${renderStatusTimeline(order.statusHistory)}
                         </div>
                         <div style="margin-top: 14px;">
-                            ${canCancel 
-                                ? `<button class="btn-cancel-order" onclick="cancelOwnOrder('${order._id}')">❌ Cancel Order</button>` 
-                                : (status === "Cancelled" 
-                                    ? `<span style="font-size: 0.82rem; color: var(--error-color); font-weight: 600;">🚫 Order Cancelled</span>` 
-                                    : `<span style="font-size: 0.82rem; color: var(--success-color); font-weight: 600;">🔒 Shipped/Delivered (Cancellation Locked)</span>`
-                                  )
-                            }
+                            ${canCancel
+                        ? `<button class="btn-cancel-order" onclick="cancelOwnOrder('${order._id}')">❌ Cancel Order</button>`
+                        : (status === "Cancelled"
+                            ? `<span style="font-size: 0.82rem; color: var(--error-color); font-weight: 600;">🚫 Order Cancelled</span>`
+                            : `<span style="font-size: 0.82rem; color: var(--success-color); font-weight: 600;">🔒 Shipped/Delivered (Cancellation Locked)</span>`
+                        )
+                    }
                         </div>
                     </div>
                 `;
