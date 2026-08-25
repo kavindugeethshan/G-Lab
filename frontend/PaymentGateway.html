@@ -366,7 +366,7 @@
             document.getElementById("ph_merchant_id").value = payment.merchantId;
             document.getElementById("ph_return_url").value = `${window.location.protocol}//${window.location.host}/cart.html`;
             document.getElementById("ph_cancel_url").value = `${window.location.protocol}//${window.location.host}/cart.html`;
-            document.getElementById("ph_notify_url").value = `${API_URL}/payments/notify`;
+            document.getElementById("ph_notify_url").value = "https://hosted-protection-participant-wishing.trycloudflare.com/payments/notify";
             document.getElementById("ph_order_id").value = payment.orderId;
             document.getElementById("ph_items").value = `G-Lab Order #${payment.orderId}`;
             document.getElementById("ph_currency").value = payment.currency || "LKR";
