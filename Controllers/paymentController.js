@@ -98,6 +98,7 @@ export const createPayment = async (req, res) => {
                 status: payment.status,
                 merchantId: process.env.PAYHERE_MERCHANT_ID,
                 hash: hash,
+                notifyUrl: process.env.PAYHERE_NOTIFY_URL || `${req.protocol}://${req.get("host")}/payments/notify`,
             },
         });
 
@@ -162,6 +163,7 @@ export const getPaymentDetails = async (req, res) => {
                 status: payment.status,
                 merchantId: process.env.PAYHERE_MERCHANT_ID,
                 hash: hash,
+                notifyUrl: process.env.PAYHERE_NOTIFY_URL || `${req.protocol}://${req.get("host")}/payments/notify`,
                 customer: {
                     first_name: payment.User.firstname || "Customer",
                     last_name: payment.User.lastname || "User",
