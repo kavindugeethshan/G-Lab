@@ -7,7 +7,9 @@
     <title>G Lab — Secure PayHere Checkout</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
     <style>
         :root {
             --bg-color: #060b18;
@@ -34,7 +36,7 @@
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
             background-color: var(--bg-color);
-            background-image: 
+            background-image:
                 radial-gradient(circle at 20% 20%, rgba(59, 130, 246, 0.12) 0%, transparent 50%),
                 radial-gradient(circle at 80% 80%, rgba(99, 102, 241, 0.12) 0%, transparent 50%);
             background-attachment: fixed;
@@ -201,8 +203,19 @@
             display: none;
         }
 
-        #message.error { display: block; background: rgba(239, 68, 68, 0.15); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.4); }
-        #message.loading { display: block; background: rgba(59, 130, 246, 0.15); color: #93c5fd; border: 1px solid rgba(59, 130, 246, 0.4); }
+        #message.error {
+            display: block;
+            background: rgba(239, 68, 68, 0.15);
+            color: #fca5a5;
+            border: 1px solid rgba(239, 68, 68, 0.4);
+        }
+
+        #message.loading {
+            display: block;
+            background: rgba(59, 130, 246, 0.15);
+            color: #93c5fd;
+            border: 1px solid rgba(59, 130, 246, 0.4);
+        }
 
         .sandbox-badge {
             background: rgba(245, 158, 11, 0.2);
@@ -427,6 +440,16 @@
         function submitToPayHere() {
             setMessage("Redirecting to PayHere Sandbox gateway...", "loading");
             document.getElementById("payHereForm").submit();
+            function submitToPayHere() {
+                console.log("merchant_id:", document.getElementById("ph_merchant_id").value);
+                console.log("order_id:", document.getElementById("ph_order_id").value);
+                console.log("amount:", document.getElementById("ph_amount").value);
+                console.log("currency:", document.getElementById("ph_currency").value);
+                console.log("hash:", document.getElementById("ph_hash").value);
+                console.log("notify_url:", document.getElementById("ph_notify_url").value);
+
+                document.getElementById("payHereForm").submit();
+            }
         }
 
         window.addEventListener("DOMContentLoaded", loadPaymentInfo);
