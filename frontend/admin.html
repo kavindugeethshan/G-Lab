@@ -9,28 +9,31 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="preloader.js"></script>
     <style>
         :root {
-            --bg-color: #060b18;
-            --card-bg: rgba(15, 23, 42, 0.75);
-            --card-border: rgba(139, 92, 246, 0.25);
-            --card-hover-border: rgba(139, 92, 246, 0.5);
-            --accent-gradient: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
-            --admin-color: #8b5cf6;
-            --admin-glow: rgba(139, 92, 246, 0.35);
-            --blue-color: #3b82f6;
+            /* PREMIUM WHITE & LIGHT THEME PALETTE */
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --card-hover-bg: #ffffff;
+            --card-border: #e2e8f0;
+            --card-hover-border: #cbd5e1;
+            --accent-gradient: linear-gradient(135deg, #0284c7 0%, #2563eb 100%);
+            --admin-color: #0284c7;
+            --admin-glow: rgba(2, 132, 199, 0.18);
+            --blue-color: #0284c7;
             --success-color: #10b981;
             --warning-color: #f59e0b;
             --error-color: #ef4444;
-            --purple-color: #a855f7;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
+            --purple-color: #7c3aed;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
             --text-dark: #64748b;
-            --border-color: rgba(51, 65, 85, 0.7);
+            --border-color: #e2e8f0;
+            --input-bg: #ffffff;
         }
 
         html {
-            overflow-y: scroll;
             scroll-behavior: smooth;
         }
 
@@ -43,26 +46,26 @@
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
             background-color: var(--bg-color);
-            background-image: 
-                radial-gradient(circle at 10% 10%, rgba(139, 92, 246, 0.08) 0%, transparent 40%),
-                radial-gradient(circle at 90% 90%, rgba(59, 130, 246, 0.08) 0%, transparent 40%);
-            background-attachment: fixed;
             color: var(--text-main);
             min-height: 100vh;
-            padding-bottom: 70px;
+            display: flex;
+            flex-direction: column;
             overflow-x: hidden;
         }
 
         /* HEADER & NAVIGATION */
         header {
-            background-color: rgba(10, 17, 32, 0.85);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border-bottom: 1px solid var(--card-border);
-            padding: 14px 40px;
+            background-color: #ffffff;
+            border-bottom: 1px solid var(--border-color);
+            padding: 16px 40px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+        }
             position: sticky;
             top: 0;
             z-index: 1000;
@@ -128,11 +131,11 @@
         .user-greeting {
             font-size: 0.88rem;
             color: var(--text-muted);
-            background: rgba(30, 41, 59, 0.6);
+            background: #f1f5f9;
             padding: 6px 14px;
             border-radius: 20px;
             border: 1px solid var(--border-color);
-            font-weight: 500;
+            font-weight: 600;
         }
 
         /* BUTTONS */
@@ -160,53 +163,53 @@
         .btn-primary:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 25px var(--admin-glow);
-            filter: brightness(1.1);
+            filter: brightness(1.05);
         }
 
         .btn-outline {
-            background: rgba(30, 41, 59, 0.5);
+            background: #ffffff;
             border-color: var(--border-color);
             color: var(--text-main);
         }
 
         .btn-outline:hover {
-            background: rgba(51, 65, 85, 0.8);
-            border-color: rgba(148, 163, 184, 0.4);
+            background: #f1f5f9;
+            border-color: #cbd5e1;
             transform: translateY(-1px);
         }
 
         .btn-danger {
-            background: rgba(239, 68, 68, 0.12);
-            color: #fca5a5;
-            border: 1px solid rgba(239, 68, 68, 0.3);
+            background: #fee2e2;
+            color: #dc2626;
+            border: 1px solid #fca5a5;
         }
 
         .btn-danger:hover {
-            background: var(--error-color);
+            background: #ef4444;
             color: white;
-            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.2);
         }
 
         .btn-warning {
-            background: rgba(245, 158, 11, 0.15);
-            color: #fcd34d;
-            border: 1px solid rgba(245, 158, 11, 0.35);
+            background: #fef3c7;
+            color: #b45309;
+            border: 1px solid #fde68a;
         }
 
         .btn-warning:hover {
-            background: var(--warning-color);
-            color: black;
+            background: #f59e0b;
+            color: white;
         }
 
         .btn-success {
             background: linear-gradient(135deg, #10b981 0%, #059669 100%);
             color: white;
-            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.25);
         }
 
         .btn-success:hover {
             transform: translateY(-1px);
-            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.35);
         }
 
         /* CONTAINER & TAB NAVIGATION */
@@ -221,11 +224,11 @@
             flex-wrap: wrap;
             gap: 10px;
             margin-bottom: 28px;
-            background: rgba(15, 23, 42, 0.8);
-            backdrop-filter: blur(12px);
-            border: 1px solid var(--card-border);
+            background: #ffffff;
+            border: 1px solid var(--border-color);
             border-radius: 16px;
             padding: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
         }
 
         .admin-tabs button {
@@ -245,7 +248,7 @@
         }
 
         .admin-tabs button:hover {
-            background: rgba(51, 65, 85, 0.4);
+            background: #f1f5f9;
             color: var(--text-main);
         }
 
@@ -262,8 +265,8 @@
             margin-bottom: 24px;
             display: none;
             font-size: 0.92rem;
-            font-weight: 500;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
             animation: slideDown 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
@@ -274,23 +277,23 @@
 
         #message.error {
             display: block;
-            background: rgba(239, 68, 68, 0.15);
-            color: #fca5a5;
-            border: 1px solid rgba(239, 68, 68, 0.4);
+            background: #fee2e2;
+            color: #dc2626;
+            border: 1px solid #fca5a5;
         }
 
         #message.success {
             display: block;
-            background: rgba(16, 185, 129, 0.15);
-            color: #6ee7b7;
-            border: 1px solid rgba(16, 185, 129, 0.4);
+            background: #dcfce7;
+            color: #15803d;
+            border: 1px solid #bbf7d0;
         }
 
         #message.loading {
             display: block;
-            background: rgba(139, 92, 246, 0.15);
-            color: #c084fc;
-            border: 1px solid rgba(139, 92, 246, 0.4);
+            background: #e0f2fe;
+            color: #0369a1;
+            border: 1px solid #bae6fd;
         }
 
         /* STATS KPI GRID */
@@ -302,7 +305,7 @@
         }
 
         .stat-card {
-            background: rgba(15, 23, 42, 0.8);
+            background: #ffffff;
             border: 1px solid var(--border-color);
             border-radius: 16px;
             padding: 20px;
@@ -312,12 +315,13 @@
             transition: all 0.25s ease;
             position: relative;
             overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
         }
 
         .stat-card:hover {
-            border-color: rgba(139, 92, 246, 0.4);
+            border-color: #cbd5e1;
             transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
         }
 
         .stat-card::before {
@@ -328,8 +332,8 @@
         }
 
         .stat-card.revenue::before { background: linear-gradient(135deg, #10b981, #059669); }
-        .stat-card.users::before { background: linear-gradient(135deg, #3b82f6, #2563eb); }
-        .stat-card.products::before { background: linear-gradient(135deg, #a855f7, #7c3aed); }
+        .stat-card.users::before { background: linear-gradient(135deg, #0284c7, #2563eb); }
+        .stat-card.products::before { background: linear-gradient(135deg, #7c3aed, #6d28d9); }
         .stat-card.orders::before { background: linear-gradient(135deg, #f59e0b, #d97706); }
         .stat-card.pending::before { background: linear-gradient(135deg, #ef4444, #dc2626); }
 
@@ -349,7 +353,7 @@
             color: var(--text-muted);
             text-transform: uppercase;
             letter-spacing: 0.8px;
-            font-weight: 600;
+            font-weight: 700;
             margin-bottom: 4px;
         }
 
@@ -375,11 +379,11 @@
         }
 
         .chart-box {
-            background: rgba(15, 23, 42, 0.75);
+            background: #ffffff;
             border: 1px solid var(--border-color);
             border-radius: 16px;
             padding: 24px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
         }
 
         .chart-title {
@@ -401,11 +405,12 @@
 
         /* PROGRESS BARS CARD */
         .progress-card {
-            background: rgba(15, 23, 42, 0.75);
+            background: #ffffff;
             border: 1px solid var(--border-color);
             border-radius: 16px;
             padding: 24px;
             margin-bottom: 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
         }
 
         .progress-group {
@@ -427,7 +432,7 @@
 
         .progress-track {
             height: 10px;
-            background: rgba(30, 41, 59, 0.8);
+            background: #f1f5f9;
             border-radius: 10px;
             overflow: hidden;
             border: 1px solid var(--border-color);
@@ -441,13 +446,12 @@
 
         /* SECTION CARDS & TABLES */
         .section-card {
-            background: var(--card-bg);
-            backdrop-filter: blur(16px);
-            border: 1px solid var(--card-border);
-            border-radius: 18px;
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
             padding: 28px;
             margin-bottom: 30px;
-            box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 4px 25px rgba(0, 0, 0, 0.025);
             display: none;
         }
 
@@ -477,7 +481,7 @@
             overflow-x: auto;
             border: 1px solid var(--border-color);
             border-radius: 14px;
-            background: rgba(15, 23, 42, 0.6);
+            background: #ffffff;
         }
 
         .admin-table {
@@ -494,7 +498,7 @@
         }
 
         .admin-table th {
-            background: rgba(11, 19, 41, 0.85);
+            background: #f8fafc;
             color: var(--text-muted);
             font-size: 0.78rem;
             text-transform: uppercase;
@@ -507,7 +511,7 @@
         }
 
         .admin-table tbody tr:hover {
-            background-color: rgba(30, 41, 59, 0.4);
+            background-color: #f8fafc;
         }
 
         /* BADGES */
@@ -526,9 +530,9 @@
             font-weight: 700;
         }
 
-        .badge-admin { background: rgba(139, 92, 246, 0.2); color: #c084fc; border: 1px solid rgba(139, 92, 246, 0.4); }
-        .badge-blocked { background: rgba(239, 68, 68, 0.2); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.4); }
-        .badge-active { background: rgba(16, 185, 129, 0.2); color: #6ee7b7; border: 1px solid rgba(16, 185, 129, 0.4); }
+        .badge-admin { background: #f3e8ff; color: #7c3aed; border: 1px solid #e9d5ff; }
+        .badge-blocked { background: #fee2e2; color: #dc2626; border: 1px solid #fca5a5; }
+        .badge-active { background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
 
         /* FORM CONTROLS */
         .grid-inputs {
@@ -544,9 +548,9 @@
         .form-group label {
             display: block;
             font-size: 0.85rem;
-            color: var(--text-muted);
+            color: var(--text-main);
             margin-bottom: 8px;
-            font-weight: 600;
+            font-weight: 700;
         }
 
         .form-group input,
@@ -555,8 +559,8 @@
             width: 100%;
             padding: 12px 16px;
             border-radius: 10px;
-            border: 1px solid var(--border-color);
-            background: rgba(15, 23, 42, 0.8);
+            border: 1.5px solid var(--border-color);
+            background: #ffffff;
             color: var(--text-main);
             font-size: 0.92rem;
             font-family: inherit;
@@ -575,8 +579,8 @@
         .modal {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.75);
-            backdrop-filter: blur(8px);
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(6px);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -592,13 +596,18 @@
         }
 
         .modal-content {
-            background: rgba(15, 23, 42, 0.95);
-            border: 1px solid var(--card-border);
-            border-radius: 18px;
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
             width: 90%;
             max-width: 650px;
             padding: 28px;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+            transform: scale(0.95);
+            transition: transform 0.3s ease;
+            max-height: 85vh;
+            overflow-y: auto;
+        }
             transform: scale(0.95);
             transition: transform 0.3s ease;
             max-height: 85vh;
@@ -935,8 +944,8 @@
                         <textarea id="newDescription" rows="2" required placeholder="Product specifications and features..."></textarea>
                     </div>
                     <div class="form-group">
-                        <label>Image URL</label>
-                        <input type="text" id="newImage" placeholder="https://example.com/image.jpg">
+                        <label>Product Image *</label>
+                        <input type="file" id="newImage" accept="image/*" required>
                     </div>
                     <button type="submit" class="btn btn-primary">Save Product</button>
                 </form>
@@ -1033,7 +1042,17 @@
 
     <!-- JAVASCRIPT ENGINE & CHARTS -->
     <script src="api-config.js"></script>
-    <script>
+    <script type="importmap">
+    {
+      "imports": {
+        "firebase/app": "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js",
+        "firebase/storage": "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js"
+      }
+    }
+    </script>
+    <script type="module">
+        import { storage } from "./firebase.js";
+        import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
         const API_URL = window.API_URL || (
             (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
                 ? 'http://localhost:3001'
@@ -1041,9 +1060,19 @@
         );
 
         const token = localStorage.getItem("token");
+        let currentUser = null;
+        try {
+            const rawUser = localStorage.getItem("user");
+            if (rawUser) currentUser = JSON.parse(rawUser);
+        } catch (_) {}
 
         if (!token) {
-            window.location.href = "index.html";
+            window.location.href = "login.html";
+        } else if (currentUser) {
+            const isAdmin = (currentUser.isadmin === true || currentUser.isadmin === "true" || currentUser.isAdmin === true || currentUser.role === "admin");
+            if (!isAdmin) {
+                window.location.href = "home.html";
+            }
         }
 
         let orderStatusChartInstance = null;
@@ -1419,19 +1448,40 @@
 
         document.getElementById("createProductForm").addEventListener("submit", async function (e) {
             e.preventDefault();
-            const body = {
-                name: document.getElementById("newName").value.trim(),
-                description: document.getElementById("newDescription").value.trim(),
-                category: document.getElementById("newCategory").value.trim(),
-                brand: document.getElementById("newBrand").value.trim(),
-                price: Number(document.getElementById("newPrice").value),
-                stock: Number(document.getElementById("newStock").value),
-                discount: Number(document.getElementById("newDiscount").value) || 0,
-                Image: document.getElementById("newImage").value.trim()
-            };
 
-            setMessage("Creating product...", "loading");
+            const fileInput = document.getElementById("newImage");
+            const file = fileInput.files ? fileInput.files[0] : null;
+
+            if (!file) {
+                setMessage("Please select a product image file.", "error");
+                return;
+            }
+
             try {
+                // Upload to Firebase Storage in products/ folder with a unique filename
+                setMessage("Uploading image to Firebase Storage...", "loading");
+
+                const timestamp = Date.now();
+                const randomStr = Math.random().toString(36).substring(2, 9);
+                const extension = file.name.split('.').pop() || 'jpg';
+                const uniqueFileName = `${timestamp}_${randomStr}.${extension}`;
+                const storageRef = ref(storage, `products/${uniqueFileName}`);
+
+                const snapshot = await uploadBytes(storageRef, file);
+                const imageUrl = await getDownloadURL(snapshot.ref);
+
+                const body = {
+                    name: document.getElementById("newName").value.trim(),
+                    description: document.getElementById("newDescription").value.trim(),
+                    category: document.getElementById("newCategory").value.trim(),
+                    brand: document.getElementById("newBrand").value.trim(),
+                    price: Number(document.getElementById("newPrice").value),
+                    stock: Number(document.getElementById("newStock").value),
+                    discount: Number(document.getElementById("newDiscount").value) || 0,
+                    image: imageUrl
+                };
+
+                setMessage("Creating product in database...", "loading");
                 const res = await fetch(`${API_URL}/admin/products/create`, {
                     method: "POST",
                     headers: getHeaders(),
@@ -1440,13 +1490,13 @@
                 const data = await res.json();
                 if (!res.ok) throw new Error(data.message || "Failed to create product");
 
-                setMessage("Product created successfully!", "success");
+                setMessage("Product created successfully with Firebase image!", "success");
                 document.getElementById("createProductForm").reset();
                 loadProducts();
                 loadDashboardStatistics();
             } catch (err) {
                 console.error("createProduct error:", err);
-                setMessage(`Create failed: ${err.message}`, "error");
+                setMessage(`Product creation failed: ${err.message}`, "error");
             }
         });
 
@@ -1710,8 +1760,30 @@
         function logout() {
             localStorage.removeItem("token");
             localStorage.removeItem("user");
-            window.location.href = "index.html";
+            window.location.href = "login.html";
         }
+
+        // Expose functions to window for inline HTML onclick handlers
+        window.switchTab = switchTab;
+        window.loadDashboardStatistics = loadDashboardStatistics;
+        window.loadAllOrders = loadAllOrders;
+        window.searchOrders = searchOrders;
+        window.filterOrdersByStatus = filterOrdersByStatus;
+        window.viewOrderDetails = viewOrderDetails;
+        window.closeOrderModal = closeOrderModal;
+        window.adminUpdateOrderStatus = adminUpdateOrderStatus;
+        window.loadProducts = loadProducts;
+        window.adminUpdateProduct = adminUpdateProduct;
+        window.adminDeleteProduct = adminDeleteProduct;
+        window.loadAllUsers = loadAllUsers;
+        window.viewUserDetails = viewUserDetails;
+        window.closeUserModal = closeUserModal;
+        window.blockUser = blockUser;
+        window.unblockUser = unblockUser;
+        window.deleteUser = deleteUser;
+        window.loadAllReviews = loadAllReviews;
+        window.adminDeleteReview = adminDeleteReview;
+        window.logout = logout;
 
         window.addEventListener("DOMContentLoaded", function () {
             loadDashboardStatistics();

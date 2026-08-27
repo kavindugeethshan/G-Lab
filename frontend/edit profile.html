@@ -8,20 +8,26 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="preloader.js"></script>
     <style>
         :root {
-            --bg-color: #060b18;
-            --card-bg: rgba(15, 23, 42, 0.85);
-            --card-border: rgba(59, 130, 246, 0.25);
-            --accent-gradient: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
-            --accent-color: #3b82f6;
-            --accent-glow: rgba(59, 130, 246, 0.35);
+            /* PREMIUM WHITE & LIGHT THEME PALETTE */
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --card-hover-bg: #ffffff;
+            --card-border: #e2e8f0;
+            --card-hover-border: #cbd5e1;
+            --accent-gradient: linear-gradient(135deg, #0284c7 0%, #2563eb 100%);
+            --accent-color: #0284c7;
+            --accent-glow: rgba(2, 132, 199, 0.18);
             --success-color: #10b981;
             --warning-color: #f59e0b;
             --error-color: #ef4444;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --border-color: rgba(51, 65, 85, 0.7);
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --input-bg: #ffffff;
         }
 
         * {
@@ -33,27 +39,134 @@
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
             background-color: var(--bg-color);
-            background-image: 
-                radial-gradient(circle at 20% 20%, rgba(59, 130, 246, 0.12) 0%, transparent 50%),
-                radial-gradient(circle at 80% 80%, rgba(99, 102, 241, 0.12) 0%, transparent 50%);
-            background-attachment: fixed;
             color: var(--text-main);
             min-height: 100vh;
             display: flex;
+            flex-direction: column;
+        }
+
+        /* HEADER NAVIGATION */
+        header {
+            background-color: #ffffff;
+            border-bottom: 1px solid var(--border-color);
+            padding: 16px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+        }
+
+        .logo-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 42px;
+            height: 42px;
+            background: var(--accent-gradient);
+            border-radius: 12px;
+            display: flex;
             align-items: center;
             justify-content: center;
-            padding: 30px 20px;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 800;
+            font-size: 1.3rem;
+            color: white;
+            box-shadow: 0 4px 15px var(--accent-glow);
+        }
+
+        .logo-text h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--text-main);
+            letter-spacing: -0.5px;
+            line-height: 1.1;
+        }
+
+        .logo-text span {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-family: inherit;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: var(--accent-gradient);
+            color: white;
+            box-shadow: 0 4px 14px var(--accent-glow);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px var(--accent-glow);
+            filter: brightness(1.05);
+        }
+
+        .btn-outline {
+            background: #ffffff;
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-outline:hover {
+            background: #f1f5f9;
+            border-color: #cbd5e1;
+        }
+
+        .btn-danger {
+            background: #fee2e2;
+            color: #dc2626;
+            border: 1px solid #fca5a5;
+        }
+
+        .btn-danger:hover {
+            background: #fecaca;
+        }
+
+        /* MAIN WRAPPER */
+        .page-container {
+            max-width: 680px;
+            margin: 40px auto;
+            padding: 0 20px;
+            flex: 1;
+            width: 100%;
         }
 
         .edit-card {
-            background: var(--card-bg);
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--card-border);
+            background: #ffffff;
+            border: 1px solid var(--border-color);
             border-radius: 24px;
             padding: 38px;
-            width: 100%;
-            max-width: 580px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+            box-shadow: 0 4px 25px rgba(0, 0, 0, 0.025);
         }
 
         .edit-card h2 {
@@ -66,7 +179,7 @@
         }
 
         .section-box {
-            background: rgba(15, 23, 42, 0.6);
+            background: #f8fafc;
             border: 1px solid var(--border-color);
             border-radius: 16px;
             padding: 22px;
@@ -77,8 +190,11 @@
             font-family: 'Outfit', sans-serif;
             font-size: 1.15rem;
             font-weight: 700;
-            color: var(--accent-color);
+            color: var(--text-main);
             margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .form-group {
@@ -87,17 +203,17 @@
 
         label {
             display: block;
-            font-size: 0.82rem;
-            font-weight: 600;
-            color: var(--text-muted);
+            font-size: 0.84rem;
+            font-weight: 700;
+            color: var(--text-main);
             margin-bottom: 6px;
         }
 
         input, textarea {
             width: 100%;
             padding: 12px 14px;
-            background: rgba(15, 23, 42, 0.8);
-            border: 1px solid var(--border-color);
+            background: #ffffff;
+            border: 1.5px solid var(--border-color);
             border-radius: 10px;
             color: var(--text-main);
             font-size: 0.92rem;
@@ -111,84 +227,143 @@
             box-shadow: 0 0 0 3px var(--accent-glow);
         }
 
-        .btn {
-            padding: 12px 18px;
-            border-radius: 10px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            cursor: pointer;
-            border: 1px solid transparent;
-            text-align: center;
-            transition: all 0.25s ease;
-            font-family: inherit;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        .btn-primary {
-            background: var(--accent-gradient);
-            color: white;
-            box-shadow: 0 4px 18px var(--accent-glow);
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px var(--accent-glow);
-            filter: brightness(1.1);
-        }
-
-        .btn-outline {
-            background: rgba(30, 41, 59, 0.6);
-            border-color: var(--border-color);
-            color: var(--text-main);
-        }
-
-        .btn-outline:hover {
-            background: rgba(51, 65, 85, 0.8);
-        }
-
-        .btn-danger {
-            background: rgba(239, 68, 68, 0.12);
-            color: #fca5a5;
-            border: 1px solid rgba(239, 68, 68, 0.35);
-        }
-
-        .btn-danger:hover {
-            background: var(--error-color);
-            color: white;
-        }
-
         #message {
-            margin-top: 16px;
-            padding: 14px;
+            margin-bottom: 20px;
+            padding: 14px 18px;
             border-radius: 12px;
             font-size: 0.9rem;
+            font-weight: 600;
             display: none;
         }
 
-        #message.error { display: block; background: rgba(239, 68, 68, 0.15); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.4); }
-        #message.success { display: block; background: rgba(16, 185, 129, 0.15); color: #6ee7b7; border: 1px solid rgba(16, 185, 129, 0.4); }
-        #message.loading { display: block; background: rgba(59, 130, 246, 0.15); color: #93c5fd; border: 1px solid rgba(59, 130, 246, 0.4); }
+        #message.error { display: block; background: #fee2e2; color: #dc2626; border: 1px solid #fca5a5; }
+        #message.success { display: block; background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
+        #message.loading { display: block; background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; }
 
-        /* RESPONSIVE BREAKPOINTS */
-        @media (max-width: 576px) {
-            body {
-                padding: 16px 12px;
+        /* FOOTER STYLING */
+        footer.site-footer {
+            background: #ffffff;
+            border-top: 1px solid var(--border-color);
+            padding: 60px 40px 25px 40px;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-top: auto;
+        }
+
+        .footer-container {
+            max-width: 1280px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1.4fr 1fr 1fr 1.2fr;
+            gap: 40px;
+            padding-bottom: 40px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .footer-brand-desc {
+            font-size: 0.88rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin: 12px 0 18px 0;
+        }
+
+        .footer-dev-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: var(--accent-color);
+            background: #e0f2fe;
+            padding: 5px 14px;
+            border-radius: 20px;
+            margin-bottom: 12px;
+        }
+
+        .footer-column-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 18px;
+            letter-spacing: -0.2px;
+        }
+
+        .footer-links-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .footer-links-list li {
+            margin-bottom: 10px;
+        }
+
+        .footer-links-list a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.88rem;
+            font-weight: 500;
+            transition: color 0.2s ease, transform 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .footer-links-list a:hover {
+            color: var(--accent-color);
+            transform: translateX(3px);
+        }
+
+        .footer-bottom-bar {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding-top: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            font-size: 0.86rem;
+            color: var(--text-muted);
+        }
+
+        .footer-copyright strong {
+            color: var(--text-main);
+        }
+
+        .footer-developer-credit {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .footer-developer-credit span {
+            color: var(--accent-color);
+        }
+
+        @media (max-width: 990px) {
+            .footer-container {
+                grid-template-columns: 1fr 1fr;
             }
+        }
 
+        @media (max-width: 600px) {
+            header {
+                padding: 14px 20px;
+            }
             .edit-card {
                 padding: 24px 18px;
-                border-radius: 18px;
             }
-
-            .section-box {
-                padding: 16px;
+            .footer-container {
+                grid-template-columns: 1fr;
+                gap: 30px;
             }
-
-            .section-box div[style*="grid-template-columns"] {
-                grid-template-columns: 1fr !important;
+            .footer-bottom-bar {
+                flex-direction: column;
+                text-align: center;
             }
         }
     </style>
@@ -196,92 +371,174 @@
 
 <body>
 
-    <div class="edit-card">
-        <h2>✏️ Account Settings</h2>
-        <div id="message"></div>
+    <!-- HEADER NAVIGATION -->
+    <header>
+        <a href="index.html" class="logo-title">
+            <div class="logo-icon">G</div>
+            <div class="logo-text">
+                <h1>G LAB</h1>
+                <span>ACCOUNT SETTINGS</span>
+            </div>
+        </a>
+        <div class="nav-actions">
+            <a href="profile.html" class="btn btn-outline"><i class="fa-solid fa-user"></i> View Profile</a>
+            <a href="home.html" class="btn btn-outline"><i class="fa-solid fa-house"></i> Store</a>
+        </div>
+    </header>
 
-        <!-- 1. PERSONAL INFORMATION (PUT /users/profile) -->
-        <div class="section-box">
-            <h3>👤 Personal Profile Information</h3>
-            <form id="profileForm" onsubmit="updateProfileInfo(event)">
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-                    <div class="form-group">
-                        <label for="firstname">First Name *</label>
-                        <input type="text" id="firstname" required>
+    <div class="page-container">
+        <div class="edit-card">
+            <h2>Account Settings</h2>
+            <div id="message"></div>
+
+            <!-- 1. PERSONAL INFORMATION (PUT /users/profile) -->
+            <div class="section-box">
+                <h3><i class="fa-solid fa-user-gear" style="color: var(--accent-color);"></i> Personal Profile Information</h3>
+                <form id="profileForm" onsubmit="updateProfileInfo(event)">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                        <div class="form-group">
+                            <label for="firstname">First Name *</label>
+                            <input type="text" id="firstname" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="lastname">Last Name *</label>
+                            <input type="text" id="lastname" required>
+                        </div>
                     </div>
                     <div class="form-group">
-                        <label for="lastname">Last Name *</label>
-                        <input type="text" id="lastname" required>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="email">Email Address *</label>
-                    <input type="email" id="email" required>
-                </div>
-                <div class="form-group">
-                    <label for="image">Avatar Image URL</label>
-                    <input type="url" id="image" placeholder="https://example.com/avatar.jpg">
-                </div>
-                <button type="submit" class="btn btn-primary" style="width: 100%;">Save Personal Details</button>
-            </form>
-        </div>
-
-        <!-- 2. DELIVERY ADDRESS (PUT /users/address) -->
-        <div class="section-box">
-            <h3>📍 Delivery Address</h3>
-            <form id="addressForm" onsubmit="updateAddressInfo(event)">
-                <div class="form-group">
-                    <label for="addressLine">Street Address / Line *</label>
-                    <input type="text" id="addressLine" required placeholder="123 Tech Street, Suite 4">
-                </div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-                    <div class="form-group">
-                        <label for="city">City *</label>
-                        <input type="text" id="city" required placeholder="Colombo">
+                        <label for="email">Email Address *</label>
+                        <input type="email" id="email" required>
                     </div>
                     <div class="form-group">
-                        <label for="district">District *</label>
-                        <input type="text" id="district" required placeholder="Colombo">
+                        <label for="image">Avatar Image URL</label>
+                        <input type="url" id="image" placeholder="https://example.com/avatar.jpg">
                     </div>
-                </div>
-                <div class="form-group">
-                    <label for="postalCode">Postal Code *</label>
-                    <input type="text" id="postalCode" required placeholder="00100">
-                </div>
-                <button type="submit" class="btn btn-primary" style="width: 100%;">Save Delivery Address</button>
-            </form>
-        </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">Save Personal Details</button>
+                </form>
+            </div>
 
-        <!-- 3. CHANGE PASSWORD (PUT /users/change-password) -->
-        <div class="section-box">
-            <h3>🔑 Security & Password</h3>
-            <form id="passwordForm" onsubmit="changeUserPassword(event)">
-                <div class="form-group">
-                    <label for="currentPassword">Current Password *</label>
-                    <input type="password" id="currentPassword" required placeholder="••••••••">
-                </div>
-                <div class="form-group">
-                    <label for="newPassword">New Password *</label>
-                    <input type="password" id="newPassword" required placeholder="••••••••">
-                </div>
-                <button type="submit" class="btn btn-outline" style="width: 100%;">Update Password</button>
-            </form>
-        </div>
+            <!-- 2. DELIVERY ADDRESS (PUT /users/address) -->
+            <div class="section-box">
+                <h3><i class="fa-solid fa-location-dot" style="color: var(--accent-color);"></i> Delivery Address</h3>
+                <form id="addressForm" onsubmit="updateAddressInfo(event)">
+                    <div class="form-group">
+                        <label for="addressLine">Street Address / Line *</label>
+                        <input type="text" id="addressLine" required placeholder="123 Tech Street, Suite 4">
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                        <div class="form-group">
+                            <label for="city">City *</label>
+                            <input type="text" id="city" required placeholder="Colombo">
+                        </div>
+                        <div class="form-group">
+                            <label for="district">District *</label>
+                            <input type="text" id="district" required placeholder="Colombo">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="postalCode">Postal Code *</label>
+                        <input type="text" id="postalCode" required placeholder="00100">
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">Save Delivery Address</button>
+                </form>
+            </div>
 
-        <!-- 4. DELETE OWN ACCOUNT (DELETE /users/profile) -->
-        <div class="section-box" style="border-color: rgba(239, 68, 68, 0.4); background: rgba(239, 68, 68, 0.05);">
-            <h3 style="color: #fca5a5;">⚠️ Danger Zone</h3>
-            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 14px;">
-                Permanently delete your account and all associated order data. This action cannot be undone.
-            </p>
-            <button type="button" class="btn btn-danger" style="width: 100%;" onclick="deleteAccount()">Delete My Account</button>
-        </div>
+            <!-- 3. CHANGE PASSWORD (PUT /users/change-password) -->
+            <div class="section-box">
+                <h3><i class="fa-solid fa-lock" style="color: var(--accent-color);"></i> Security & Password</h3>
+                <form id="passwordForm" onsubmit="changeUserPassword(event)">
+                    <div class="form-group">
+                        <label for="currentPassword">Current Password *</label>
+                        <input type="password" id="currentPassword" required placeholder="••••••••">
+                    </div>
+                    <div class="form-group">
+                        <label for="newPassword">New Password *</label>
+                        <input type="password" id="newPassword" required placeholder="••••••••">
+                    </div>
+                    <button type="submit" class="btn btn-outline" style="width: 100%;">Update Password</button>
+                </form>
+            </div>
 
-        <div style="display: flex; gap: 12px;">
-            <button type="button" class="btn btn-outline" style="flex: 1;" onclick="window.location.href='profile.html'">← Back to Profile</button>
-            <button type="button" class="btn btn-outline" style="flex: 1;" onclick="window.location.href='cart.html'">🛒 Go to Cart</button>
+            <!-- 4. DELETE OWN ACCOUNT (DELETE /users/profile) -->
+            <div class="section-box" style="border-color: #fca5a5; background: #fff5f5;">
+                <h3 style="color: #dc2626;"><i class="fa-solid fa-triangle-exclamation"></i> Danger Zone</h3>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 14px;">
+                    Permanently delete your account and all associated order data. This action cannot be undone.
+                </p>
+                <button type="button" class="btn btn-danger" style="width: 100%;" onclick="deleteAccount()">Delete My Account</button>
+            </div>
+
+            <div style="display: flex; gap: 12px;">
+                <button type="button" class="btn btn-outline" style="flex: 1;" onclick="window.location.href='profile.html'">← Back to Profile</button>
+                <button type="button" class="btn btn-outline" style="flex: 1;" onclick="window.location.href='cart.html'">🛒 Go to Cart</button>
+            </div>
         </div>
     </div>
+
+    <!-- FOOTER -->
+    <footer class="site-footer">
+        <div class="footer-container">
+            <div class="footer-brand">
+                <a href="index.html" class="logo-title">
+                    <div class="logo-icon">G</div>
+                    <div class="logo-text">
+                        <h1>G LAB</h1>
+                        <span>COMPUTER HARDWARE</span>
+                    </div>
+                </a>
+                <div class="footer-dev-badge" style="margin-top: 10px;">
+                    <i class="fa-solid fa-code"></i> Developed by Kavindu Geethshan
+                </div>
+                <p class="footer-brand-desc">
+                    Sri Lanka's premier destination for high-performance computer hardware, custom PC components, gaming gear, and official manufacturer warranties.
+                </p>
+            </div>
+
+            <div>
+                <h4 class="footer-column-title">Quick Links</h4>
+                <ul class="footer-links-list">
+                    <li><a href="index.html"><i class="fa-solid fa-chevron-right" style="font-size: 0.7rem;"></i> Home Page</a></li>
+                    <li><a href="products.html"><i class="fa-solid fa-chevron-right" style="font-size: 0.7rem;"></i> All Products</a></li>
+                    <li><a href="index.html#categoriesSection"><i class="fa-solid fa-chevron-right" style="font-size: 0.7rem;"></i> Categories</a></li>
+                    <li><a href="index.html#whyGlab"><i class="fa-solid fa-chevron-right" style="font-size: 0.7rem;"></i> Why Choose G LAB</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 class="footer-column-title">Customer Care</h4>
+                <ul class="footer-links-list">
+                    <li><a href="profile.html"><i class="fa-solid fa-chevron-right" style="font-size: 0.7rem;"></i> My Account</a></li>
+                    <li><a href="cart.html"><i class="fa-solid fa-chevron-right" style="font-size: 0.7rem;"></i> Shopping Cart</a></li>
+                    <li><a href="cart.html#my-orders"><i class="fa-solid fa-chevron-right" style="font-size: 0.7rem;"></i> Track Orders</a></li>
+                    <li><a href="login.html"><i class="fa-solid fa-chevron-right" style="font-size: 0.7rem;"></i> Sign In / Register</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 class="footer-column-title">Contact & Support</h4>
+                <ul class="footer-links-list" style="margin-bottom: 16px;">
+                    <li style="display: flex; gap: 8px; color: var(--text-muted);"><i class="fa-solid fa-location-dot" style="color: var(--accent-color); margin-top: 3px;"></i> Colombo, Sri Lanka</li>
+                    <li style="display: flex; gap: 8px; color: var(--text-muted);"><i class="fa-solid fa-envelope" style="color: var(--accent-color); margin-top: 3px;"></i> support@glab.lk</li>
+                    <li style="display: flex; gap: 8px; color: var(--text-muted);"><i class="fa-solid fa-phone" style="color: var(--accent-color); margin-top: 3px;"></i> 0767601045</li>
+                </ul>
+                <div style="font-size: 0.78rem; font-weight: 700; color: var(--text-main); margin-bottom: 6px;">SECURE CHECKOUT</div>
+                <div style="display: flex; gap: 8px; font-size: 1.3rem; color: var(--text-muted);">
+                    <i class="fa-solid fa-shield-halved" style="color: #10b981;" title="PayHere Encrypted"></i>
+                    <i class="fa-brands fa-cc-visa" title="Visa"></i>
+                    <i class="fa-brands fa-cc-mastercard" title="MasterCard"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-bottom-bar">
+            <div class="footer-copyright">
+                © 2026 <strong>G LAB</strong>. All rights reserved.
+            </div>
+            <div class="footer-developer-credit">
+                Developed by <span>Kavindu Geethshan</span>
+            </div>
+        </div>
+    </footer>
 
     <script src="api-config.js"></script>
     <script>
@@ -292,7 +549,7 @@
         );
 
         const token = localStorage.getItem("token");
-        if (!token) window.location.href = "index.html";
+        if (!token) window.location.href = "login.html";
 
         function getHeaders() {
             return {
@@ -306,7 +563,7 @@
             if (!text) { el.style.display = "none"; return; }
             el.textContent = text;
             el.className = type || "";
-            if (type === "success") {
+            if (type === "success" || type === "error") {
                 setTimeout(() => { if (el.textContent === text) el.style.display = "none"; }, 4000);
             }
         }
@@ -335,7 +592,6 @@
             }
         }
 
-        // 1. UPDATE PROFILE INFO
         async function updateProfileInfo(e) {
             e.preventDefault();
             const body = {
@@ -364,7 +620,6 @@
             }
         }
 
-        // 2. UPDATE DELIVERY ADDRESS
         async function updateAddressInfo(e) {
             e.preventDefault();
             const address = {
@@ -393,7 +648,6 @@
             }
         }
 
-        // 3. CHANGE PASSWORD
         async function changeUserPassword(e) {
             e.preventDefault();
             const currentPassword = document.getElementById("currentPassword").value;
@@ -424,7 +678,6 @@
             }
         }
 
-        // 4. DELETE ACCOUNT
         async function deleteAccount() {
             if (!confirm("Are you sure you want to PERMANENTLY delete your account?\n\nThis cannot be undone!")) return;
 
@@ -440,7 +693,7 @@
                 alert("Your account has been deleted successfully.");
                 localStorage.removeItem("token");
                 localStorage.removeItem("user");
-                window.location.href = "index.html";
+                window.location.href = "login.html";
 
             } catch (err) {
                 console.error("deleteAccount error:", err);

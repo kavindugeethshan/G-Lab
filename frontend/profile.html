@@ -8,20 +8,26 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="preloader.js"></script>
     <style>
         :root {
-            --bg-color: #060b18;
-            --card-bg: rgba(15, 23, 42, 0.85);
-            --card-border: rgba(59, 130, 246, 0.25);
-            --accent-gradient: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
-            --accent-color: #3b82f6;
-            --accent-glow: rgba(59, 130, 246, 0.35);
+            /* PREMIUM WHITE & LIGHT THEME PALETTE */
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --card-hover-bg: #ffffff;
+            --card-border: #e2e8f0;
+            --card-hover-border: #cbd5e1;
+            --accent-gradient: linear-gradient(135deg, #0284c7 0%, #2563eb 100%);
+            --accent-color: #0284c7;
+            --accent-glow: rgba(2, 132, 199, 0.18);
             --success-color: #10b981;
             --warning-color: #f59e0b;
             --error-color: #ef4444;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --border-color: rgba(51, 65, 85, 0.7);
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --input-bg: #ffffff;
         }
 
         * {
@@ -33,27 +39,134 @@
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
             background-color: var(--bg-color);
-            background-image: 
-                radial-gradient(circle at 20% 20%, rgba(59, 130, 246, 0.12) 0%, transparent 50%),
-                radial-gradient(circle at 80% 80%, rgba(99, 102, 241, 0.12) 0%, transparent 50%);
-            background-attachment: fixed;
             color: var(--text-main);
             min-height: 100vh;
             display: flex;
+            flex-direction: column;
+        }
+
+        /* HEADER NAVIGATION */
+        header {
+            background-color: #ffffff;
+            border-bottom: 1px solid var(--border-color);
+            padding: 16px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+        }
+
+        .logo-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 42px;
+            height: 42px;
+            background: var(--accent-gradient);
+            border-radius: 12px;
+            display: flex;
             align-items: center;
             justify-content: center;
-            padding: 24px;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 800;
+            font-size: 1.3rem;
+            color: white;
+            box-shadow: 0 4px 15px var(--accent-glow);
+        }
+
+        .logo-text h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--text-main);
+            letter-spacing: -0.5px;
+            line-height: 1.1;
+        }
+
+        .logo-text span {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-family: inherit;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: var(--accent-gradient);
+            color: white;
+            box-shadow: 0 4px 14px var(--accent-glow);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px var(--accent-glow);
+            filter: brightness(1.05);
+        }
+
+        .btn-outline {
+            background: #ffffff;
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-outline:hover {
+            background: #f1f5f9;
+            border-color: #cbd5e1;
+        }
+
+        .btn-danger {
+            background: #fee2e2;
+            color: #dc2626;
+            border: 1px solid #fca5a5;
+        }
+
+        .btn-danger:hover {
+            background: #fecaca;
+        }
+
+        /* MAIN WRAPPER */
+        .page-container {
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 0 20px;
+            flex: 1;
+            width: 100%;
         }
 
         .profile-card {
-            background: var(--card-bg);
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--card-border);
+            background: #ffffff;
+            border: 1px solid var(--border-color);
             border-radius: 24px;
             padding: 38px;
-            width: 100%;
-            max-width: 520px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+            box-shadow: 0 4px 25px rgba(0, 0, 0, 0.025);
         }
 
         .profile-header {
@@ -68,8 +181,8 @@
             object-fit: cover;
             border: 3px solid var(--accent-color);
             margin-bottom: 12px;
-            background-color: #0f172a;
-            box-shadow: 0 8px 25px var(--accent-glow);
+            background-color: #f1f5f9;
+            box-shadow: 0 8px 20px var(--accent-glow);
         }
 
         .profile-header h2 {
@@ -82,19 +195,19 @@
         .badge-role {
             display: inline-block;
             margin-top: 6px;
-            padding: 4px 12px;
-            background: rgba(59, 130, 246, 0.2);
-            color: #60a5fa;
-            border-radius: 14px;
+            padding: 5px 14px;
+            background: #e0f2fe;
+            color: var(--accent-color);
+            border-radius: 20px;
             font-size: 0.8rem;
             font-weight: 700;
-            border: 1px solid rgba(59, 130, 246, 0.4);
+            border: 1px solid #bae6fd;
         }
 
         .badge-admin {
-            background: rgba(168, 85, 247, 0.2);
-            color: #c084fc;
-            border-color: rgba(168, 85, 247, 0.4);
+            background: #f3e8ff;
+            color: #9333ea;
+            border-color: #e9d5ff;
         }
 
         .info-grid {
@@ -102,7 +215,7 @@
             grid-template-columns: 1fr 1fr;
             gap: 16px;
             margin-bottom: 26px;
-            background: rgba(15, 23, 42, 0.6);
+            background: #f8fafc;
             padding: 20px;
             border-radius: 16px;
             border: 1px solid var(--border-color);
@@ -118,7 +231,7 @@
             color: var(--text-muted);
             text-transform: uppercase;
             letter-spacing: 0.8px;
-            font-weight: 600;
+            font-weight: 700;
             margin-bottom: 4px;
         }
 
@@ -134,74 +247,133 @@
             gap: 12px;
         }
 
-        .btn {
-            padding: 12px 18px;
-            border-radius: 12px;
-            font-size: 0.92rem;
-            font-weight: 600;
-            cursor: pointer;
-            border: 1px solid transparent;
-            text-align: center;
-            transition: all 0.25s ease;
-            font-family: inherit;
-            display: flex;
+        /* FOOTER STYLING */
+        footer.site-footer {
+            background: #ffffff;
+            border-top: 1px solid var(--border-color);
+            padding: 60px 40px 25px 40px;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-top: auto;
+        }
+
+        .footer-container {
+            max-width: 1280px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1.4fr 1fr 1fr 1.2fr;
+            gap: 40px;
+            padding-bottom: 40px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .footer-brand-desc {
+            font-size: 0.88rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin: 12px 0 18px 0;
+        }
+
+        .footer-dev-badge {
+            display: inline-flex;
             align-items: center;
-            justify-content: center;
-            gap: 8px;
+            gap: 6px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: var(--accent-color);
+            background: #e0f2fe;
+            padding: 5px 14px;
+            border-radius: 20px;
+            margin-bottom: 12px;
         }
 
-        .btn-primary {
-            background: var(--accent-gradient);
-            color: white;
-            box-shadow: 0 4px 18px var(--accent-glow);
+        .footer-column-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 18px;
+            letter-spacing: -0.2px;
         }
 
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px var(--accent-glow);
-            filter: brightness(1.1);
+        .footer-links-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
         }
 
-        .btn-outline {
-            background: rgba(30, 41, 59, 0.6);
-            border-color: var(--border-color);
+        .footer-links-list li {
+            margin-bottom: 10px;
+        }
+
+        .footer-links-list a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.88rem;
+            font-weight: 500;
+            transition: color 0.2s ease, transform 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .footer-links-list a:hover {
+            color: var(--accent-color);
+            transform: translateX(3px);
+        }
+
+        .footer-bottom-bar {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding-top: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            font-size: 0.86rem;
+            color: var(--text-muted);
+        }
+
+        .footer-copyright strong {
             color: var(--text-main);
         }
 
-        .btn-outline:hover {
-            background: rgba(51, 65, 85, 0.8);
+        .footer-developer-credit {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 600;
+            color: var(--text-main);
         }
 
-        .btn-danger {
-            background: rgba(239, 68, 68, 0.12);
-            color: #fca5a5;
-            border: 1px solid rgba(239, 68, 68, 0.35);
+        .footer-developer-credit span {
+            color: var(--accent-color);
         }
 
-        .btn-danger:hover {
-            background: var(--error-color);
-            color: white;
-        }
-
-        /* RESPONSIVE BREAKPOINTS */
-        @media (max-width: 480px) {
-            body {
-                padding: 16px 12px;
+        @media (max-width: 990px) {
+            .footer-container {
+                grid-template-columns: 1fr 1fr;
             }
+        }
 
+        @media (max-width: 600px) {
+            header {
+                padding: 14px 20px;
+            }
             .profile-card {
                 padding: 24px 18px;
-                border-radius: 18px;
             }
-
             .info-grid {
                 grid-template-columns: 1fr;
-                gap: 12px;
-                padding: 14px;
             }
-
-            .info-value {
-                word-break: break-all;
+            .footer-container {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+            .footer-bottom-bar {
+                flex-direction: column;
+                text-align: center;
             }
         }
     </style>
@@ -209,42 +381,125 @@
 
 <body>
 
-    <div class="profile-card">
-        <div class="profile-header">
-            <img id="userAvatar" class="avatar" src="https://via.placeholder.com/95?text=User" alt="User Avatar" onerror="this.src='https://via.placeholder.com/95?text=User'">
-            <h2 id="userName">Loading profile...</h2>
-            <span class="badge-role" id="userRole">Customer</span>
+    <!-- HEADER NAVIGATION -->
+    <header>
+        <a href="index.html" class="logo-title">
+            <div class="logo-icon">G</div>
+            <div class="logo-text">
+                <h1>G LAB</h1>
+                <span>USER ACCOUNT</span>
+            </div>
+        </a>
+        <div class="nav-actions">
+            <a href="home.html" class="btn btn-outline"><i class="fa-solid fa-house"></i> Store</a>
+            <a href="cart.html" class="btn btn-outline"><i class="fa-solid fa-cart-shopping"></i> Cart</a>
+            <button type="button" class="btn btn-danger" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
         </div>
+    </header>
 
-        <div class="info-grid">
-            <div class="info-group">
-                <span class="info-label">First Name</span>
-                <span class="info-value" id="infoFirstName">—</span>
+    <div class="page-container">
+        <div class="profile-card">
+            <div class="profile-header">
+                <img id="userAvatar" class="avatar" src="https://via.placeholder.com/95?text=User" alt="User Avatar" onerror="this.src='https://via.placeholder.com/95?text=User'">
+                <h2 id="userName">Loading profile...</h2>
+                <span class="badge-role" id="userRole">Customer</span>
             </div>
-            <div class="info-group">
-                <span class="info-label">Last Name</span>
-                <span class="info-value" id="infoLastName">—</span>
-            </div>
-            <div class="info-group" style="grid-column: span 2;">
-                <span class="info-label">Email Address</span>
-                <span class="info-value" id="infoEmail">—</span>
-            </div>
-            <div class="info-group" style="grid-column: span 2;">
-                <span class="info-label">Delivery Address</span>
-                <span class="info-value" id="infoAddress">Not provided</span>
-            </div>
-            <div class="info-group" style="grid-column: span 2;">
-                <span class="info-label">Account Created</span>
-                <span class="info-value" id="infoCreatedAt">—</span>
-            </div>
-        </div>
 
-        <div class="action-buttons">
-            <button type="button" class="btn btn-primary" onclick="window.location.href='edit profile.html'">✏️ Edit Profile & Address</button>
-            <button type="button" class="btn btn-outline" onclick="window.location.href='home.html'">🏠 Back to Store</button>
-            <button type="button" class="btn btn-danger" onclick="logout()">Logout Account</button>
+            <div class="info-grid">
+                <div class="info-group">
+                    <span class="info-label">First Name</span>
+                    <span class="info-value" id="infoFirstName">—</span>
+                </div>
+                <div class="info-group">
+                    <span class="info-label">Last Name</span>
+                    <span class="info-value" id="infoLastName">—</span>
+                </div>
+                <div class="info-group" style="grid-column: span 2;">
+                    <span class="info-label">Email Address</span>
+                    <span class="info-value" id="infoEmail">—</span>
+                </div>
+                <div class="info-group" style="grid-column: span 2;">
+                    <span class="info-label">Delivery Address</span>
+                    <span class="info-value" id="infoAddress">Not provided</span>
+                </div>
+                <div class="info-group" style="grid-column: span 2;">
+                    <span class="info-label">Account Created</span>
+                    <span class="info-value" id="infoCreatedAt">—</span>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <a href="edit profile.html" class="btn btn-primary"><i class="fa-solid fa-user-pen"></i> Edit Profile & Address</a>
+                <a href="home.html" class="btn btn-outline"><i class="fa-solid fa-house"></i> Back to Store</a>
+                <button type="button" class="btn btn-danger" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> Logout Account</button>
+            </div>
         </div>
     </div>
+
+    <!-- FOOTER -->
+    <footer class="site-footer">
+        <div class="footer-container">
+            <div class="footer-brand">
+                <a href="index.html" class="logo-title">
+                    <div class="logo-icon">G</div>
+                    <div class="logo-text">
+                        <h1>G LAB</h1>
+                        <span>COMPUTER HARDWARE</span>
+                    </div>
+                </a>
+                <div class="footer-dev-badge" style="margin-top: 10px;">
+                    <i class="fa-solid fa-code"></i> Developed by Kavindu Geethshan
+                </div>
+                <p class="footer-brand-desc">
+                    Sri Lanka's premier destination for high-performance computer hardware, custom PC components, gaming gear, and official manufacturer warranties.
+                </p>
+            </div>
+
+            <div>
+                <h4 class="footer-column-title">Quick Links</h4>
+                <ul class="footer-links-list">
+                    <li><a href="index.html"><i class="fa-solid fa-chevron-right" style="font-size: 0.7rem;"></i> Home Page</a></li>
+                    <li><a href="products.html"><i class="fa-solid fa-chevron-right" style="font-size: 0.7rem;"></i> All Products</a></li>
+                    <li><a href="index.html#categoriesSection"><i class="fa-solid fa-chevron-right" style="font-size: 0.7rem;"></i> Categories</a></li>
+                    <li><a href="index.html#whyGlab"><i class="fa-solid fa-chevron-right" style="font-size: 0.7rem;"></i> Why Choose G LAB</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 class="footer-column-title">Customer Care</h4>
+                <ul class="footer-links-list">
+                    <li><a href="profile.html"><i class="fa-solid fa-chevron-right" style="font-size: 0.7rem;"></i> My Account</a></li>
+                    <li><a href="cart.html"><i class="fa-solid fa-chevron-right" style="font-size: 0.7rem;"></i> Shopping Cart</a></li>
+                    <li><a href="cart.html#my-orders"><i class="fa-solid fa-chevron-right" style="font-size: 0.7rem;"></i> Track Orders</a></li>
+                    <li><a href="login.html"><i class="fa-solid fa-chevron-right" style="font-size: 0.7rem;"></i> Sign In / Register</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 class="footer-column-title">Contact & Support</h4>
+                <ul class="footer-links-list" style="margin-bottom: 16px;">
+                    <li style="display: flex; gap: 8px; color: var(--text-muted);"><i class="fa-solid fa-location-dot" style="color: var(--accent-color); margin-top: 3px;"></i> Colombo, Sri Lanka</li>
+                    <li style="display: flex; gap: 8px; color: var(--text-muted);"><i class="fa-solid fa-envelope" style="color: var(--accent-color); margin-top: 3px;"></i> support@glab.lk</li>
+                    <li style="display: flex; gap: 8px; color: var(--text-muted);"><i class="fa-solid fa-phone" style="color: var(--accent-color); margin-top: 3px;"></i> 0767601045</li>
+                </ul>
+                <div style="font-size: 0.78rem; font-weight: 700; color: var(--text-main); margin-bottom: 6px;">SECURE CHECKOUT</div>
+                <div style="display: flex; gap: 8px; font-size: 1.3rem; color: var(--text-muted);">
+                    <i class="fa-solid fa-shield-halved" style="color: #10b981;" title="PayHere Encrypted"></i>
+                    <i class="fa-brands fa-cc-visa" title="Visa"></i>
+                    <i class="fa-brands fa-cc-mastercard" title="MasterCard"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-bottom-bar">
+            <div class="footer-copyright">
+                © 2026 <strong>G LAB</strong>. All rights reserved.
+            </div>
+            <div class="footer-developer-credit">
+                Developed by <span>Kavindu Geethshan</span>
+            </div>
+        </div>
+    </footer>
 
     <script src="api-config.js"></script>
     <script>
@@ -255,7 +510,7 @@
         );
 
         const token = localStorage.getItem("token");
-        if (!token) window.location.href = "index.html";
+        if (!token) window.location.href = "login.html";
 
         async function fetchProfile() {
             try {
@@ -302,7 +557,7 @@
         function logout() {
             localStorage.removeItem("token");
             localStorage.removeItem("user");
-            window.location.href = "index.html";
+            window.location.href = "login.html";
         }
 
         window.addEventListener("DOMContentLoaded", fetchProfile);

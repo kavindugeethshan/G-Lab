@@ -10,21 +10,26 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
         rel="stylesheet">
+    <script src="preloader.js"></script>
     <style>
         :root {
-            --bg-color: #060b18;
-            --card-bg: rgba(15, 23, 42, 0.85);
-            --card-border: rgba(59, 130, 246, 0.25);
-            --accent-gradient: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
+            /* PREMIUM WHITE & LIGHT THEME PALETTE */
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --card-hover-bg: #ffffff;
+            --card-border: #e2e8f0;
+            --card-hover-border: #cbd5e1;
+            --accent-gradient: linear-gradient(135deg, #0284c7 0%, #2563eb 100%);
             --success-gradient: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            --accent-color: #3b82f6;
-            --accent-glow: rgba(59, 130, 246, 0.35);
+            --accent-color: #0284c7;
+            --accent-glow: rgba(2, 132, 199, 0.18);
             --success-color: #10b981;
             --warning-color: #f59e0b;
             --error-color: #ef4444;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --border-color: rgba(51, 65, 85, 0.7);
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --input-bg: #ffffff;
         }
 
         * {
@@ -36,10 +41,6 @@
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
             background-color: var(--bg-color);
-            background-image:
-                radial-gradient(circle at 20% 20%, rgba(59, 130, 246, 0.12) 0%, transparent 50%),
-                radial-gradient(circle at 80% 80%, rgba(99, 102, 241, 0.12) 0%, transparent 50%);
-            background-attachment: fixed;
             color: var(--text-main);
             min-height: 100vh;
             display: flex;
@@ -49,14 +50,13 @@
         }
 
         .checkout-card {
-            background: var(--card-bg);
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--card-border);
+            background: #ffffff;
+            border: 1px solid var(--border-color);
             border-radius: 24px;
             padding: 38px;
             width: 100%;
             max-width: 520px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+            box-shadow: 0 4px 25px rgba(0, 0, 0, 0.03);
         }
 
         .brand-header {
@@ -76,7 +76,7 @@
             font-weight: 800;
             font-size: 1.8rem;
             color: white;
-            box-shadow: 0 8px 25px var(--accent-glow);
+            box-shadow: 0 8px 20px var(--accent-glow);
             margin-bottom: 12px;
         }
 
@@ -84,9 +84,7 @@
             font-family: 'Outfit', sans-serif;
             font-size: 1.7rem;
             font-weight: 800;
-            background: linear-gradient(135deg, #f8fafc 0%, #cbd5e1 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: var(--text-main);
             letter-spacing: -0.5px;
         }
 
@@ -97,7 +95,7 @@
         }
 
         .payment-details-box {
-            background: rgba(15, 23, 42, 0.6);
+            background: #f8fafc;
             border: 1px solid var(--border-color);
             border-radius: 16px;
             padding: 20px;
@@ -127,8 +125,8 @@
         }
 
         .total-amount-box {
-            background: rgba(16, 185, 129, 0.1);
-            border: 1px solid rgba(16, 185, 129, 0.3);
+            background: #dcfce7;
+            border: 1px solid #bbf7d0;
             border-radius: 14px;
             padding: 16px 20px;
             display: flex;
@@ -147,7 +145,7 @@
             font-family: 'Outfit', sans-serif;
             font-size: 1.6rem;
             font-weight: 800;
-            color: var(--success-color);
+            color: #15803d;
         }
 
         .btn-payhere {
@@ -161,7 +159,7 @@
             font-weight: 800;
             font-family: 'Outfit', sans-serif;
             cursor: pointer;
-            box-shadow: 0 6px 22px rgba(16, 185, 129, 0.35);
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.25);
             transition: all 0.25s ease;
             display: flex;
             align-items: center;
@@ -171,14 +169,14 @@
 
         .btn-payhere:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(16, 185, 129, 0.5);
-            filter: brightness(1.1);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.35);
+            filter: brightness(1.05);
         }
 
         .btn-cancel {
             width: 100%;
             padding: 12px;
-            background: rgba(30, 41, 59, 0.6);
+            background: #ffffff;
             border: 1px solid var(--border-color);
             color: var(--text-muted);
             border-radius: 12px;
@@ -191,7 +189,7 @@
         }
 
         .btn-cancel:hover {
-            background: rgba(51, 65, 85, 0.8);
+            background: #f1f5f9;
             color: var(--text-main);
         }
 
@@ -200,33 +198,34 @@
             border-radius: 12px;
             margin-bottom: 20px;
             font-size: 0.88rem;
+            font-weight: 600;
             display: none;
         }
 
         #message.error {
             display: block;
-            background: rgba(239, 68, 68, 0.15);
-            color: #fca5a5;
-            border: 1px solid rgba(239, 68, 68, 0.4);
+            background: #fee2e2;
+            color: #dc2626;
+            border: 1px solid #fca5a5;
         }
 
         #message.loading {
             display: block;
-            background: rgba(59, 130, 246, 0.15);
-            color: #93c5fd;
-            border: 1px solid rgba(59, 130, 246, 0.4);
+            background: #e0f2fe;
+            color: #0369a1;
+            border: 1px solid #bae6fd;
         }
 
         .sandbox-badge {
-            background: rgba(245, 158, 11, 0.2);
-            color: #fcd34d;
-            border: 1px solid rgba(245, 158, 11, 0.4);
-            font-size: 0.72rem;
+            background: #fef3c7;
+            color: #b45309;
+            border: 1px solid #fde68a;
+            padding: 4px 10px;
+            border-radius: 10px;
+            font-size: 0.75rem;
             font-weight: 700;
-            padding: 2px 8px;
-            border-radius: 6px;
-            margin-left: 6px;
-            letter-spacing: 0.5px;
+            display: inline-block;
+            margin-bottom: 12px;
         }
 
         .detail-value {
@@ -328,7 +327,7 @@
         async function loadPaymentInfo() {
             if (!token) {
                 setMessage("Authentication required. Redirecting to login...", "error");
-                setTimeout(() => window.location.href = "index.html", 1500);
+                setTimeout(() => window.location.href = "login.html", 1500);
                 return;
             }
 
@@ -440,17 +439,6 @@
         function submitToPayHere() {
             setMessage("Redirecting to PayHere Sandbox gateway...", "loading");
             document.getElementById("payHereForm").submit();
-            //debug
-            function submitToPayHere() {
-                console.log("merchant_id:", document.getElementById("ph_merchant_id").value);
-                console.log("order_id:", document.getElementById("ph_order_id").value);
-                console.log("amount:", document.getElementById("ph_amount").value);
-                console.log("currency:", document.getElementById("ph_currency").value);
-                console.log("hash:", document.getElementById("ph_hash").value);
-                console.log("notify_url:", document.getElementById("ph_notify_url").value);
-
-                document.getElementById("payHereForm").submit();
-            }
         }
 
         window.addEventListener("DOMContentLoaded", loadPaymentInfo);

@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>G Lab — Login & Signup</title>
+    
+    <!-- Google Font Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="preloader.js"></script>
+    
+    <style>
+        * {
+            font-family: "Poppins", sans-serif;
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #fff;
+            overflow-x: hidden;
+        }
+
+        .btn-back-home {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 100;
+            color: #333;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.85rem;
+            background: rgba(255, 255, 255, 0.85);
+            padding: 8px 16px;
+            border-radius: 30px;
+            border: 1px solid #ccc;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-back-home:hover {
+            background: #5995fd;
+            color: #fff;
+            border-color: #5995fd;
+        }
+
+        .container {
+            position: relative;
+            width: 100%;
+            background: #fff;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .forms-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+        }
+
+        .signin-signup {
+            position: absolute;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            left: 75%;
+            width: 50%;
+            transition: 1s 0.7s ease-in-out;
+            display: grid;
+            grid-template-columns: 1fr;
+            z-index: 5;
+        }
+
+        form {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            padding: 0rem 5rem;
+            transition: all 0.2s 0.7s;
+            overflow: hidden;
+            grid-column: 1/2;
+            grid-row: 1/2;
+        }
+
+        form.sign-in-form {
+            z-index: 2;
+        }
+
+        form.sign-up-form {
+            opacity: 0;
+            z-index: 1;
+        }
+
+        .title {
+            font-size: 2.2rem;
+            color: #444;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            font-size: 0.85rem;
+            color: #666;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+
+        .input-field {
+            max-width: 380px;
+            width: 100%;
+            background: #f0f0f0;
+            margin: 8px 0;
+            height: 55px;
+            border-radius: 55px;
+            display: grid;
+            grid-template-columns: 15% 85%;
+            padding: 0 0.4rem;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .input-field.hidden {
+            display: none !important;
+        }
+
+        .input-field i {
+            text-align: center;
+            line-height: 55px;
+            color: #acacac;
+            transition: 0.5s;
+            font-size: 1.1rem;
+        }
+
+        .input-field input {
+            background: none;
+            outline: none;
+            border: none;
+            line-height: 1;
+            font-weight: 600;
+            font-size: 1.05rem;
+            color: #333;
+        }
+
+        .input-field input::placeholder {
+            color: #aaa;
+            font-weight: 500;
+        }
+
+        .forgot-link {
+            font-size: 0.8rem;
+            color: #5995fd;
+            text-decoration: none;
+            margin-top: 4px;
+            margin-bottom: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            align-self: flex-end;
+            max-width: 380px;
+            width: 100%;
+            text-align: right;
+        }
+
+        .forgot-link:hover {
+            text-decoration: underline;
+            color: #4d84e2;
+        }
+
+        .btn {
+            width: 150px;
+            background: #5995fd;
+            border: none;
+            outline: none;
+            height: 49px;
+            border-radius: 49px;
+            color: #fff;
+            text-transform: uppercase;
+            font-weight: 600;
+            margin: 10px 0;
+            cursor: pointer;
+            transition: 0.5s;
+        }
+
+        .btn:hover {
+            background: #4d84e2;
+        }
+
+        .message-box {
+            max-width: 380px;
+            width: 100%;
+            margin-top: 10px;
+            padding: 10px 14px;
+            border-radius: 12px;
+            font-size: 0.82rem;
+            display: none;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .message-box.error {
+            display: block;
+            background: #fee2e2;
+            color: #dc2626;
+            border: 1px solid #fca5a5;
+        }
+
+        .message-box.success {
+            display: block;
+            background: #d1fae5;
+            color: #059669;
+            border: 1px solid #6ee7b7;
+        }
+
+        .message-box.loading {
+            display: block;
+            background: #e0f2fe;
+            color: #0284c7;
+            border: 1px solid #7dd3fc;
+        }
+
+        .panels-container {
+            position: absolute;
+            height: 100%;
+            width: 100%;
+            top: 0;
+            left: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .container::before {
+            content: "";
+            position: absolute;
+            height: 2000px;
+            width: 2000px;
+            top: -10px;
+            right: 48%;
+            transform: translateY(-50%);
+            background-image: linear-gradient(-45deg, #4481eb 0%, #04befe 100%);
+            transition: 1.8s ease-in-out;
+            border-radius: 50%;
+            z-index: 6;
+        }
+
+        .image {
+            width: 100%;
+            max-width: 400px;
+            transition: transform 1.1s ease-in-out;
+            transition-delay: 0.4s;
+        }
+
+        .panel {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            justify-content: space-around;
+            text-align: center;
+            z-index: 6;
+        }
+
+        .left-panel {
+            pointer-events: all;
+            padding: 3rem 17% 2rem 12%;
+        }
+
+        .right-panel {
+            pointer-events: none;
+            padding: 3rem 12% 2rem 17%;
+        }
+
+        .panel .content {
+            color: #fff;
+            transition: transform 0.9s ease-out;
+            transition-delay: 0.6s;
+        }
+
+        .panel h3 {
+            font-weight: 600;
+            line-height: 1;
+            font-size: 1.5rem;
+        }
+
+        .panel p {
+            font-size: 0.95rem;
+            padding: 0.7rem 0;
+        }
+
+        .btn.transparent {
+            margin: 0;
+            background: none;
+            border: 2px solid #fff;
+            width: 130px;
+            height: 41px;
+            font-weight: 600;
+            font-size: 0.8rem;
+        }
+
+        .right-panel .image,
+        .right-panel .content {
+            transform: translateX(800px);
+        }
+
+        /* Animation States */
+        .container.sign-up-mode::before {
+            transform: translate(100%, -50%);
+            right: 52%;
+        }
+
+        .container.sign-up-mode .left-panel .image,
+        .container.sign-up-mode .left-panel .content {
+            transform: translateX(-800px);
+        }
+
+        .container.sign-up-mode .signin-signup {
+            left: 25%;
+        }
+
+        .container.sign-up-mode form.sign-up-form {
+            opacity: 1;
+            z-index: 2;
+        }
+
+        .container.sign-up-mode form.sign-in-form {
+            opacity: 0;
+            z-index: 1;
+        }
+
+        .container.sign-up-mode .right-panel .image,
+        .container.sign-up-mode .right-panel .content {
+            transform: translateX(0%);
+        }
+
+        .container.sign-up-mode .left-panel {
+            pointer-events: none;
+        }
+
+        .container.sign-up-mode .right-panel {
+            pointer-events: all;
+        }
+
+        /* Responsive Breakpoints */
+        @media (max-width: 870px) {
+            .container {
+                min-height: 800px;
+                height: 100vh;
+            }
+            .signin-signup {
+                width: 100%;
+                top: 95%;
+                transform: translate(-50%, -100%);
+                transition: 1s 0.8s ease-in-out;
+            }
+            .signin-signup,
+            .container.sign-up-mode .signin-signup {
+                left: 50%;
+            }
+            .panels-container {
+                grid-template-columns: 1fr;
+                grid-template-rows: 1fr 2fr 1fr;
+            }
+            .panel {
+                flex-direction: row;
+                justify-content: space-around;
+                align-items: center;
+                padding: 2.5rem 8%;
+                grid-column: 1/2;
+            }
+            .right-panel {
+                grid-row: 3/4;
+            }
+            .left-panel {
+                grid-row: 1/2;
+            }
+            .image {
+                width: 200px;
+                transition: transform 0.9s ease-in-out;
+                transition-delay: 0.6s;
+            }
+            .panel .content {
+                padding-right: 15%;
+                transition: transform 0.9s ease-in-out;
+                transition-delay: 0.8s;
+            }
+            .panel h3 {
+                font-size: 1.2rem;
+            }
+            .panel p {
+                font-size: 0.7rem;
+                padding: 0.5rem 0;
+            }
+            .btn.transparent {
+                width: 110px;
+                height: 35px;
+                font-size: 0.7rem;
+            }
+            .container::before {
+                width: 1500px;
+                height: 1500px;
+                transform: translateX(-50%);
+                left: 30%;
+                bottom: 68%;
+                right: initial;
+                top: initial;
+                transition: 2s ease-in-out;
+            }
+            .container.sign-up-mode::before {
+                transform: translate(-50%, 100%);
+                bottom: 32%;
+                right: initial;
+            }
+            .container.sign-up-mode .right-panel .image,
+            .container.sign-up-mode .right-panel .content {
+                transform: translateY(0px);
+            }
+            .container.sign-up-mode .left-panel .image,
+            .container.sign-up-mode .left-panel .content {
+                transform: translateY(-300px);
+            }
+            .right-panel .image,
+            .right-panel .content {
+                transform: translateY(300px);
+            }
+            .container.sign-up-mode .signin-signup {
+                top: 5%;
+                transform: translate(-50%, 0);
+            }
+        }
+
+        @media (max-width: 570px) {
+            form {
+                padding: 0 1.5rem;
+            }
+            .image {
+                display: none;
+            }
+            .panel .content {
+                padding: 0.5rem 1rem;
+            }
+            .container::before {
+                bottom: 72%;
+                left: 50%;
+            }
+            .container.sign-up-mode::before {
+                bottom: 28%;
+                left: 50%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <a href="index.html" class="btn-back-home">
+        <i class="fa-solid fa-arrow-left"></i> Home
+    </a>
+
+    <div class="container" id="mainContainer">
+        <!-- Forms Container -->
+        <div class="forms-container">
+            <div class="signin-signup">
+
+                <!-- 1. Sign In Form -->
+                <form id="signInForm" class="sign-in-form" onsubmit="handleSignInSubmit(event)">
+                    <h2 class="title" id="titleSignIn">Sign in</h2>
+                    <p class="subtitle" id="subHeadingSignIn">Enter your G Lab account credentials</p>
+
+                    <!-- Email Field -->
+                    <div class="input-field" id="fgEmailIn">
+                        <i class="fa-solid fa-envelope"></i>
+                        <input type="email" id="email" required placeholder="Email Address">
+                    </div>
+
+                    <!-- Password Field -->
+                    <div class="input-field" id="fgPasswordIn">
+                        <i class="fa-solid fa-lock"></i>
+                        <input type="password" id="password" placeholder="Password">
+                    </div>
+
+                    <!-- Forgot Password Link -->
+                    <a class="forgot-link" id="linkForgot" onclick="toggleForgotMode(true)">
+                        Forgot Password / Reset Token?
+                    </a>
+
+                    <!-- Reset Token Field (Hidden by default) -->
+                    <div class="input-field hidden" id="fgResetTokenIn">
+                        <i class="fa-solid fa-key"></i>
+                        <input type="text" id="resetToken" placeholder="Password Reset Token">
+                    </div>
+
+                    <input type="submit" id="btnSubmitIn" value="Login" class="btn solid">
+
+                    <div id="rowBackToLogin" style="display: none; text-align: center; margin-top: 4px;">
+                        <a class="forgot-link" style="text-align: center;" onclick="toggleForgotMode(false)">
+                            <i class="fa-solid fa-arrow-left"></i> Back to Sign In
+                        </a>
+                    </div>
+
+                    <div id="messageIn" class="message-box"></div>
+                </form>
+
+                <!-- 2. Sign Up Form -->
+                <form id="signUpForm" class="sign-up-form" onsubmit="handleSignUpSubmit(event)">
+                    <h2 class="title">Sign up</h2>
+                    <p class="subtitle">Create your new G Lab account</p>
+
+                    <div class="input-field">
+                        <i class="fa-solid fa-user"></i>
+                        <input type="text" id="firstname" required placeholder="First Name">
+                    </div>
+
+                    <div class="input-field">
+                        <i class="fa-solid fa-user-tag"></i>
+                        <input type="text" id="lastname" required placeholder="Last Name">
+                    </div>
+
+                    <div class="input-field">
+                        <i class="fa-solid fa-envelope"></i>
+                        <input type="email" id="emailReg" required placeholder="Email Address">
+                    </div>
+
+                    <div class="input-field">
+                        <i class="fa-solid fa-lock"></i>
+                        <input type="password" id="passwordReg" required placeholder="Password">
+                    </div>
+
+                    <div class="input-field">
+                        <i class="fa-solid fa-shield-halved"></i>
+                        <input type="password" id="confirmPassword" required placeholder="Confirm Password">
+                    </div>
+
+                    <div class="input-field">
+                        <i class="fa-solid fa-image"></i>
+                        <input type="text" id="image" placeholder="Avatar URL (Optional)">
+                    </div>
+
+                    <input type="submit" id="btnSubmitUp" value="Sign up" class="btn solid">
+
+                    <div id="messageUp" class="message-box"></div>
+                </form>
+
+            </div>
+        </div>
+
+        <!-- Panels Container -->
+        <div class="panels-container">
+            <!-- Left Panel (Login view) -->
+            <div class="panel left-panel">
+                <div class="content">
+                    <h3>New here ?</h3>
+                    <p>Create an account to explore high-performance PC hardware, custom gaming rigs, and exclusive deals.</p>
+                    <button class="btn transparent" id="sign-up-btn">Sign up</button>
+                </div>
+                <video autoplay loop muted playsinline class="image" style="border-radius: 16px; object-fit: cover; max-height: 280px;" onerror="this.style.display='none'">
+                    <source src="animation/Login.mp4" type="video/mp4">
+                </video>
+            </div>
+
+            <!-- Right Panel (Sign up view) -->
+            <div class="panel right-panel">
+                <div class="content">
+                    <h3>One of us ?</h3>
+                    <p>Sign in with your credentials to access your cart, track orders, and manage your hardware profile.</p>
+                    <button class="btn transparent" id="sign-in-btn">Sign in</button>
+                </div>
+                <video autoplay loop muted playsinline class="image" style="border-radius: 16px; object-fit: cover; max-height: 280px;" onerror="this.style.display='none'">
+                    <source src="animation/sign up.mp4" type="video/mp4">
+                </video>
+            </div>
+        </div>
+    </div>
+
+    <!-- G-Lab API Configuration -->
+    <script src="api-config.js"></script>
+    <script>
+        const API_URL = window.API_URL ||
+            ((window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+                ? 'http://localhost:3001'
+                : window.location.origin);
+
+        const container = document.querySelector("#mainContainer");
+        const sign_in_btn = document.querySelector("#sign-in-btn");
+        const sign_up_btn = document.querySelector("#sign-up-btn");
+
+        sign_up_btn.addEventListener("click", () => {
+            container.classList.add("sign-up-mode");
+            setMessageIn("", "");
+            setMessageUp("", "");
+        });
+
+        sign_in_btn.addEventListener("click", () => {
+            container.classList.remove("sign-up-mode");
+            toggleForgotMode(false);
+            setMessageIn("", "");
+            setMessageUp("", "");
+        });
+
+        let isForgotMode = false;
+        let isResetMode = false;
+
+        function setMessageIn(text, type) {
+            const el = document.getElementById("messageIn");
+            if (!text) { el.style.display = "none"; return; }
+            el.textContent = text;
+            el.className = "message-box " + (type || "");
+        }
+
+        function setMessageUp(text, type) {
+            const el = document.getElementById("messageUp");
+            if (!text) { el.style.display = "none"; return; }
+            el.textContent = text;
+            el.className = "message-box " + (type || "");
+        }
+
+        function toggleForgotMode(enable) {
+            isForgotMode = enable;
+            isResetMode = false;
+            setMessageIn("", "");
+
+            const fgPasswordIn = document.getElementById("fgPasswordIn");
+            const fgResetTokenIn = document.getElementById("fgResetTokenIn");
+            const rowBackToLogin = document.getElementById("rowBackToLogin");
+            const subHeadingIn = document.getElementById("subHeadingSignIn");
+            const btnSubmitIn = document.getElementById("btnSubmitIn");
+            const linkForgot = document.getElementById("linkForgot");
+            const titleSignIn = document.getElementById("titleSignIn");
+
+            if (enable) {
+                titleSignIn.textContent = "Reset Password";
+                subHeadingIn.textContent = "Request a password reset token";
+                fgPasswordIn.classList.add("hidden");
+                fgResetTokenIn.classList.add("hidden");
+                btnSubmitIn.value = "Send Token";
+                linkForgot.style.display = "none";
+                rowBackToLogin.style.display = "block";
+            } else {
+                titleSignIn.textContent = "Sign in";
+                subHeadingIn.textContent = "Enter your G Lab account credentials";
+                fgPasswordIn.classList.remove("hidden");
+                fgResetTokenIn.classList.add("hidden");
+                btnSubmitIn.value = "Login";
+                linkForgot.style.display = "block";
+                rowBackToLogin.style.display = "none";
+            }
+        }
+
+        function setResetMode() {
+            isForgotMode = false;
+            isResetMode = true;
+
+            const fgPasswordIn = document.getElementById("fgPasswordIn");
+            const fgResetTokenIn = document.getElementById("fgResetTokenIn");
+            const subHeadingIn = document.getElementById("subHeadingSignIn");
+            const btnSubmitIn = document.getElementById("btnSubmitIn");
+            const titleSignIn = document.getElementById("titleSignIn");
+
+            titleSignIn.textContent = "New Password";
+            subHeadingIn.textContent = "Enter new password & reset token";
+            fgPasswordIn.classList.remove("hidden");
+            fgResetTokenIn.classList.remove("hidden");
+            btnSubmitIn.value = "Reset Password";
+        }
+
+        // 1. SIGN IN / FORGOT / RESET SUBMIT HANDLER
+        async function handleSignInSubmit(event) {
+            event.preventDefault();
+            setMessageIn("", "");
+
+            const email = document.getElementById("email").value.trim().toLowerCase();
+            const password = document.getElementById("password").value;
+            const resetToken = document.getElementById("resetToken").value.trim();
+
+            // A. FORGOT PASSWORD MODE (POST /users/forgot-password)
+            if (isForgotMode) {
+                if (!email) {
+                    setMessageIn("Please enter your registered email address.", "error");
+                    return;
+                }
+
+                setMessageIn("Requesting password reset token...", "loading");
+                try {
+                    const res = await fetch(`${API_URL}/users/forgot-password`, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ email })
+                    });
+                    const data = await res.json();
+
+                    if (!res.ok) throw new Error(data.message || "Failed to request reset token");
+
+                    const tokenStr = data.token ? `Token: ${data.token}` : '';
+                    setMessageIn(`Reset token generated! ${tokenStr}`, "success");
+
+                    if (data.token) {
+                        document.getElementById("resetToken").value = data.token;
+                    }
+                    setTimeout(() => setResetMode(), 1800);
+
+                } catch (err) {
+                    setMessageIn(`Reset request failed: ${err.message}`, "error");
+                }
+            }
+
+            // B. RESET PASSWORD MODE (POST /users/reset-password/:token)
+            else if (isResetMode) {
+                if (!resetToken || !password) {
+                    setMessageIn("Reset token and new password are required.", "error");
+                    return;
+                }
+
+                setMessageIn("Resetting password...", "loading");
+                try {
+                    const res = await fetch(`${API_URL}/users/reset-password/${resetToken}`, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ password })
+                    });
+                    const data = await res.json();
+
+                    if (!res.ok) throw new Error(data.message || "Password reset failed");
+
+                    setMessageIn("Password reset successfully! Please log in with your new password.", "success");
+                    setTimeout(() => toggleForgotMode(false), 1800);
+
+                } catch (err) {
+                    setMessageIn(`Reset failed: ${err.message}`, "error");
+                }
+            }
+
+            // C. LOGIN MODE (POST /users/login)
+            else {
+                if (!email || !password) {
+                    setMessageIn("Email and password are required.", "error");
+                    return;
+                }
+
+                setMessageIn("Authenticating...", "loading");
+                try {
+                    const res = await fetch(`${API_URL}/users/login`, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ email, password })
+                    });
+                    const data = await res.json();
+
+                    if (!res.ok) throw new Error(data.message || `Login failed (${res.status})`);
+
+                    if (!data.token) throw new Error("Authentication failed: Server did not return a valid session token.");
+
+                    // Save JWT token & User details into localStorage BEFORE redirecting
+                    localStorage.setItem("token", data.token);
+                    localStorage.setItem("user", JSON.stringify(data.user || {}));
+
+                    setMessageIn("Login successful! Redirecting...", "success");
+
+                    setTimeout(() => {
+                        const u = data.user || {};
+                        const isAdmin = (u.isadmin === true || u.isadmin === "true" || u.isAdmin === true || u.role === "admin");
+                        if (isAdmin) {
+                            window.location.href = "admin.html";
+                        } else {
+                            window.location.href = "home.html";
+                        }
+                    }, 500);
+
+                } catch (err) {
+                    setMessageIn(`Login failed: ${err.message}`, "error");
+                }
+            }
+        }
+
+        // 2. SIGN UP SUBMIT HANDLER (POST /users/create)
+        async function handleSignUpSubmit(event) {
+            event.preventDefault();
+            setMessageUp("", "");
+
+            const firstname = document.getElementById("firstname").value.trim();
+            const lastname = document.getElementById("lastname").value.trim();
+            const email = document.getElementById("emailReg").value.trim().toLowerCase();
+            const password = document.getElementById("passwordReg").value;
+            const confirmPassword = document.getElementById("confirmPassword").value;
+            const Image = document.getElementById("image").value.trim();
+
+            if (!firstname) {
+                setMessageUp("First name is required.", "error");
+                return;
+            }
+            if (firstname.length < 2 || firstname.length > 50) {
+                setMessageUp("First name must be between 2 and 50 characters.", "error");
+                return;
+            }
+
+            if (!lastname) {
+                setMessageUp("Last name is required.", "error");
+                return;
+            }
+            if (lastname.length < 2 || lastname.length > 50) {
+                setMessageUp("Last name must be between 2 and 50 characters.", "error");
+                return;
+            }
+
+            if (!email) {
+                setMessageUp("Email address is required.", "error");
+                return;
+            }
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                setMessageUp("Please enter a valid email address.", "error");
+                return;
+            }
+
+            if (!password) {
+                setMessageUp("Password is required.", "error");
+                return;
+            }
+            const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+            if (!passwordRegex.test(password)) {
+                setMessageUp("Password must be at least 8 characters long and contain uppercase, lowercase, and a number.", "error");
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                setMessageUp("Passwords do not match.", "error");
+                return;
+            }
+
+            const btnSubmitUp = document.getElementById("btnSubmitUp");
+            btnSubmitUp.disabled = true;
+            btnSubmitUp.value = "Creating...";
+            setMessageUp("Creating account...", "loading");
+
+            try {
+                const res = await fetch(`${API_URL}/users/create`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        firstname,
+                        lastname,
+                        email,
+                        password,
+                        ...(Image ? { Image } : {})
+                    })
+                });
+
+                let data = null;
+                const contentType = res.headers.get("content-type");
+                if (contentType && contentType.includes("application/json")) {
+                    try {
+                        data = await res.json();
+                    } catch (e) {
+                        data = null;
+                    }
+                }
+
+                if (!res.ok) {
+                    if (res.status === 409) {
+                        throw new Error((data && data.message) || "User already exists");
+                    } else if (res.status === 400) {
+                        throw new Error((data && data.message) || "Invalid registration data.");
+                    } else if (res.status === 502 || res.status === 504) {
+                        throw new Error(`Server unavailable (Cloudflare ${res.status}). Please try again later.`);
+                    } else if (res.status >= 500) {
+                        throw new Error((data && data.message) || `Server error (${res.status}). Please try again later.`);
+                    } else {
+                        throw new Error((data && data.message) || `Registration failed (${res.status}).`);
+                    }
+                }
+
+                setMessageUp("Account created successfully! Switching to sign in...", "success");
+                document.getElementById("signUpForm").reset();
+                setTimeout(() => {
+                    container.classList.remove("sign-up-mode");
+                }, 1800);
+
+            } catch (err) {
+                let errText = err.message || "Registration failed.";
+                if (err.name === "TypeError" || errText.includes("Failed to fetch")) {
+                    errText = "Network failure: Unable to connect to server.";
+                }
+                setMessageUp(errText, "error");
+            } finally {
+                btnSubmitUp.disabled = false;
+                btnSubmitUp.value = "Sign up";
+            }
+        }
+
+        // Auto-redirect if already logged in
+        window.addEventListener("DOMContentLoaded", () => {
+            const token = localStorage.getItem("token");
+            if (token) {
+                try {
+                    const u = JSON.parse(localStorage.getItem("user") || "{}");
+                    const isAdmin = (u.isadmin === true || u.isadmin === "true" || u.isAdmin === true || u.role === "admin");
+                    if (isAdmin) {
+                        window.location.href = "admin.html";
+                    } else {
+                        window.location.href = "home.html";
+                    }
+                } catch (_) {}
+            }
+        });
+    </script>
+</body>
+
+</html>
