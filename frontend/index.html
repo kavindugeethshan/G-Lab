@@ -220,6 +220,7 @@
             z-index: 1;
             overflow: hidden;
             background: #0f172a;
+            border-radius: 24px;
         }
 
         .cinematic-hero-bg-video {
@@ -240,8 +241,7 @@
         .cinematic-hero-overlay {
             position: absolute;
             inset: 0;
-            background: radial-gradient(circle at center, rgba(15, 23, 42, 0.35) 0%, rgba(15, 23, 42, 0.85) 100%),
-                        linear-gradient(180deg, rgba(15, 23, 42, 0.7) 0%, rgba(15, 23, 42, 0.45) 50%, rgba(15, 23, 42, 0.95) 100%);
+            background: linear-gradient(180deg, rgba(15, 23, 42, 0.3) 0%, rgba(15, 23, 42, 0.1) 50%, rgba(15, 23, 42, 0.45) 100%);
             z-index: 2;
             pointer-events: none;
         }
@@ -365,9 +365,22 @@
         }
 
         @keyframes bounceDown {
-            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
-            40% { transform: translateY(6px); }
-            60% { transform: translateY(3px); }
+
+            0%,
+            20%,
+            50%,
+            80%,
+            100% {
+                transform: translateY(0);
+            }
+
+            40% {
+                transform: translateY(6px);
+            }
+
+            60% {
+                transform: translateY(3px);
+            }
         }
 
         /* 2. ORIGINAL HERO SECTION (SECOND) */
@@ -467,6 +480,408 @@
             object-fit: cover;
         }
 
+        /* SECOND CINEMATIC VIDEO BANNER (hero2.mp4) - ULTRA GRAND & BRIGHTER */
+        .cinematic-banner-section {
+            position: relative;
+            width: 100vw;
+            left: 50%;
+            right: 50%;
+            margin-left: -50vw;
+            margin-right: -50vw;
+            height: 92vh;
+            min-height: 680px;
+            overflow: hidden;
+            background: transparent;
+            margin-top: 80px;
+            margin-bottom: 80px;
+            padding: 0 16px;
+        }
+
+        .cinematic-banner-frame {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            border-radius: 40px;
+            border: none;
+            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.15);
+            background: #0f172a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .cinematic-banner-video {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            min-width: 100%;
+            min-height: 100%;
+            width: 100%;
+            height: 100%;
+            transform: translate(-50%, -50%);
+            object-fit: cover;
+            z-index: 1;
+        }
+
+        .cinematic-banner-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(15, 23, 42, 0.3) 0%, rgba(15, 23, 42, 0.1) 50%, rgba(15, 23, 42, 0.4) 100%);
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .cinematic-banner-content {
+            position: relative;
+            z-index: 3;
+            text-align: center;
+            color: #ffffff;
+            max-width: 950px;
+            padding: 40px 24px;
+            margin: 0 auto;
+        }
+
+        .cinematic-banner-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 22px;
+            background: rgba(15, 23, 42, 0.45);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            color: #38bdf8;
+            border-radius: 30px;
+            font-size: 0.88rem;
+            font-weight: 700;
+            margin-bottom: 24px;
+            border: 1px solid rgba(56, 189, 248, 0.4);
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .cinematic-banner-heading {
+            font-family: 'Outfit', sans-serif;
+            font-size: 3.8rem;
+            font-weight: 800;
+            line-height: 1.12;
+            margin-bottom: 24px;
+            color: #ffffff;
+            text-shadow: 0 4px 25px rgba(0, 0, 0, 0.85);
+            letter-spacing: -1.4px;
+        }
+
+        .cinematic-banner-subtext {
+            font-size: 1.3rem;
+            color: rgba(255, 255, 255, 0.98);
+            line-height: 1.65;
+            margin: 0 auto 36px auto;
+            max-width: 780px;
+            text-shadow: 0 2px 14px rgba(0, 0, 0, 0.8);
+        }
+
+        .cinematic-banner-actions {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        @media (max-width: 870px) {
+            .cinematic-banner-section {
+                height: 70vh;
+                min-height: 500px;
+            }
+
+            .cinematic-banner-heading {
+                font-size: 2.5rem;
+            }
+
+            .cinematic-banner-subtext {
+                font-size: 1.1rem;
+            }
+        }
+
+        @media (max-width: 500px) {
+            .cinematic-banner-section {
+                height: 60vh;
+                min-height: 420px;
+            }
+
+            .cinematic-banner-heading {
+                font-size: 1.9rem;
+            }
+        }
+
+        /* THIRD CINEMATIC VIDEO BANNER (hero3.mp4) - FIT TO WALL / FULL BROWSER WIDTH */
+        .cinematic-hero3-section {
+            position: relative;
+            width: 100vw;
+            left: 50%;
+            right: 50%;
+            margin-left: -50vw;
+            margin-right: -50vw;
+            height: 92vh;
+            min-height: 700px;
+            overflow: hidden;
+            background: transparent;
+            margin-top: 80px;
+            margin-bottom: 80px;
+            padding: 0 16px;
+        }
+
+        .cinematic-hero3-frame {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            border-radius: 40px;
+            border: none;
+            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.15);
+            background: #0f172a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .cinematic-hero3-video {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            min-width: 100%;
+            min-height: 100%;
+            width: 100%;
+            height: 100%;
+            transform: translate(-50%, -50%);
+            object-fit: cover;
+            z-index: 1;
+        }
+
+        .cinematic-hero3-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(15, 23, 42, 0.3) 0%, rgba(15, 23, 42, 0.1) 50%, rgba(15, 23, 42, 0.45) 100%);
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .cinematic-hero3-content {
+            position: relative;
+            z-index: 3;
+            text-align: center;
+            color: #ffffff;
+            max-width: 950px;
+            padding: 40px 24px;
+            margin: 0 auto;
+        }
+
+        .cinematic-hero3-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 22px;
+            background: rgba(15, 23, 42, 0.45);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            color: #38bdf8;
+            border-radius: 30px;
+            font-size: 0.88rem;
+            font-weight: 700;
+            margin-bottom: 24px;
+            border: 1px solid rgba(56, 189, 248, 0.4);
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .cinematic-hero3-heading {
+            font-family: 'Outfit', sans-serif;
+            font-size: 3.5rem;
+            font-weight: 800;
+            line-height: 1.12;
+            margin-bottom: 24px;
+            color: #ffffff;
+            text-shadow: 0 4px 25px rgba(0, 0, 0, 0.85);
+            letter-spacing: -1.4px;
+        }
+
+        .cinematic-hero3-subtext {
+            font-size: 1.25rem;
+            color: rgba(255, 255, 255, 0.98);
+            line-height: 1.65;
+            margin: 0 auto 36px auto;
+            max-width: 780px;
+            text-shadow: 0 2px 14px rgba(0, 0, 0, 0.8);
+        }
+
+        .cinematic-hero3-actions {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        @media (max-width: 870px) {
+            .cinematic-hero3-section {
+                height: 70vh;
+                min-height: 500px;
+            }
+
+            .cinematic-hero3-heading {
+                font-size: 2.3rem;
+            }
+
+            .cinematic-hero3-subtext {
+                font-size: 1.05rem;
+            }
+        }
+
+        @media (max-width: 500px) {
+            .cinematic-hero3-section {
+                height: 60vh;
+                min-height: 420px;
+            }
+
+            .cinematic-hero3-heading {
+                font-size: 1.8rem;
+            }
+        }
+
+        /* FOURTH CINEMATIC VIDEO BANNER (hero4.mp4) - FIT TO WALL / FULL BROWSER WIDTH */
+        .cinematic-hero4-section {
+            position: relative;
+            width: 100vw;
+            left: 50%;
+            right: 50%;
+            margin-left: -50vw;
+            margin-right: -50vw;
+            height: 92vh;
+            min-height: 700px;
+            overflow: hidden;
+            background: transparent;
+            margin-top: 80px;
+            margin-bottom: 80px;
+            padding: 0 16px;
+        }
+
+        .cinematic-hero4-frame {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            border-radius: 40px;
+            border: none;
+            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.15);
+            background: #0f172a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .cinematic-hero4-video {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            min-width: 100%;
+            min-height: 100%;
+            width: 100%;
+            height: 100%;
+            transform: translate(-50%, -50%);
+            object-fit: cover;
+            z-index: 1;
+        }
+
+        .cinematic-hero4-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(15, 23, 42, 0.3) 0%, rgba(15, 23, 42, 0.1) 50%, rgba(15, 23, 42, 0.45) 100%);
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .cinematic-hero4-content {
+            position: relative;
+            z-index: 3;
+            text-align: center;
+            color: #ffffff;
+            max-width: 950px;
+            padding: 40px 24px;
+            margin: 0 auto;
+        }
+
+        .cinematic-hero4-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 22px;
+            background: rgba(15, 23, 42, 0.45);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            color: #38bdf8;
+            border-radius: 30px;
+            font-size: 0.88rem;
+            font-weight: 700;
+            margin-bottom: 24px;
+            border: 1px solid rgba(56, 189, 248, 0.4);
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .cinematic-hero4-heading {
+            font-family: 'Outfit', sans-serif;
+            font-size: 3.5rem;
+            font-weight: 800;
+            line-height: 1.12;
+            margin-bottom: 24px;
+            color: #ffffff;
+            text-shadow: 0 4px 25px rgba(0, 0, 0, 0.85);
+            letter-spacing: -1.4px;
+        }
+
+        .cinematic-hero4-subtext {
+            font-size: 1.25rem;
+            color: rgba(255, 255, 255, 0.98);
+            line-height: 1.65;
+            margin: 0 auto 36px auto;
+            max-width: 780px;
+            text-shadow: 0 2px 14px rgba(0, 0, 0, 0.8);
+        }
+
+        .cinematic-hero4-actions {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        @media (max-width: 870px) {
+            .cinematic-hero4-section {
+                height: 70vh;
+                min-height: 500px;
+            }
+
+            .cinematic-hero4-heading {
+                font-size: 2.3rem;
+            }
+
+            .cinematic-hero4-subtext {
+                font-size: 1.05rem;
+            }
+        }
+
+        @media (max-width: 500px) {
+            .cinematic-hero4-section {
+                height: 60vh;
+                min-height: 420px;
+            }
+
+            .cinematic-hero4-heading {
+                font-size: 1.8rem;
+            }
+        }
+
         /* SECTION TILES */
         .section-header-center {
             text-align: center;
@@ -495,15 +910,15 @@
 
         .category-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 16px;
         }
 
         .category-card {
             background: #ffffff;
             border: 1px solid var(--border-color);
             border-radius: 16px;
-            padding: 26px 20px;
+            padding: 24px 12px;
             text-align: center;
             text-decoration: none;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -511,6 +926,20 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+        }
+
+        @media (max-width: 1100px) {
+            .category-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 16px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .category-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+            }
         }
 
         .category-card:hover {
@@ -679,7 +1108,7 @@
 
         .why-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            grid-template-columns: repeat(4, 1fr);
             gap: 24px;
         }
 
@@ -691,6 +1120,24 @@
             text-align: left;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
             transition: all 0.3s ease;
+        }
+
+        .why-card:hover {
+            transform: translateY(-4px);
+            border-color: #cbd5e1;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+        }
+
+        @media (max-width: 990px) {
+            .why-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .why-grid {
+                grid-template-columns: 1fr;
+            }
         }
 
         .why-card:hover {
@@ -1022,7 +1469,8 @@
                 </div>
                 <h1 class="cinematic-hero-heading">Engineered For Extreme Performance</h1>
                 <p class="cinematic-hero-subtext">
-                    Discover top-tier GPUs, processors, and custom cooling systems benchmarked for peak gaming & professional workstation workloads.
+                    Discover top-tier GPUs, processors, and custom cooling systems benchmarked for peak gaming &
+                    professional workstation workloads.
                 </p>
                 <div class="cinematic-hero-actions">
                     <a href="#originalHero" class="btn btn-primary" style="padding: 14px 32px; font-size: 1rem;">
@@ -1088,28 +1536,7 @@
         </div>
     </section>
 
-    <!-- 3. FEATURED PRODUCTS SECTION -->
-    <section class="featured-section">
-        <div class="featured-container">
-            <div class="section-header-center">
-                <h3>Featured Arrival Hardware</h3>
-                <p>Hand-picked top tier components for gamers and creators</p>
-            </div>
-
-            <div class="featured-grid" id="featuredProductList">
-                <p style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 40px;">Loading
-                    featured components...</p>
-            </div>
-
-            <div style="text-align: center;">
-                <a href="products.html" class="btn btn-outline" style="padding: 12px 30px; font-size: 0.95rem;">
-                    View All Products <i class="fa-solid fa-arrow-right"></i>
-                </a>
-            </div>
-        </div>
-    </section>
-
-    <!-- 4. CATEGORIES SECTION -->
+    <!-- 3. CATEGORIES SECTION -->
     <section class="categories-section" id="categoriesSection">
         <div class="section-header-center">
             <h3>Major Component Categories</h3>
@@ -1150,7 +1577,7 @@
         </div>
     </section>
 
-    <!-- 3. FEATURED PRODUCTS SECTION -->
+    <!-- 4. FEATURED PRODUCTS & VIEW ALL PRODUCTS SECTION -->
     <section class="featured-section">
         <div class="featured-container">
             <div class="section-header-center">
@@ -1161,6 +1588,147 @@
             <div class="featured-grid" id="featuredProductList">
                 <p style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 40px;">Loading
                     featured components...</p>
+            </div>
+
+            <div style="text-align: center;">
+                <a href="products.html" class="btn btn-outline" style="padding: 12px 30px; font-size: 0.95rem;">
+                    View All Products <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5. SECOND CINEMATIC VIDEO BANNER (hero2.mp4) -->
+    <section class="cinematic-banner-section">
+        <div class="cinematic-banner-frame">
+            <video id="hero2BgVideo" class="cinematic-banner-video" autoplay muted loop playsinline preload="auto">
+                <source src="assets/videos/hero2.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            <div class="cinematic-banner-overlay"></div>
+            <div class="cinematic-banner-content">
+                <div class="cinematic-banner-tag">
+                    <i class="fa-solid fa-bolt"></i> Next-Level Performance
+                </div>
+                <h2 class="cinematic-banner-heading">Unleash Ultimate Power & Efficiency</h2>
+                <p class="cinematic-banner-subtext">
+                    Experience unmatched gaming frame rates and heavy workstation render speeds with authentic
+                    components.
+                </p>
+                <div class="cinematic-banner-actions">
+                    <a href="products.html" class="btn btn-primary" style="padding: 13px 28px; font-size: 0.98rem;">
+                        <i class="fa-solid fa-fire"></i> Shop High Performance
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 6-CARD PRODUCT SHOWCASE SECTION (AFTER 2ND VIDEO & BEFORE WHY CHOOSE G LAB) -->
+    <section class="featured-section" style="padding-top: 40px; padding-bottom: 60px;">
+        <div class="featured-container">
+            <div class="section-header-center">
+                <h3>High Performance Hardware Showcase</h3>
+                <p>Top-rated gaming graphics, high-tier processors, and premium components</p>
+            </div>
+
+            <div class="featured-grid" id="hero2ProductList">
+                <p style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 40px;">Loading
+                    performance components...</p>
+            </div>
+
+            <div style="text-align: center;">
+                <a href="products.html" class="btn btn-outline" style="padding: 12px 30px; font-size: 0.95rem;">
+                    View All Products <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- THIRD CINEMATIC VIDEO BANNER (hero3.mp4) - FULL BROWSER WIDTH -->
+    <section class="cinematic-hero3-section">
+        <div class="cinematic-hero3-frame">
+            <video id="hero3BgVideo" class="cinematic-hero3-video" autoplay muted loop playsinline preload="auto">
+                <source src="assets/videos/hero3.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            <div class="cinematic-hero3-overlay"></div>
+            <div class="cinematic-hero3-content">
+                <div class="cinematic-hero3-tag">
+                    <i class="fa-solid fa-microchip"></i> Pro Gaming & Workstation Collection
+                </div>
+                <h2 class="cinematic-hero3-heading">Pro Tier PC Components & Graphics Systems</h2>
+                <p class="cinematic-hero3-subtext">
+                    Engineered for high frame rates, extreme cooling performance, and seamless multi-threaded creator
+                    workloads.
+                </p>
+                <div class="cinematic-hero3-actions">
+                    <a href="products.html" class="btn btn-primary" style="padding: 14px 32px; font-size: 1rem;">
+                        <i class="fa-solid fa-bag-shopping"></i> Explore Pro Hardware
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4-CARD PRODUCT SHOWCASE SECTION (AFTER HERO3 VIDEO & BEFORE WHY CHOOSE G LAB) -->
+    <section class="featured-section" style="padding-top: 40px; padding-bottom: 60px;">
+        <div class="featured-container">
+            <div class="section-header-center">
+                <h3>Pro Gaming & Extreme Hardware Showcase</h3>
+                <p>Top-rated gaming graphics, high-tier processors, and premium components</p>
+            </div>
+
+            <div class="featured-grid" id="hero3ProductList">
+                <p style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 40px;">Loading
+                    performance components...</p>
+            </div>
+
+            <div style="text-align: center;">
+                <a href="products.html" class="btn btn-outline" style="padding: 12px 30px; font-size: 0.95rem;">
+                    View All Products <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOURTH CINEMATIC VIDEO BANNER (hero4.mp4) - FULL BROWSER WIDTH -->
+    <section class="cinematic-hero4-section">
+        <div class="cinematic-hero4-frame">
+            <video id="hero4BgVideo" class="cinematic-hero4-video" autoplay muted loop playsinline preload="auto">
+                <source src="assets/videos/hero4.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            <div class="cinematic-hero4-overlay"></div>
+            <div class="cinematic-hero4-content">
+                <div class="cinematic-hero4-tag">
+                    <i class="fa-solid fa-desktop"></i> Next-Gen Custom PC Builds
+                </div>
+                <h2 class="cinematic-hero4-heading">Masterpiece Hardware Architecture</h2>
+                <p class="cinematic-hero4-subtext">
+                    Custom-built rig superiority with maximum thermal airflow, ultra-low latency, and hand-crafted
+                    aesthetic precision.
+                </p>
+                <div class="cinematic-hero4-actions">
+                    <a href="products.html" class="btn btn-primary" style="padding: 14px 32px; font-size: 1rem;">
+                        <i class="fa-solid fa-gem"></i> Build Your Custom PC
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4-CARD PRODUCT SHOWCASE SECTION (AFTER HERO4 VIDEO & BEFORE WHY CHOOSE G LAB) -->
+    <section class="featured-section" style="padding-top: 40px; padding-bottom: 60px;">
+        <div class="featured-container">
+            <div class="section-header-center">
+                <h3>Ultimate Custom Rig & Extreme Hardware Showcase</h3>
+                <p>Top-rated gaming graphics, high-tier processors, and premium components</p>
+            </div>
+
+            <div class="featured-grid" id="hero4ProductList">
+                <p style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 40px;">Loading
+                    performance components...</p>
             </div>
 
             <div style="text-align: center;">
@@ -1188,21 +1756,24 @@
             <div class="why-card">
                 <div class="why-icon"><i class="fa-solid fa-shield-halved"></i></div>
                 <h4>Secure Payments</h4>
-                <p>Checkout safely with encrypted local PayHere Sandbox payment integration and instant confirmation.
+                <p>Checkout safely with encrypted local PayHere Sandbox payment integration and instant
+                    confirmation.
                 </p>
             </div>
 
             <div class="why-card">
                 <div class="why-icon"><i class="fa-solid fa-truck-ramp-box"></i></div>
                 <h4>Fast Delivery</h4>
-                <p>Reliable Islandwide shipping ensuring your delicate computer hardware arrives safely at your door.
+                <p>Reliable Islandwide shipping ensuring your delicate computer hardware arrives safely at your
+                    door.
                 </p>
             </div>
 
             <div class="why-card">
                 <div class="why-icon"><i class="fa-solid fa-headset"></i></div>
                 <h4>Trusted Service</h4>
-                <p>Dedicated technical assistance for custom PC builds, compatibility checks, and post-purchase support.
+                <p>Dedicated technical assistance for custom PC builds, compatibility checks, and post-purchase
+                    support.
                 </p>
             </div>
         </div>
@@ -1387,56 +1958,73 @@
             } catch (_) { }
         }
 
-        // FETCH 4 to 8 FEATURED PRODUCTS
+        function renderProductCardsList(products, limit) {
+            let html = "";
+            const items = products.slice(0, limit);
+            items.forEach(p => {
+                const priceFormatted = Number(p.price || 0).toLocaleString('en-US');
+                const imgUrl = (p.images && p.images.length > 0) ? p.images[0] : (p.Image || p.image || 'https://images.unsplash.com/photo-1587202372775-e229f172b9d7?w=500');
+
+                html += `
+                    <div class="product-card">
+                        <div>
+                            <div class="product-image-container">
+                                <img src="${imgUrl}" alt="${p.name || 'Component'}" onerror="this.src='https://images.unsplash.com/photo-1587202372775-e229f172b9d7?w=500'">
+                            </div>
+                            <span class="product-category">${p.category || 'Hardware'}</span>
+                            <h4 class="product-title">${p.name || 'Component'}</h4>
+                            <p class="product-details">${p.description || 'High performance computer component.'}</p>
+                        </div>
+                        <div class="product-footer">
+                            <div class="product-price">Rs. ${priceFormatted}</div>
+                            <div class="product-actions">
+                                <a href="product.html?id=${p._id}" class="btn btn-outline btn-sm">Details</a>
+                                <button type="button" class="btn btn-primary btn-sm" onclick="addToCart('${p._id}')">
+                                    <i class="fa-solid fa-cart-plus"></i> Add
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            return html;
+        }
+
+        // FETCH FEATURED PRODUCTS FOR ALL SECTIONS
         async function loadFeaturedProducts() {
-            const container = document.getElementById("featuredProductList");
-            if (!container) return;
+            const container1 = document.getElementById("featuredProductList");
+            const container2 = document.getElementById("hero2ProductList");
+            const container3 = document.getElementById("hero3ProductList");
+            const container4 = document.getElementById("hero4ProductList");
 
             try {
-                const res = await fetch(`${API_URL}/products?limit=8`);
+                const res = await fetch(`${API_URL}/products?limit=20`);
                 const data = await res.json();
 
                 if (!res.ok) throw new Error(data.message || "Failed to load products");
 
-                const products = (data.products || []).slice(0, 8);
+                const products = data.products || [];
 
                 if (products.length === 0) {
-                    container.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: var(--text-muted);">No featured hardware currently available.</p>`;
+                    const emptyMsg = `<p style="grid-column: 1/-1; text-align: center; color: var(--text-muted);">No featured hardware currently available.</p>`;
+                    if (container1) container1.innerHTML = emptyMsg;
+                    if (container2) container2.innerHTML = emptyMsg;
+                    if (container3) container3.innerHTML = emptyMsg;
+                    if (container4) container4.innerHTML = emptyMsg;
                     return;
                 }
 
-                let html = "";
-                products.forEach(p => {
-                    const priceFormatted = Number(p.price || 0).toLocaleString('en-US');
-                    const imgUrl = (p.images && p.images.length > 0) ? p.images[0] : (p.Image || p.image || 'https://images.unsplash.com/photo-1587202372775-e229f172b9d7?w=500');
-
-                    html += `
-                        <div class="product-card">
-                            <div>
-                                <div class="product-image-container">
-                                    <img src="${imgUrl}" alt="${p.name || 'Component'}" onerror="this.src='https://images.unsplash.com/photo-1587202372775-e229f172b9d7?w=500'">
-                                </div>
-                                <span class="product-category">${p.category || 'Hardware'}</span>
-                                <h4 class="product-title">${p.name || 'Component'}</h4>
-                                <p class="product-details">${p.description || 'High performance computer component.'}</p>
-                            </div>
-                            <div class="product-footer">
-                                <div class="product-price">Rs. ${priceFormatted}</div>
-                                <div class="product-actions">
-                                    <a href="product.html?id=${p._id}" class="btn btn-outline btn-sm">Details</a>
-                                    <button type="button" class="btn btn-primary btn-sm" onclick="addToCart('${p._id}')">
-                                        <i class="fa-solid fa-cart-plus"></i> Add
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                });
-
-                container.innerHTML = html;
+                if (container1) container1.innerHTML = renderProductCardsList(products, 4);
+                if (container2) container2.innerHTML = renderProductCardsList(products, 4);
+                if (container3) container3.innerHTML = renderProductCardsList(products, 4);
+                if (container4) container4.innerHTML = renderProductCardsList(products, 4);
 
             } catch (err) {
-                container.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: var(--error-color);">Error loading featured products: ${err.message}</p>`;
+                const errorMsg = `<p style="grid-column: 1/-1; text-align: center; color: var(--error-color);">Error loading featured products: ${err.message}</p>`;
+                if (container1) container1.innerHTML = errorMsg;
+                if (container2) container2.innerHTML = errorMsg;
+                if (container3) container3.innerHTML = errorMsg;
+                if (container4) container4.innerHTML = errorMsg;
             }
         }
 
