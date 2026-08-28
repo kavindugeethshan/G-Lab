@@ -279,7 +279,7 @@ export const getallProducts = async (req, res) => {
     const itemsPerPage = Number(limit) || 10;
     const skip = (currentPage - 1) * itemsPerPage;
 
-    const filter = {};
+    const filter = { isActive: { $ne: false } };
 
     // Search
     if (search) {
@@ -502,7 +502,6 @@ export const updateProduct = async (req, res) => {
   }
 };
 
-//---------------------------------------------------------------------------------------------
 // deleteProduct function
 export const deleteProduct = async (req, res) => {
   try {
@@ -514,15 +513,11 @@ export const deleteProduct = async (req, res) => {
       });
     }
 
-    const deletedProduct = await Product.findByIdAndUpdate(
-      id,
-      { isActive: false },
-      { new: true }
-    );
+    const deletedProduct = await Product.findByIdAndDelete(id);
 
     if (!deletedProduct) {
       return res.status(404).json({
-        message: "Product deactivated successfully",
+        message: "Product not found",
       });
     }
 

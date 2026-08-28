@@ -1581,8 +1581,8 @@
     <section class="featured-section">
         <div class="featured-container">
             <div class="section-header-center">
-                <h3>Featured Arrival Hardware</h3>
-                <p>Hand-picked top tier components for gamers and creators</p>
+                <h3>New Laptop Arrivals</h3>
+                <p>Explore the latest laptops built for work, gaming, and everyday performance.</p>
             </div>
 
             <div class="featured-grid" id="featuredProductList">
@@ -1628,8 +1628,8 @@
     <section class="featured-section" style="padding-top: 40px; padding-bottom: 60px;">
         <div class="featured-container">
             <div class="section-header-center">
-                <h3>High Performance Hardware Showcase</h3>
-                <p>Top-rated gaming graphics, high-tier processors, and premium components</p>
+                <h3>Next-Gen Hardware</h3>
+                <p>Discover the latest components engineered to power your ultimate setup.</p>
             </div>
 
             <div class="featured-grid" id="hero2ProductList">
@@ -1655,16 +1655,15 @@
             <div class="cinematic-hero3-overlay"></div>
             <div class="cinematic-hero3-content">
                 <div class="cinematic-hero3-tag">
-                    <i class="fa-solid fa-microchip"></i> Pro Gaming & Workstation Collection
+                    <i class="fa-solid fa-camera"></i> Cinematic Camera Collection
                 </div>
-                <h2 class="cinematic-hero3-heading">Pro Tier PC Components & Graphics Systems</h2>
+                <h2 class="cinematic-hero3-heading">Capture Every Moment in Stunning Detail</h2>
                 <p class="cinematic-hero3-subtext">
-                    Engineered for high frame rates, extreme cooling performance, and seamless multi-threaded creator
-                    workloads.
+                    Explore powerful cameras designed for cinematic storytelling, professional photography, and unforgettable moments.
                 </p>
                 <div class="cinematic-hero3-actions">
                     <a href="products.html" class="btn btn-primary" style="padding: 14px 32px; font-size: 1rem;">
-                        <i class="fa-solid fa-bag-shopping"></i> Explore Pro Hardware
+                        <i class="fa-solid fa-camera"></i> Explore Cameras
                     </a>
                 </div>
             </div>
@@ -1675,8 +1674,8 @@
     <section class="featured-section" style="padding-top: 40px; padding-bottom: 60px;">
         <div class="featured-container">
             <div class="section-header-center">
-                <h3>Pro Gaming & Extreme Hardware Showcase</h3>
-                <p>Top-rated gaming graphics, high-tier processors, and premium components</p>
+                <h3>Cinematic Camera Collection</h3>
+                <p>Capture every moment in stunning detail with cameras built for cinematic storytelling, professional photography, and creative adventures.</p>
             </div>
 
             <div class="featured-grid" id="hero3ProductList">
@@ -1702,16 +1701,15 @@
             <div class="cinematic-hero4-overlay"></div>
             <div class="cinematic-hero4-content">
                 <div class="cinematic-hero4-tag">
-                    <i class="fa-solid fa-desktop"></i> Next-Gen Custom PC Builds
+                    <i class="fa-solid fa-plane-up"></i> Next-Gen Drone Collection
                 </div>
-                <h2 class="cinematic-hero4-heading">Masterpiece Hardware Architecture</h2>
+                <h2 class="cinematic-hero4-heading">Explore Beyond the Horizon</h2>
                 <p class="cinematic-hero4-subtext">
-                    Custom-built rig superiority with maximum thermal airflow, ultra-low latency, and hand-crafted
-                    aesthetic precision.
+                    Discover advanced drones built for breathtaking aerial footage, exploration, and unforgettable adventures.
                 </p>
                 <div class="cinematic-hero4-actions">
                     <a href="products.html" class="btn btn-primary" style="padding: 14px 32px; font-size: 1rem;">
-                        <i class="fa-solid fa-gem"></i> Build Your Custom PC
+                        <i class="fa-solid fa-plane-up"></i> Explore Drones
                     </a>
                 </div>
             </div>
@@ -1722,8 +1720,8 @@
     <section class="featured-section" style="padding-top: 40px; padding-bottom: 60px;">
         <div class="featured-container">
             <div class="section-header-center">
-                <h3>Ultimate Custom Rig & Extreme Hardware Showcase</h3>
-                <p>Top-rated gaming graphics, high-tier processors, and premium components</p>
+                <h3>Drone Zone</h3>
+                <p>Take your creativity to new heights with advanced drones built for stunning aerial footage, exploration, and adventure.</p>
             </div>
 
             <div class="featured-grid" id="hero4ProductList">
@@ -1958,6 +1956,16 @@
             } catch (_) { }
         }
 
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
         function renderProductCardsList(products, limit) {
             let html = "";
             const items = products.slice(0, limit);
@@ -1969,11 +1977,11 @@
                     <div class="product-card">
                         <div>
                             <div class="product-image-container">
-                                <img src="${imgUrl}" alt="${p.name || 'Component'}" onerror="this.src='https://images.unsplash.com/photo-1587202372775-e229f172b9d7?w=500'">
+                                <img src="${imgUrl}" alt="${escapeHtml(p.name || 'Product')}" onerror="this.src='https://images.unsplash.com/photo-1587202372775-e229f172b9d7?w=500'">
                             </div>
-                            <span class="product-category">${p.category || 'Hardware'}</span>
-                            <h4 class="product-title">${p.name || 'Component'}</h4>
-                            <p class="product-details">${p.description || 'High performance computer component.'}</p>
+                            <span class="product-category">${escapeHtml(p.category || 'Product')}</span>
+                            <h4 class="product-title">${escapeHtml(p.name || 'Product')}</h4>
+                            <p class="product-details">${escapeHtml(p.description || 'High performance product.')}</p>
                         </div>
                         <div class="product-footer">
                             <div class="product-price">Rs. ${priceFormatted}</div>
@@ -1990,15 +1998,41 @@
             return html;
         }
 
-        // FETCH FEATURED PRODUCTS FOR ALL SECTIONS
+        function normalizeCategoryStr(cat) {
+            return (cat || '').toLowerCase().trim();
+        }
+
+        function isLaptopProduct(p) {
+            const cat = normalizeCategoryStr(p.category);
+            const name = (p.name || '').toLowerCase();
+            return cat.includes('laptop') || cat.includes('notebook') || cat.includes('macbook') || name.includes('laptop');
+        }
+
+        function isCameraProduct(p) {
+            const cat = normalizeCategoryStr(p.category);
+            const name = (p.name || '').toLowerCase();
+            return cat.includes('camera') || cat.includes('dslr') || cat.includes('mirrorless') || name.includes('camera');
+        }
+
+        function isDroneProduct(p) {
+            const cat = normalizeCategoryStr(p.category);
+            const name = (p.name || '').toLowerCase();
+            return cat.includes('drone') || cat.includes('aerial') || cat.includes('quadcopter') || name.includes('drone');
+        }
+
+        function isHardwareProduct(p) {
+            return !isLaptopProduct(p) && !isCameraProduct(p) && !isDroneProduct(p);
+        }
+
+        // FETCH FEATURED PRODUCTS FOR ALL SECTIONS WITH CATEGORY FILTERING
         async function loadFeaturedProducts() {
-            const container1 = document.getElementById("featuredProductList");
-            const container2 = document.getElementById("hero2ProductList");
-            const container3 = document.getElementById("hero3ProductList");
-            const container4 = document.getElementById("hero4ProductList");
+            const container1 = document.getElementById("featuredProductList"); // New Laptop Arrivals
+            const container2 = document.getElementById("hero2ProductList");    // Next-Gen Hardware
+            const container3 = document.getElementById("hero3ProductList");    // Cinematic Camera Collection
+            const container4 = document.getElementById("hero4ProductList");    // Drone Zone
 
             try {
-                const res = await fetch(`${API_URL}/products?limit=20`);
+                const res = await fetch(`${API_URL}/products?limit=100`);
                 const data = await res.json();
 
                 if (!res.ok) throw new Error(data.message || "Failed to load products");
@@ -2006,7 +2040,7 @@
                 const products = data.products || [];
 
                 if (products.length === 0) {
-                    const emptyMsg = `<p style="grid-column: 1/-1; text-align: center; color: var(--text-muted);">No featured hardware currently available.</p>`;
+                    const emptyMsg = `<p style="grid-column: 1/-1; text-align: center; color: var(--text-muted);">No products currently available.</p>`;
                     if (container1) container1.innerHTML = emptyMsg;
                     if (container2) container2.innerHTML = emptyMsg;
                     if (container3) container3.innerHTML = emptyMsg;
@@ -2014,13 +2048,39 @@
                     return;
                 }
 
-                if (container1) container1.innerHTML = renderProductCardsList(products, 4);
-                if (container2) container2.innerHTML = renderProductCardsList(products, 4);
-                if (container3) container3.innerHTML = renderProductCardsList(products, 4);
-                if (container4) container4.innerHTML = renderProductCardsList(products, 4);
+                // Filter products into their respective categories
+                const laptopProducts = products.filter(isLaptopProduct);
+                const hardwareProducts = products.filter(isHardwareProduct);
+                const cameraProducts = products.filter(isCameraProduct);
+                const droneProducts = products.filter(isDroneProduct);
+
+                // Render each section with its filtered category products (limit 4 per section)
+                if (container1) {
+                    container1.innerHTML = laptopProducts.length > 0 
+                        ? renderProductCardsList(laptopProducts, 4)
+                        : `<p style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 40px;">No laptop products currently available.</p>`;
+                }
+
+                if (container2) {
+                    container2.innerHTML = hardwareProducts.length > 0 
+                        ? renderProductCardsList(hardwareProducts, 4)
+                        : `<p style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 40px;">No hardware components currently available.</p>`;
+                }
+
+                if (container3) {
+                    container3.innerHTML = cameraProducts.length > 0 
+                        ? renderProductCardsList(cameraProducts, 4)
+                        : `<p style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 40px;">No camera products currently available.</p>`;
+                }
+
+                if (container4) {
+                    container4.innerHTML = droneProducts.length > 0 
+                        ? renderProductCardsList(droneProducts, 4)
+                        : `<p style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 40px;">No drone products currently available.</p>`;
+                }
 
             } catch (err) {
-                const errorMsg = `<p style="grid-column: 1/-1; text-align: center; color: var(--error-color);">Error loading featured products: ${err.message}</p>`;
+                const errorMsg = `<p style="grid-column: 1/-1; text-align: center; color: var(--error-color);">Error loading products: ${err.message}</p>`;
                 if (container1) container1.innerHTML = errorMsg;
                 if (container2) container2.innerHTML = errorMsg;
                 if (container3) container3.innerHTML = errorMsg;

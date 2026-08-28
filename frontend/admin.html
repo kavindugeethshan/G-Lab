@@ -7,7 +7,9 @@
     <title>G Lab — Admin Dashboard & Control Panel</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="preloader.js"></script>
     <style>
@@ -66,10 +68,11 @@
             z-index: 1000;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
         }
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
         }
 
         .logo-title {
@@ -271,8 +274,15 @@
         }
 
         @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         #message.error {
@@ -327,15 +337,32 @@
         .stat-card::before {
             content: '';
             position: absolute;
-            top: 0; left: 0; width: 4px; height: 100%;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
             background: var(--accent-gradient);
         }
 
-        .stat-card.revenue::before { background: linear-gradient(135deg, #10b981, #059669); }
-        .stat-card.users::before { background: linear-gradient(135deg, #0284c7, #2563eb); }
-        .stat-card.products::before { background: linear-gradient(135deg, #7c3aed, #6d28d9); }
-        .stat-card.orders::before { background: linear-gradient(135deg, #f59e0b, #d97706); }
-        .stat-card.pending::before { background: linear-gradient(135deg, #ef4444, #dc2626); }
+        .stat-card.revenue::before {
+            background: linear-gradient(135deg, #10b981, #059669);
+        }
+
+        .stat-card.users::before {
+            background: linear-gradient(135deg, #0284c7, #2563eb);
+        }
+
+        .stat-card.products::before {
+            background: linear-gradient(135deg, #7c3aed, #6d28d9);
+        }
+
+        .stat-card.orders::before {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+        }
+
+        .stat-card.pending::before {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+        }
 
         .stat-icon {
             font-size: 2.2rem;
@@ -461,8 +488,15 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(6px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(6px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .section-card h2,
@@ -530,9 +564,23 @@
             font-weight: 700;
         }
 
-        .badge-admin { background: #f3e8ff; color: #7c3aed; border: 1px solid #e9d5ff; }
-        .badge-blocked { background: #fee2e2; color: #dc2626; border: 1px solid #fca5a5; }
-        .badge-active { background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
+        .badge-admin {
+            background: #f3e8ff;
+            color: #7c3aed;
+            border: 1px solid #e9d5ff;
+        }
+
+        .badge-blocked {
+            background: #fee2e2;
+            color: #dc2626;
+            border: 1px solid #fca5a5;
+        }
+
+        .badge-active {
+            background: #dcfce7;
+            color: #15803d;
+            border: 1px solid #bbf7d0;
+        }
 
         /* FORM CONTROLS */
         .grid-inputs {
@@ -578,7 +626,10 @@
         /* MODALS */
         .modal {
             position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             background: rgba(15, 23, 42, 0.6);
             backdrop-filter: blur(6px);
             display: flex;
@@ -608,10 +659,11 @@
             max-height: 85vh;
             overflow-y: auto;
         }
-            transform: scale(0.95);
-            transition: transform 0.3s ease;
-            max-height: 85vh;
-            overflow-y: auto;
+
+        transform: scale(0.95);
+        transition: transform 0.3s ease;
+        max-height: 85vh;
+        overflow-y: auto;
         }
 
         .modal.active .modal-content {
@@ -729,7 +781,8 @@
         </div>
         <div class="nav-actions">
             <span class="user-greeting" id="userGreeting">Admin Session</span>
-            <button type="button" class="btn btn-outline" onclick="window.location.href='home.html'">🌐 Storefront</button>
+            <button type="button" class="btn btn-outline" onclick="window.location.href='home.html'">🌐
+                Storefront</button>
             <button type="button" class="btn btn-danger" onclick="logout()">Logout</button>
         </div>
     </header>
@@ -751,27 +804,13 @@
         <div id="sec-dashboard" class="section-card active">
             <h2>📊 Admin Analytics & System Performance</h2>
 
-            <!-- KPI Metric Cards Grid -->
-            <div class="stats-grid">
+            <!-- KPI Metric Cards Grid (5 Cards) -->
+            <div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
                 <div class="stat-card revenue">
                     <div class="stat-icon">💰</div>
                     <div class="stat-info">
                         <span class="stat-label">Total Revenue</span>
                         <span class="stat-value" id="statTotalRevenue" style="color: var(--success-color);">Rs. 0</span>
-                    </div>
-                </div>
-                <div class="stat-card users">
-                    <div class="stat-icon">👥</div>
-                    <div class="stat-info">
-                        <span class="stat-label">Total Users</span>
-                        <span class="stat-value" id="statTotalUsers">0</span>
-                    </div>
-                </div>
-                <div class="stat-card products">
-                    <div class="stat-icon">📦</div>
-                    <div class="stat-info">
-                        <span class="stat-label">Total Products</span>
-                        <span class="stat-value" id="statTotalProducts">0</span>
                     </div>
                 </div>
                 <div class="stat-card orders">
@@ -781,32 +820,131 @@
                         <span class="stat-value" id="statTotalOrders">0</span>
                     </div>
                 </div>
-                <div class="stat-card pending">
-                    <div class="stat-icon">⏳</div>
+                <div class="stat-card products">
+                    <div class="stat-icon">📦</div>
                     <div class="stat-info">
-                        <span class="stat-label">Pending Orders</span>
-                        <span class="stat-value" id="statPendingOrders" style="color: var(--warning-color);">0</span>
+                        <span class="stat-label">Total Products</span>
+                        <span class="stat-value" id="statTotalProducts">0</span>
+                    </div>
+                </div>
+                <div class="stat-card users">
+                    <div class="stat-icon">👥</div>
+                    <div class="stat-info">
+                        <span class="stat-label">Total Customers</span>
+                        <span class="stat-value" id="statTotalUsers">0</span>
+                    </div>
+                </div>
+                <div class="stat-card pending">
+                    <div class="stat-icon">⚠️</div>
+                    <div class="stat-info">
+                        <span class="stat-label">Low Stock Warning</span>
+                        <span class="stat-value" id="statLowStock" style="color: var(--error-color);">0</span>
                     </div>
                 </div>
             </div>
 
-            <!-- Visual Charts & Analytics Grid -->
-            <div class="charts-grid">
+            <!-- Primary Analytics Charts Grid -->
+            <div class="charts-grid" style="margin-bottom: 24px;">
                 <div class="chart-box">
-                    <div class="chart-title">🍩 Order Status Distribution</div>
+                    <div class="chart-title">📈 Sales Revenue Overview</div>
+                    <div class="chart-container">
+                        <canvas id="salesLineChart"></canvas>
+                    </div>
+                </div>
+                <div class="chart-box">
+                    <div class="chart-title">📊 Category Distribution</div>
+                    <div class="chart-container">
+                        <canvas id="categoryBarChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Secondary Analytics Charts Grid -->
+            <div class="charts-grid" style="margin-bottom: 24px;">
+                <div class="chart-box">
+                    <div class="chart-title">🍩 Order Status Breakdown</div>
                     <div class="chart-container">
                         <canvas id="orderStatusChart"></canvas>
                     </div>
                 </div>
                 <div class="chart-box">
-                    <div class="chart-title">📊 Platform Statistics Overview</div>
+                    <div class="chart-title">🏆 Top Selling Products</div>
                     <div class="chart-container">
-                        <canvas id="metricsBarChart"></canvas>
+                        <canvas id="topProductsChart"></canvas>
                     </div>
                 </div>
             </div>
 
-            <!-- Order Conversion Progress Bars -->
+            <!-- Live Tables & Activity Widgets Grid -->
+            <div class="dashboard-widgets-grid"
+                style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px;">
+                <!-- Recent Orders Widget -->
+                <div class="chart-box" style="padding: 20px;">
+                    <div class="chart-title" style="justify-content: space-between;">
+                        <span>📦 Recent Orders</span>
+                        <button class="btn btn-outline" style="padding: 4px 10px; font-size: 0.75rem;"
+                            onclick="switchTab('orders')">View All</button>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Order ID</th>
+                                    <th>Customer</th>
+                                    <th>Date</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="dashRecentOrdersBody">
+                                <tr>
+                                    <td colspan="5"
+                                        style="text-align: center; color: var(--text-muted); padding: 20px;">Loading
+                                        orders...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Low Stock Products Widget -->
+                <div class="chart-box" style="padding: 20px;">
+                    <div class="chart-title" style="justify-content: space-between;">
+                        <span>⚠️ Low Stock Alert (Stock ≤ 5)</span>
+                        <button class="btn btn-outline" style="padding: 4px 10px; font-size: 0.75rem;"
+                            onclick="switchTab('products')">Manage</button>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Category</th>
+                                    <th>Stock</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="dashLowStockBody">
+                                <tr>
+                                    <td colspan="4"
+                                        style="text-align: center; color: var(--text-muted); padding: 20px;">Loading low
+                                        stock items...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity Widget -->
+            <div class="chart-box" style="padding: 20px; margin-bottom: 24px;">
+                <div class="chart-title">⚡ Recent Store Activity</div>
+                <div id="dashActivityList">
+                    <p style="color: var(--text-muted); font-size: 0.85rem;">Loading activity...</p>
+                </div>
+            </div>
+
+            <!-- Order Fulfillment Progress Bars -->
             <div class="progress-card">
                 <div class="chart-title">📈 Order Delivery & Fulfillment Rates</div>
                 <div class="progress-group">
@@ -815,7 +953,8 @@
                         <span id="rateDeliveredText">0%</span>
                     </div>
                     <div class="progress-track">
-                        <div class="progress-bar-fill" id="rateDeliveredBar" style="width: 0%; background: linear-gradient(90deg, #10b981, #059669);"></div>
+                        <div class="progress-bar-fill" id="rateDeliveredBar"
+                            style="width: 0%; background: linear-gradient(90deg, #10b981, #059669);"></div>
                     </div>
                 </div>
                 <div class="progress-group">
@@ -824,7 +963,8 @@
                         <span id="ratePendingText">0%</span>
                     </div>
                     <div class="progress-track">
-                        <div class="progress-bar-fill" id="ratePendingBar" style="width: 0%; background: linear-gradient(90deg, #f59e0b, #d97706);"></div>
+                        <div class="progress-bar-fill" id="ratePendingBar"
+                            style="width: 0%; background: linear-gradient(90deg, #f59e0b, #d97706);"></div>
                     </div>
                 </div>
                 <div class="progress-group">
@@ -833,7 +973,8 @@
                         <span id="rateCancelledText">0%</span>
                     </div>
                     <div class="progress-track">
-                        <div class="progress-bar-fill" id="rateCancelledBar" style="width: 0%; background: linear-gradient(90deg, #ef4444, #dc2626);"></div>
+                        <div class="progress-bar-fill" id="rateCancelledBar"
+                            style="width: 0%; background: linear-gradient(90deg, #ef4444, #dc2626);"></div>
                     </div>
                 </div>
             </div>
@@ -844,8 +985,10 @@
             <h2>📦 Orders Management & Status Control</h2>
 
             <!-- Update Order Status Controls -->
-            <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid var(--border-color); padding: 20px; border-radius: 14px; margin-bottom: 24px;">
-                <h3 style="font-size: 1.1rem; margin-bottom: 14px;">⚡ Update Order Status (PATCH /admin/orders/:id/status)</h3>
+            <div
+                style="background: rgba(15, 23, 42, 0.7); border: 1px solid var(--border-color); padding: 20px; border-radius: 14px; margin-bottom: 24px;">
+                <h3 style="font-size: 1.1rem; margin-bottom: 14px;">⚡ Update Order Status (PATCH
+                    /admin/orders/:id/status)</h3>
                 <div class="grid-inputs" style="grid-template-columns: 1fr 1fr auto; align-items: end;">
                     <div class="form-group" style="margin-bottom: 0;">
                         <label for="updateOrderId">Target Order ID</label>
@@ -861,18 +1004,22 @@
                             <option value="Pending">Pending</option>
                         </select>
                     </div>
-                    <button type="button" class="btn btn-primary" style="height: 45px;" onclick="adminUpdateOrderStatus()">Update Status</button>
+                    <button type="button" class="btn btn-primary" style="height: 45px;"
+                        onclick="adminUpdateOrderStatus()">Update Status</button>
                 </div>
             </div>
 
             <!-- Search & Filter Controls -->
-            <div style="display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 18px; flex-wrap: wrap;">
+            <div
+                style="display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 18px; flex-wrap: wrap;">
                 <div style="display: flex; gap: 10px; flex: 1; max-width: 500px;">
-                    <input type="text" id="searchOrdersInput" placeholder="Search by Order ID, User ID, or Email..." style="flex: 1; padding: 10px 14px; border-radius: 8px; border: 1px solid var(--border-color); background: rgba(15, 23, 42, 0.8); color: white;">
+                    <input type="text" id="searchOrdersInput" placeholder="Search by Order ID, User ID, or Email..."
+                        style="flex: 1; padding: 10px 14px; border-radius: 8px; border: 1px solid var(--border-color); background: rgba(15, 23, 42, 0.8); color: white;">
                     <button type="button" class="btn btn-outline" onclick="searchOrders()">🔍 Search</button>
                 </div>
                 <div style="display: flex; gap: 10px; align-items: center;">
-                    <select id="filterStatusSelect" onchange="filterOrdersByStatus()" style="padding: 10px 14px; border-radius: 8px; border: 1px solid var(--border-color); background: rgba(15, 23, 42, 0.8); color: white;">
+                    <select id="filterStatusSelect" onchange="filterOrdersByStatus()"
+                        style="padding: 10px 14px; border-radius: 8px; border: 1px solid var(--border-color); background: rgba(15, 23, 42, 0.8); color: white;">
                         <option value="">All Statuses</option>
                         <option value="Pending">Pending</option>
                         <option value="Confirmed">Confirmed</option>
@@ -899,7 +1046,9 @@
                         </tr>
                     </thead>
                     <tbody id="ordersTableBody">
-                        <tr><td colspan="7" style="text-align: center; color: var(--text-muted);">Loading orders...</td></tr>
+                        <tr>
+                            <td colspan="7" style="text-align: center; color: var(--text-muted);">Loading orders...</td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -910,7 +1059,8 @@
             <h2>🛒 Product Inventory Management</h2>
 
             <!-- Create Product Form -->
-            <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid var(--border-color); padding: 22px; border-radius: 14px; margin-bottom: 28px;">
+            <div
+                style="background: rgba(15, 23, 42, 0.7); border: 1px solid var(--border-color); padding: 22px; border-radius: 14px; margin-bottom: 28px;">
                 <h3 style="font-size: 1.1rem; margin-bottom: 16px;">➕ Create New Product</h3>
                 <form id="createProductForm">
                     <div class="grid-inputs">
@@ -941,7 +1091,8 @@
                     </div>
                     <div class="form-group">
                         <label>Description *</label>
-                        <textarea id="newDescription" rows="2" required placeholder="Product specifications and features..."></textarea>
+                        <textarea id="newDescription" rows="2" required
+                            placeholder="Product specifications and features..."></textarea>
                     </div>
                     <div class="form-group">
                         <label>Product Image *</label>
@@ -966,7 +1117,10 @@
                         </tr>
                     </thead>
                     <tbody id="productsTableBody">
-                        <tr><td colspan="7" style="text-align: center; color: var(--text-muted);">Loading products...</td></tr>
+                        <tr>
+                            <td colspan="7" style="text-align: center; color: var(--text-muted);">Loading products...
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -988,7 +1142,9 @@
                         </tr>
                     </thead>
                     <tbody id="usersTableBody">
-                        <tr><td colspan="6" style="text-align: center; color: var(--text-muted);">Loading users...</td></tr>
+                        <tr>
+                            <td colspan="6" style="text-align: center; color: var(--text-muted);">Loading users...</td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -1011,7 +1167,10 @@
                         </tr>
                     </thead>
                     <tbody id="reviewsTableBody">
-                        <tr><td colspan="7" style="text-align: center; color: var(--text-muted);">Loading reviews...</td></tr>
+                        <tr>
+                            <td colspan="7" style="text-align: center; color: var(--text-muted);">Loading reviews...
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -1064,7 +1223,7 @@
         try {
             const rawUser = localStorage.getItem("user");
             if (rawUser) currentUser = JSON.parse(rawUser);
-        } catch (_) {}
+        } catch (_) { }
 
         if (!token) {
             window.location.href = "login.html";
@@ -1075,8 +1234,20 @@
             }
         }
 
+        let salesLineChartInstance = null;
+        let categoryBarChartInstance = null;
         let orderStatusChartInstance = null;
-        let metricsBarChartInstance = null;
+        let topProductsChartInstance = null;
+
+        function escapeHtmlStr(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
 
         function getHeaders() {
             return {
@@ -1130,17 +1301,19 @@
                 const totalProducts = stats.totalProducts || 0;
                 const totalOrders = stats.totalOrders || 0;
                 const totalRevenue = stats.totalRevenue || 0;
+                const lowStockCount = stats.lowStockCount || 0;
                 const pendingOrders = stats.pendingOrders || 0;
+                const confirmedOrders = stats.confirmedOrders || 0;
+                const shippedOrders = stats.shippedOrders || 0;
                 const deliveredOrders = stats.deliveredOrders || 0;
                 const cancelledOrders = stats.cancelledOrders || 0;
-                const confirmedOrders = totalOrders - (pendingOrders + deliveredOrders + cancelledOrders);
 
-                // Update KPI Card Texts
-                document.getElementById("statTotalRevenue").textContent = `Rs. ${totalRevenue.toLocaleString()}`;
-                document.getElementById("statTotalUsers").textContent = totalUsers;
-                document.getElementById("statTotalProducts").textContent = totalProducts;
+                // Update KPI Card Values
+                document.getElementById("statTotalRevenue").textContent = `Rs. ${totalRevenue.toLocaleString('en-US')}`;
                 document.getElementById("statTotalOrders").textContent = totalOrders;
-                document.getElementById("statPendingOrders").textContent = pendingOrders;
+                document.getElementById("statTotalProducts").textContent = totalProducts;
+                document.getElementById("statTotalUsers").textContent = totalUsers;
+                document.getElementById("statLowStock").textContent = lowStockCount;
 
                 // Update Progress Bars
                 const delRate = totalOrders > 0 ? ((deliveredOrders / totalOrders) * 100).toFixed(1) : 0;
@@ -1156,21 +1329,100 @@
                 document.getElementById("rateCancelledText").textContent = `${canRate}% (${cancelledOrders} orders)`;
                 document.getElementById("rateCancelledBar").style.width = `${canRate}%`;
 
-                // Render Chart 1: Order Status Doughnut Chart
+                // Render Chart 1: Sales Revenue Line Chart
+                renderSalesLineChart(stats.salesOverTime || []);
+
+                // Render Chart 2: Category Distribution Bar Chart
+                renderCategoryBarChart(stats.categoryStats || []);
+
+                // Render Chart 3: Order Status Donut Chart
                 renderOrderStatusChart({
                     pending: pendingOrders,
-                    confirmed: Math.max(0, confirmedOrders),
+                    confirmed: confirmedOrders + shippedOrders,
                     delivered: deliveredOrders,
                     cancelled: cancelledOrders
                 });
 
-                // Render Chart 2: Metrics Bar Chart
-                renderMetricsBarChart({
-                    users: totalUsers,
-                    products: totalProducts,
-                    orders: totalOrders,
-                    delivered: deliveredOrders
-                });
+                // Render Chart 4: Top Products Chart
+                renderTopProductsChart(stats.topProducts || []);
+
+                // Populate Recent Orders Widget
+                const recentOrders = stats.recentOrders || [];
+                const orderTbody = document.getElementById("dashRecentOrdersBody");
+                if (orderTbody) {
+                    if (recentOrders.length === 0) {
+                        orderTbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--text-muted); padding: 20px;">No recent orders.</td></tr>`;
+                    } else {
+                        orderTbody.innerHTML = recentOrders.map(o => {
+                            const customer = o.User ? `${o.User.firstname || ''} ${o.User.lastname || ''}`.trim() || o.User.email : 'Guest';
+                            const dateStr = new Date(o.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                            let badgeStyle = 'background: #dcfce7; color: #15803d;';
+                            if (o.Orderstatus === 'Pending') badgeStyle = 'background: #fef3c7; color: #b45309;';
+                            else if (o.Orderstatus === 'Cancelled') badgeStyle = 'background: #fee2e2; color: #dc2626;';
+
+                            return `
+                                <tr>
+                                    <td style="font-family: monospace; font-size: 0.8rem;">#${String(o._id).substring(18)}</td>
+                                    <td><strong>${escapeHtmlStr(customer)}</strong></td>
+                                    <td style="font-size: 0.82rem;">${dateStr}</td>
+                                    <td style="color: var(--success-color); font-weight: 700;">Rs. ${(o.FinalTotal || 0).toLocaleString()}</td>
+                                    <td><span style="padding: 4px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 700; ${badgeStyle}">${o.Orderstatus || 'Pending'}</span></td>
+                                </tr>
+                            `;
+                        }).join('');
+                    }
+                }
+
+                // Populate Low Stock Widget
+                const lowStockItems = stats.lowStockItems || [];
+                const lowTbody = document.getElementById("dashLowStockBody");
+                if (lowTbody) {
+                    if (lowStockItems.length === 0) {
+                        lowTbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--text-muted); padding: 20px;">Healthy stock level across all products.</td></tr>`;
+                    } else {
+                        lowTbody.innerHTML = lowStockItems.map(p => `
+                            <tr>
+                                <td><strong>${escapeHtmlStr(p.name)}</strong></td>
+                                <td><span style="font-size: 0.78rem; color: var(--text-muted);">${escapeHtmlStr(p.category || '-')}</span></td>
+                                <td><span style="padding: 3px 8px; border-radius: 10px; font-size: 0.75rem; font-weight: 800; background: #fee2e2; color: #dc2626;">${p.stock} left</span></td>
+                                <td>
+                                    <button class="btn btn-outline" style="padding: 3px 8px; font-size: 0.72rem;" onclick="adminUpdateProduct('${p._id}')">Restock</button>
+                                </td>
+                            </tr>
+                        `).join('');
+                    }
+                }
+
+                // Populate Activity Feed Widget
+                const recentActivity = stats.recentActivity || [];
+                const activityEl = document.getElementById("dashActivityList");
+                if (activityEl) {
+                    if (recentActivity.length === 0) {
+                        activityEl.innerHTML = `<p style="color: var(--text-muted); font-size: 0.85rem; padding: 10px;">No recent store activity recorded.</p>`;
+                    } else {
+                        activityEl.innerHTML = recentActivity.map(act => {
+                            let icon = '🔔';
+                            if (act.type === 'order') icon = '🛒';
+                            else if (act.type === 'user') icon = '👤';
+                            else if (act.type === 'warning') icon = '⚠️';
+
+                            const timeAgo = new Date(act.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+                            return `
+                                <div style="display: flex; gap: 12px; align-items: flex-start; padding: 10px 0; border-bottom: 1px solid var(--border-color);">
+                                    <div style="font-size: 1.2rem; line-height: 1;">${icon}</div>
+                                    <div style="flex: 1;">
+                                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                                            <strong style="font-size: 0.85rem; color: var(--text-main);">${escapeHtmlStr(act.title)}</strong>
+                                            <span style="font-size: 0.72rem; color: var(--text-muted);">${timeAgo}</span>
+                                        </div>
+                                        <p style="font-size: 0.8rem; color: var(--text-muted); margin: 2px 0 0 0;">${escapeHtmlStr(act.desc)}</p>
+                                    </div>
+                                </div>
+                            `;
+                        }).join('');
+                    }
+                }
 
             } catch (err) {
                 console.error("loadDashboardStatistics error:", err);
@@ -1178,61 +1430,129 @@
             }
         }
 
-        function renderOrderStatusChart(data) {
-            const ctx = document.getElementById('orderStatusChart').getContext('2d');
+        function renderSalesLineChart(salesData) {
+            const ctx = document.getElementById('salesLineChart');
+            if (!ctx) return;
 
-            if (orderStatusChartInstance) {
-                orderStatusChartInstance.destroy();
-            }
+            if (salesLineChartInstance) salesLineChartInstance.destroy();
 
-            orderStatusChartInstance = new Chart(ctx, {
-                type: 'doughnut',
+            const labels = salesData.length > 0 ? salesData.map(d => d._id) : ['No Orders Yet'];
+            const values = salesData.length > 0 ? salesData.map(d => d.revenue) : [0];
+
+            salesLineChartInstance = new Chart(ctx, {
+                type: 'line',
                 data: {
-                    labels: ['Pending', 'Confirmed/Shipped', 'Delivered', 'Cancelled'],
+                    labels: labels,
                     datasets: [{
-                        data: [data.pending, data.confirmed, data.delivered, data.cancelled],
-                        backgroundColor: ['#f59e0b', '#3b82f6', '#10b981', '#ef4444'],
-                        borderWidth: 2,
-                        borderColor: '#0f172a'
+                        label: 'Sales Revenue (Rs.)',
+                        data: values,
+                        borderColor: '#10b981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.12)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.35,
+                        pointRadius: 4,
+                        pointBackgroundColor: '#10b981'
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: {
-                        legend: { position: 'right', labels: { color: '#94a3b8', font: { family: 'Plus Jakarta Sans' } } }
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { grid: { display: false } },
+                        y: { beginAtZero: true }
                     }
                 }
             });
         }
 
-        function renderMetricsBarChart(data) {
-            const ctx = document.getElementById('metricsBarChart').getContext('2d');
+        function renderCategoryBarChart(categoryData) {
+            const ctx = document.getElementById('categoryBarChart');
+            if (!ctx) return;
 
-            if (metricsBarChartInstance) {
-                metricsBarChartInstance.destroy();
-            }
+            if (categoryBarChartInstance) categoryBarChartInstance.destroy();
 
-            metricsBarChartInstance = new Chart(ctx, {
+            const labels = categoryData.length > 0 ? categoryData.map(c => c._id || 'Unassigned') : ['No Products'];
+            const values = categoryData.length > 0 ? categoryData.map(c => c.count) : [0];
+
+            categoryBarChartInstance = new Chart(ctx, {
                 type: 'bar',
                 data: {
-                    labels: ['Users', 'Products', 'Total Orders', 'Delivered Orders'],
+                    labels: labels,
                     datasets: [{
-                        label: 'Count',
-                        data: [data.users, data.products, data.orders, data.delivered],
-                        backgroundColor: ['#3b82f6', '#a855f7', '#f59e0b', '#10b981'],
+                        label: 'Total Products',
+                        data: values,
+                        backgroundColor: ['#3b82f6', '#8b5cf6', '#ec4899', '#f59e0b', '#10b981', '#06b6d4'],
                         borderRadius: 8
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: {
-                        legend: { display: false }
-                    },
+                    plugins: { legend: { display: false } },
                     scales: {
-                        x: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(51, 65, 85, 0.3)' } },
-                        y: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(51, 65, 85, 0.3)' } }
+                        x: { grid: { display: false } },
+                        y: { beginAtZero: true, ticks: { precision: 0 } }
+                    }
+                }
+            });
+        }
+
+        function renderOrderStatusChart(data) {
+            const ctx = document.getElementById('orderStatusChart');
+            if (!ctx) return;
+
+            if (orderStatusChartInstance) orderStatusChartInstance.destroy();
+
+            orderStatusChartInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Pending', 'Confirmed / Shipped', 'Delivered', 'Cancelled'],
+                    datasets: [{
+                        data: [data.pending || 0, data.confirmed || 0, data.delivered || 0, data.cancelled || 0],
+                        backgroundColor: ['#f59e0b', '#3b82f6', '#10b981', '#ef4444'],
+                        borderWidth: 2,
+                        borderColor: '#ffffff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'right', labels: { boxWidth: 12 } }
+                    }
+                }
+            });
+        }
+
+        function renderTopProductsChart(topProducts) {
+            const ctx = document.getElementById('topProductsChart');
+            if (!ctx) return;
+
+            if (topProductsChartInstance) topProductsChartInstance.destroy();
+
+            const labels = topProducts.length > 0 ? topProducts.map(p => p.name) : ['No Sold Items'];
+            const values = topProducts.length > 0 ? topProducts.map(p => p.totalSold) : [0];
+
+            topProductsChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Units Sold',
+                        data: values,
+                        backgroundColor: '#8b5cf6',
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { beginAtZero: true, ticks: { precision: 0 } }
                     }
                 }
             });

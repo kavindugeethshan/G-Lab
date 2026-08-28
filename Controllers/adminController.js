@@ -538,42 +538,119 @@ export const deleteUser = async (req, res) => {
 export const getDashboardStatistics = async (req, res) => {
     try {
         const totalUsers = await User.countDocuments();
-        const totalProducts = await Product.countDocuments();
+        const totalProducts = await Product.countDocuments({ isActive: { $ne: false } });
         const totalOrders = await Order.countDocuments();
+        const lowStockCount = await Product.countDocuments({ stock: { $lte: 5 }, isActive: { $ne: false } });
 
-        const pendingOrders = await Order.countDocuments({
-            Orderstatus: "Pending",
-        });
+        const pendingOrders = await Order.countDocuments({ Orderstatus: "Pending" });
+        const confirmedOrders = await Order.countDocuments({ Orderstatus: "Confirmed" });
+        const shippedOrders = await Order.countDocuments({ Orderstatus: "Shipped" });
+        const deliveredOrders = await Order.countDocuments({ Orderstatus: "Delivered" });
+        const cancelledOrders = await Order.countDocuments({ Orderstatus: "Cancelled" });
 
-        const deliveredOrders = await Order.countDocuments({
-            Orderstatus: "Delivered",
-        });
-
-        const cancelledOrders = await Order.countDocuments({
-            Orderstatus: "Cancelled",
-        });
-
-        // Revenue calculation excluding cancelled orders
+        // Total revenue calculation excluding cancelled orders
         const revenueResult = await Order.aggregate([
-            {
-                $match: {
-                    Orderstatus: { $ne: "Cancelled" },
-                },
-            },
+            { $match: { Orderstatus: { $ne: "Cancelled" } } },
             {
                 $group: {
                     _id: null,
-                    totalRevenue: {
-                        $sum: { $ifNull: ["$FinalTotal", "$Total"] },
-                    },
+                    totalRevenue: { $sum: { $ifNull: ["$FinalTotal", "$Subtotal"] } },
                 },
             },
         ]);
+        const totalRevenue = revenueResult.length > 0 ? revenueResult[0].totalRevenue : 0;
 
-        const totalRevenue =
-            revenueResult.length > 0
-                ? revenueResult[0].totalRevenue
-                : 0;
+        // Sales over time (Line Chart data by date)
+        const salesOverTime = await Order.aggregate([
+            { $match: { Orderstatus: { $ne: "Cancelled" } } },
+            {
+                $group: {
+                    _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
+                    revenue: { $sum: { $ifNull: ["$FinalTotal", "$Subtotal"] } },
+                    orders: { $sum: 1 },
+                },
+            },
+            { $sort: { "_id": 1 } },
+            { $limit: 30 }
+        ]);
+
+        // Category breakdown (Bar Chart data)
+        const categoryStats = await Product.aggregate([
+            { $match: { isActive: { $ne: false } } },
+            {
+                $group: {
+                    _id: "$category",
+                    count: { $sum: 1 },
+                    totalStock: { $sum: "$stock" }
+                }
+            },
+            { $sort: { count: -1 } }
+        ]);
+
+        // Top selling products from order items
+        const topProducts = await Order.aggregate([
+            { $match: { Orderstatus: { $ne: "Cancelled" } } },
+            { $unwind: "$Products" },
+            {
+                $group: {
+                    _id: "$Products.name",
+                    productId: { $first: "$Products.productId" },
+                    name: { $first: "$Products.name" },
+                    brand: { $first: "$Products.brand" },
+                    price: { $first: "$Products.price" },
+                    totalSold: { $sum: "$Products.quantity" },
+                    totalRevenue: { $sum: { $multiply: ["$Products.price", "$Products.quantity"] } }
+                }
+            },
+            { $sort: { totalSold: -1 } },
+            { $limit: 5 }
+        ]);
+
+        // Recent orders (latest 5)
+        const recentOrders = await Order.find()
+            .populate("User", "firstname lastname email")
+            .sort({ createdAt: -1 })
+            .limit(5);
+
+        // Low stock products list (latest 5 with stock <= 5)
+        const lowStockItems = await Product.find({ stock: { $lte: 5 }, isActive: { $ne: false } })
+            .sort({ stock: 1 })
+            .limit(5);
+
+        // Recent activity feed
+        const recentUsers = await User.find().sort({ createdAt: -1 }).limit(3);
+        const recentActivity = [];
+
+        recentOrders.slice(0, 3).forEach(o => {
+            const customerName = o.User ? `${o.User.firstname || ''} ${o.User.lastname || ''}`.trim() : 'Customer';
+            recentActivity.push({
+                type: 'order',
+                title: `New Order #${String(o._id).substring(18)}`,
+                desc: `${customerName} placed an order for Rs. ${(o.FinalTotal || 0).toLocaleString()} (${o.Orderstatus})`,
+                date: o.createdAt
+            });
+        });
+
+        recentUsers.forEach(u => {
+            const userName = `${u.firstname || ''} ${u.lastname || ''}`.trim() || u.email;
+            recentActivity.push({
+                type: 'user',
+                title: `New Customer Registration`,
+                desc: `${userName} joined G-LAB`,
+                date: u.createdAt
+            });
+        });
+
+        lowStockItems.slice(0, 3).forEach(p => {
+            recentActivity.push({
+                type: 'warning',
+                title: `Low Stock Alert`,
+                desc: `${p.name} has only ${p.stock} units left in stock`,
+                date: p.updatedAt || p.createdAt
+            });
+        });
+
+        recentActivity.sort((a, b) => new Date(b.date) - new Date(a.date));
 
         return res.status(200).json({
             message: "Dashboard statistics fetched successfully",
@@ -582,15 +659,25 @@ export const getDashboardStatistics = async (req, res) => {
                 totalProducts,
                 totalOrders,
                 totalRevenue,
+                lowStockCount,
                 pendingOrders,
+                confirmedOrders,
+                shippedOrders,
                 deliveredOrders,
                 cancelledOrders,
+                salesOverTime,
+                categoryStats,
+                topProducts,
+                recentOrders,
+                lowStockItems,
+                recentActivity: recentActivity.slice(0, 5)
             },
         });
     } catch (error) {
-        console.log(error.message);
+        console.error("getDashboardStatistics error:", error.message);
         return res.status(500).json({
             message: "Internal server error",
+            error: error.message,
         });
     }
 };
