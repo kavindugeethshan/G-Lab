@@ -292,15 +292,45 @@ export const getallProducts = async (req, res) => {
       ];
     }
 
-    // Filter by multiple categories
+    // Filter by multiple categories (with alias mapping)
     if (category) {
-      const categories = category
+      const categoryMap = {
+        "graphics cards": ["Graphic Cards", "Graphics Cards", "Graphic Card", "Cards", "GPU"],
+        "graphic cards": ["Graphic Cards", "Graphics Cards", "Graphic Card", "Cards", "GPU"],
+        "graphic card": ["Graphic Cards", "Graphics Cards", "Graphic Card", "Cards", "GPU"],
+        "gpu": ["Graphic Cards", "Graphics Cards", "Graphic Card", "Cards", "GPU"],
+        "power supplies": ["Power Supply", "Power Supplies", "PSU"],
+        "power supply": ["Power Supply", "Power Supplies", "PSU"],
+        "psu": ["Power Supply", "Power Supplies", "PSU"],
+        "storage": ["SSD", "Storage", "SSDs", "SSDs & Storage", "HDD", "Hard Drive"],
+        "ssd": ["SSD", "Storage", "SSDs", "SSDs & Storage", "HDD", "Hard Drive"],
+        "ssds": ["SSD", "Storage", "SSDs", "SSDs & Storage", "HDD", "Hard Drive"],
+        "processors": ["Processors", "Processor", "CPU"],
+        "processor": ["Processors", "Processor", "CPU"],
+        "cpu": ["Processors", "Processor", "CPU"],
+        "ram": ["RAM", "Memory", "Memory (RAM)"],
+        "memory": ["RAM", "Memory", "Memory (RAM)"],
+        "motherboards": ["Motherboards", "Motherboard"],
+        "motherboard": ["Motherboards", "Motherboard"]
+      };
+
+      const rawItems = category
         .split(",")
         .map((item) => item.trim())
         .filter(Boolean);
 
+      const expandedCategories = [];
+      rawItems.forEach((item) => {
+        const key = item.toLowerCase();
+        if (categoryMap[key]) {
+          expandedCategories.push(...categoryMap[key]);
+        } else {
+          expandedCategories.push(item);
+        }
+      });
+
       filter.category = {
-        $in: categories.map((item) => new RegExp(`^${escapeRegex(item)}$`, "i"))
+        $in: expandedCategories.map((item) => new RegExp(`^${escapeRegex(item)}$`, "i"))
       };
     }
 

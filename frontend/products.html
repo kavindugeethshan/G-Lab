@@ -865,13 +865,13 @@
                 <div class="filter-group">
                     <span class="filter-label">Categories</span>
                     <ul class="category-list">
-                        <li><button type="button" class="category-item-btn active" onclick="filterByChip('', this)">All Categories</button></li>
-                        <li><button type="button" class="category-item-btn" onclick="filterByChip('Graphics Cards', this)">Graphics Cards</button></li>
-                        <li><button type="button" class="category-item-btn" onclick="filterByChip('Processors', this)">Processors</button></li>
-                        <li><button type="button" class="category-item-btn" onclick="filterByChip('RAM', this)">Memory (RAM)</button></li>
-                        <li><button type="button" class="category-item-btn" onclick="filterByChip('Storage', this)">SSDs & Storage</button></li>
-                        <li><button type="button" class="category-item-btn" onclick="filterByChip('Power Supplies', this)">Power Supplies</button></li>
-                        <li><button type="button" class="category-item-btn" onclick="filterByChip('Motherboards', this)">Motherboards</button></li>
+                        <li><button type="button" class="category-item-btn active" data-category="" onclick="filterByChip('', this)">All Categories</button></li>
+                        <li><button type="button" class="category-item-btn" data-category="Graphics Cards" onclick="filterByChip('Graphics Cards', this)">Graphics Cards</button></li>
+                        <li><button type="button" class="category-item-btn" data-category="Processors" onclick="filterByChip('Processors', this)">Processors</button></li>
+                        <li><button type="button" class="category-item-btn" data-category="RAM" onclick="filterByChip('RAM', this)">Memory (RAM)</button></li>
+                        <li><button type="button" class="category-item-btn" data-category="Storage" onclick="filterByChip('Storage', this)">SSDs & Storage</button></li>
+                        <li><button type="button" class="category-item-btn" data-category="Power Supplies" onclick="filterByChip('Power Supplies', this)">Power Supplies</button></li>
+                        <li><button type="button" class="category-item-btn" data-category="Motherboards" onclick="filterByChip('Motherboards', this)">Motherboards</button></li>
                     </ul>
                     <input type="hidden" id="category" value="">
                 </div>
@@ -948,13 +948,13 @@
         <div class="filter-group">
             <span class="filter-label">Categories</span>
             <ul class="category-list">
-                <li><button type="button" class="category-item-btn active" onclick="filterByChip('', this); toggleMobileFilter(false);">All Categories</button></li>
-                <li><button type="button" class="category-item-btn" onclick="filterByChip('Graphics Cards', this); toggleMobileFilter(false);">Graphics Cards</button></li>
-                <li><button type="button" class="category-item-btn" onclick="filterByChip('Processors', this); toggleMobileFilter(false);">Processors</button></li>
-                <li><button type="button" class="category-item-btn" onclick="filterByChip('RAM', this); toggleMobileFilter(false);">Memory (RAM)</button></li>
-                <li><button type="button" class="category-item-btn" onclick="filterByChip('Storage', this); toggleMobileFilter(false);">SSDs & Storage</button></li>
-                <li><button type="button" class="category-item-btn" onclick="filterByChip('Power Supplies', this); toggleMobileFilter(false);">Power Supplies</button></li>
-                <li><button type="button" class="category-item-btn" onclick="filterByChip('Motherboards', this); toggleMobileFilter(false);">Motherboards</button></li>
+                <li><button type="button" class="category-item-btn active" data-category="" onclick="filterByChip('', this); toggleMobileFilter(false);">All Categories</button></li>
+                <li><button type="button" class="category-item-btn" data-category="Graphics Cards" onclick="filterByChip('Graphics Cards', this); toggleMobileFilter(false);">Graphics Cards</button></li>
+                <li><button type="button" class="category-item-btn" data-category="Processors" onclick="filterByChip('Processors', this); toggleMobileFilter(false);">Processors</button></li>
+                <li><button type="button" class="category-item-btn" data-category="RAM" onclick="filterByChip('RAM', this); toggleMobileFilter(false);">Memory (RAM)</button></li>
+                <li><button type="button" class="category-item-btn" data-category="Storage" onclick="filterByChip('Storage', this); toggleMobileFilter(false);">SSDs & Storage</button></li>
+                <li><button type="button" class="category-item-btn" data-category="Power Supplies" onclick="filterByChip('Power Supplies', this); toggleMobileFilter(false);">Power Supplies</button></li>
+                <li><button type="button" class="category-item-btn" data-category="Motherboards" onclick="filterByChip('Motherboards', this); toggleMobileFilter(false);">Motherboards</button></li>
             </ul>
         </div>
 
@@ -1256,11 +1256,40 @@
         }
 
         function filterByChip(catName, btnEl) {
-            document.querySelectorAll(".category-item-btn").forEach(c => c.classList.remove("active"));
-            if (btnEl) btnEl.classList.add("active");
             document.getElementById("category").value = catName;
+            updateActiveCategoryButtons(catName);
             currentPage = 1;
             loadProducts();
+        }
+
+        function updateActiveCategoryButtons(catName) {
+            const targetCat = (catName || "").toLowerCase().trim();
+            document.querySelectorAll(".category-item-btn").forEach(btn => {
+                const btnCat = (btn.getAttribute("data-category") || "").toLowerCase().trim();
+                const btnText = btn.textContent.trim().toLowerCase();
+
+                let isMatch = false;
+                if (!targetCat && !btnCat) {
+                    isMatch = true;
+                } else if (targetCat) {
+                    if (btnCat === targetCat) {
+                        isMatch = true;
+                    } else if (targetCat === "graphics cards" || targetCat === "graphic cards" || targetCat === "gpu") {
+                        if (btnCat === "graphics cards" || btnText.includes("graphic")) isMatch = true;
+                    } else if (targetCat === "storage" || targetCat === "ssd" || targetCat === "ssds") {
+                        if (btnCat === "storage" || btnText.includes("ssd") || btnText.includes("storage")) isMatch = true;
+                    } else if (targetCat === "power supplies" || targetCat === "power supply" || targetCat === "psu") {
+                        if (btnCat === "power supplies" || btnText.includes("power")) isMatch = true;
+                    } else if (targetCat === "ram" || targetCat === "memory") {
+                        if (btnCat === "ram" || btnText.includes("ram") || btnText.includes("memory")) isMatch = true;
+                    } else if (targetCat === "processors" || targetCat === "processor") {
+                        if (btnCat === "processors" || btnText.includes("processor")) isMatch = true;
+                    } else if (targetCat === "motherboards" || targetCat === "motherboard") {
+                        if (btnCat === "motherboards" || btnText.includes("motherboard")) isMatch = true;
+                    }
+                }
+                btn.classList.toggle("active", isMatch);
+            });
         }
 
         function applyFilterAndSort() {
@@ -1289,9 +1318,7 @@
             if (maxPriceMobile) maxPriceMobile.value = "";
 
             document.getElementById("sortOption").value = "newest";
-            document.querySelectorAll(".category-item-btn").forEach((c, idx) => {
-                c.classList.toggle("active", idx === 0);
-            });
+            updateActiveCategoryButtons("");
             currentPage = 1;
             loadProducts();
         }
@@ -1335,11 +1362,7 @@
             const categoryQuery = urlParams.get("category");
             if (categoryQuery) {
                 document.getElementById("category").value = categoryQuery;
-                const matchingBtn = Array.from(document.querySelectorAll(".category-item-btn")).find(c => c.textContent.trim().toLowerCase() === categoryQuery.toLowerCase());
-                if (matchingBtn) {
-                    document.querySelectorAll(".category-item-btn").forEach(c => c.classList.remove("active"));
-                    matchingBtn.classList.add("active");
-                }
+                updateActiveCategoryButtons(categoryQuery);
             }
 
             loadProducts();
