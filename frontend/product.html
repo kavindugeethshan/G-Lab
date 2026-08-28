@@ -757,7 +757,7 @@
                 <i class="fa-solid fa-store"></i> All Products
             </button>
             <button type="button" class="btn btn-primary" onclick="window.location.href='cart.html'">
-                <i class="fa-solid fa-cart-shopping"></i> Cart
+                <i class="fa-solid fa-cart-shopping"></i> Cart <span id="cartCountBadge" class="badge" style="background:#ef4444; color:white; font-size:0.72rem; padding:2px 7px; border-radius:10px; font-weight:700;">0</span>
             </button>
         </div>
     </header>
@@ -1093,6 +1093,47 @@
                 }).catch(() => {});
         }
 
+        async function loadCartCount(cartData) {
+            const badge = document.getElementById("cartCountBadge") || document.getElementById("navCartCount");
+            if (!badge) return;
+
+            if (cartData) {
+                let count = 0;
+                if (cartData.totalQuantity !== undefined) {
+                    count = cartData.totalQuantity;
+                } else if (cartData.itemCount !== undefined) {
+                    count = cartData.itemCount;
+                } else if (cartData.cart && Array.isArray(cartData.cart.items)) {
+                    count = cartData.cart.items.reduce((sum, item) => sum + (Number(item.quantity) || 1), 0);
+                } else if (Array.isArray(cartData.items)) {
+                    count = cartData.items.reduce((sum, item) => sum + (Number(item.quantity) || 1), 0);
+                }
+                badge.textContent = count;
+                return;
+            }
+
+            if (!token) return;
+            try {
+                const res = await fetch(`${API_URL}/cart`, {
+                    headers: getHeaders()
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    let count = 0;
+                    if (data.totalQuantity !== undefined) {
+                        count = data.totalQuantity;
+                    } else if (data.itemCount !== undefined) {
+                        count = data.itemCount;
+                    } else if (Array.isArray(data.items)) {
+                        count = data.items.reduce((sum, item) => sum + (Number(item.quantity) || 1), 0);
+                    } else if (data.cart && Array.isArray(data.cart.items)) {
+                        count = data.cart.items.reduce((sum, item) => sum + (Number(item.quantity) || 1), 0);
+                    }
+                    badge.textContent = count;
+                }
+            } catch (_) {}
+        }
+
         async function addToCartDetail(pId) {
             if (!token) {
                 setMessage("Please sign in to add items to your shopping cart.", "error");
@@ -1112,6 +1153,7 @@
                 if (!res.ok) throw new Error(data.message || "Failed to add to cart");
 
                 setMessage("Product added to cart! 🛒", "success");
+                loadCartCount(data);
             } catch (err) {
                 setMessage(`Add to cart failed: ${err.message}`, "error");
             }
@@ -1299,7 +1341,10 @@
             }
         }
 
-        window.addEventListener("DOMContentLoaded", loadProductDetail);
+        window.addEventListener("DOMContentLoaded", () => {
+            loadProductDetail();
+            if (token) loadCartCount();
+        });
     </script>
 </body>
 

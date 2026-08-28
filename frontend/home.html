@@ -1944,7 +1944,25 @@
             }
         }
 
-        async function loadCartCount() {
+        async function loadCartCount(cartData) {
+            const badge = document.getElementById("cartCountBadge") || document.getElementById("navCartCount");
+            if (!badge) return;
+
+            if (cartData) {
+                let count = 0;
+                if (cartData.totalQuantity !== undefined) {
+                    count = cartData.totalQuantity;
+                } else if (cartData.itemCount !== undefined) {
+                    count = cartData.itemCount;
+                } else if (cartData.cart && Array.isArray(cartData.cart.items)) {
+                    count = cartData.cart.items.reduce((sum, item) => sum + (Number(item.quantity) || 1), 0);
+                } else if (Array.isArray(cartData.items)) {
+                    count = cartData.items.reduce((sum, item) => sum + (Number(item.quantity) || 1), 0);
+                }
+                badge.textContent = count;
+                return;
+            }
+
             if (!token) return;
             try {
                 const res = await fetch(`${API_URL}/cart`, {
@@ -1952,13 +1970,19 @@
                 });
                 if (res.ok) {
                     const data = await res.json();
-                    const badge = document.getElementById("cartCountBadge");
-                    if (badge) {
-                        const count = (data.cart && data.cart.items) ? data.cart.items.length : 0;
-                        badge.textContent = count;
+                    let count = 0;
+                    if (data.totalQuantity !== undefined) {
+                        count = data.totalQuantity;
+                    } else if (data.itemCount !== undefined) {
+                        count = data.itemCount;
+                    } else if (Array.isArray(data.items)) {
+                        count = data.items.reduce((sum, item) => sum + (Number(item.quantity) || 1), 0);
+                    } else if (data.cart && Array.isArray(data.cart.items)) {
+                        count = data.cart.items.reduce((sum, item) => sum + (Number(item.quantity) || 1), 0);
                     }
+                    badge.textContent = count;
                 }
-            } catch (_) { }
+            } catch (_) {}
         }
 
         function escapeHtml(str) {
@@ -2114,7 +2138,7 @@
                 if (!res.ok) throw new Error(data.message || "Failed to add item to cart");
 
                 setMessage("Item added to cart successfully!", "success");
-                loadCartCount();
+                loadCartCount(data);
             } catch (err) {
                 setMessage(err.message, "error");
             }
