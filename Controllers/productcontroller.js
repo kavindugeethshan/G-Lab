@@ -311,7 +311,11 @@ export const getallProducts = async (req, res) => {
         "ram": ["RAM", "Memory", "Memory (RAM)"],
         "memory": ["RAM", "Memory", "Memory (RAM)"],
         "motherboards": ["Motherboards", "Motherboard"],
-        "motherboard": ["Motherboards", "Motherboard"]
+        "motherboard": ["Motherboards", "Motherboard"],
+        "cameras": ["Cameras", "Camera", "Cinematic Camera Collection", "Camera Collection"],
+        "camera": ["Cameras", "Camera", "Cinematic Camera Collection", "Camera Collection"],
+        "drones": ["Drones", "Drone", "Drone Zone", "Next-Gen Drone Collection"],
+        "drone": ["Drones", "Drone", "Drone Zone", "Next-Gen Drone Collection"]
       };
 
       const rawItems = category

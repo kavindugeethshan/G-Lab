@@ -873,6 +873,8 @@
                         <li><button type="button" class="category-item-btn" data-category="Storage" onclick="filterByChip('Storage', this)">SSDs & Storage</button></li>
                         <li><button type="button" class="category-item-btn" data-category="Power Supplies" onclick="filterByChip('Power Supplies', this)">Power Supplies</button></li>
                         <li><button type="button" class="category-item-btn" data-category="Motherboards" onclick="filterByChip('Motherboards', this)">Motherboards</button></li>
+                        <li><button type="button" class="category-item-btn" data-category="Cameras" onclick="filterByChip('Cameras', this)">Cameras</button></li>
+                        <li><button type="button" class="category-item-btn" data-category="Drones" onclick="filterByChip('Drones', this)">Drones</button></li>
                     </ul>
                     <input type="hidden" id="category" value="">
                 </div>
@@ -956,6 +958,8 @@
                 <li><button type="button" class="category-item-btn" data-category="Storage" onclick="filterByChip('Storage', this); toggleMobileFilter(false);">SSDs & Storage</button></li>
                 <li><button type="button" class="category-item-btn" data-category="Power Supplies" onclick="filterByChip('Power Supplies', this); toggleMobileFilter(false);">Power Supplies</button></li>
                 <li><button type="button" class="category-item-btn" data-category="Motherboards" onclick="filterByChip('Motherboards', this); toggleMobileFilter(false);">Motherboards</button></li>
+                <li><button type="button" class="category-item-btn" data-category="Cameras" onclick="filterByChip('Cameras', this); toggleMobileFilter(false);">Cameras</button></li>
+                <li><button type="button" class="category-item-btn" data-category="Drones" onclick="filterByChip('Drones', this); toggleMobileFilter(false);">Drones</button></li>
             </ul>
         </div>
 
@@ -1315,6 +1319,10 @@
                         if (btnCat === "processors" || btnText.includes("processor")) isMatch = true;
                     } else if (targetCat === "motherboards" || targetCat === "motherboard") {
                         if (btnCat === "motherboards" || btnText.includes("motherboard")) isMatch = true;
+                    } else if (targetCat === "cameras" || targetCat === "camera") {
+                        if (btnCat === "cameras" || btnText.includes("camera")) isMatch = true;
+                    } else if (targetCat === "drones" || targetCat === "drone") {
+                        if (btnCat === "drones" || btnText.includes("drone")) isMatch = true;
                     }
                 }
                 btn.classList.toggle("active", isMatch);

@@ -6,16 +6,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>G Lab — Login & Signup</title>
     <link rel="icon" type="image/png" href="animation/Favicon.png">
-    
+
     <!-- Google Font Poppins -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="preloader.js"></script>
-    
+
     <style>
         * {
             font-family: "Poppins", sans-serif;
@@ -357,20 +358,24 @@
                 min-height: 800px;
                 height: 100vh;
             }
+
             .signin-signup {
                 width: 100%;
                 top: 95%;
                 transform: translate(-50%, -100%);
                 transition: 1s 0.8s ease-in-out;
             }
+
             .signin-signup,
             .container.sign-up-mode .signin-signup {
                 left: 50%;
             }
+
             .panels-container {
                 grid-template-columns: 1fr;
                 grid-template-rows: 1fr 2fr 1fr;
             }
+
             .panel {
                 flex-direction: row;
                 justify-content: space-around;
@@ -378,34 +383,42 @@
                 padding: 2.5rem 8%;
                 grid-column: 1/2;
             }
+
             .right-panel {
                 grid-row: 3/4;
             }
+
             .left-panel {
                 grid-row: 1/2;
             }
+
             .image {
                 width: 200px;
                 transition: transform 0.9s ease-in-out;
                 transition-delay: 0.6s;
             }
+
             .panel .content {
                 padding-right: 15%;
                 transition: transform 0.9s ease-in-out;
                 transition-delay: 0.8s;
             }
+
             .panel h3 {
                 font-size: 1.2rem;
             }
+
             .panel p {
                 font-size: 0.7rem;
                 padding: 0.5rem 0;
             }
+
             .btn.transparent {
                 width: 110px;
                 height: 35px;
                 font-size: 0.7rem;
             }
+
             .container::before {
                 width: 1500px;
                 height: 1500px;
@@ -416,23 +429,28 @@
                 top: initial;
                 transition: 2s ease-in-out;
             }
+
             .container.sign-up-mode::before {
                 transform: translate(-50%, 100%);
                 bottom: 32%;
                 right: initial;
             }
+
             .container.sign-up-mode .right-panel .image,
             .container.sign-up-mode .right-panel .content {
                 transform: translateY(0px);
             }
+
             .container.sign-up-mode .left-panel .image,
             .container.sign-up-mode .left-panel .content {
                 transform: translateY(-300px);
             }
+
             .right-panel .image,
             .right-panel .content {
                 transform: translateY(300px);
             }
+
             .container.sign-up-mode .signin-signup {
                 top: 5%;
                 transform: translate(-50%, 0);
@@ -443,16 +461,20 @@
             form {
                 padding: 0 1.5rem;
             }
+
             .image {
                 display: none;
             }
+
             .panel .content {
                 padding: 0.5rem 1rem;
             }
+
             .container::before {
                 bottom: 72%;
                 left: 50%;
             }
+
             .container.sign-up-mode::before {
                 bottom: 28%;
                 left: 50%;
@@ -488,10 +510,45 @@
                         <input type="password" id="password" placeholder="Password">
                     </div>
 
-                    <!-- Forgot Password Link -->
-                    <a class="forgot-link" id="linkForgot" onclick="toggleForgotMode(true)">
-                        Forgot Password / Reset Token?
-                    </a>
+                    <!-- Inline Wrong Password Animation & Alert Box -->
+                    <div id="wrongPasswordContainer" style="display: none; width: 100%; max-width: 440px; margin: 12px 0; transition: all 0.3s ease;">
+                        <div style="display: flex; align-items: center; gap: 14px;">
+                            <!-- Animation Video Outside the Card on the Left -->
+                            <video id="wrongPasswordVideo" autoplay loop muted playsinline style="width: 180px; height: 140px; object-fit: contain; flex-shrink: 0;">
+                                <source src="animation/forgot password red.webm" type="video/webm">
+                            </video>
+
+                            <!-- Red Card containing Text & Forgot Link -->
+                            <div style="flex: 1; background: #fff5f5; border: 1px solid #fca5a5; border-radius: 16px; padding: 14px 18px; box-shadow: 0 6px 20px rgba(239, 68, 68, 0.12); text-align: left;">
+                                <div id="wrongPasswordText" style="font-size: 0.92rem; font-weight: 700; color: #dc2626; line-height: 1.3;">
+                                    Invalid email or password
+                                </div>
+                                <a class="forgot-link" onclick="toggleForgotMode(true)" style="font-size: 0.82rem; color: #0284c7; text-decoration: underline; cursor: pointer; font-weight: 600; display: inline-block; margin-top: 6px;">
+                                    Forgot Password?
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Inline Success Login Animation & Card Box -->
+                    <div id="successLoginContainer" style="display: none; width: 100%; max-width: 440px; margin: 12px 0; transition: all 0.3s ease;">
+                        <div style="display: flex; align-items: center; gap: 14px;">
+                            <!-- Success Video Animation Outside Card on Left -->
+                            <video id="correctPasswordVideo" autoplay loop muted playsinline style="width: 180px; height: 140px; object-fit: contain; flex-shrink: 0;">
+                                <source src="animation/correct password.webm" type="video/webm">
+                            </video>
+
+                            <!-- Green Card containing Success Message -->
+                            <div style="flex: 1; background: #f0fdf4; border: 1px solid #86efac; border-radius: 16px; padding: 14px 18px; box-shadow: 0 6px 20px rgba(34, 197, 94, 0.12); text-align: left;">
+                                <div style="font-size: 0.95rem; font-weight: 700; color: #15803d; line-height: 1.3;">
+                                    Login Successful!
+                                </div>
+                                <div style="font-size: 0.82rem; color: #166534; font-weight: 600; margin-top: 4px;">
+                                    Redirecting to your account...
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
                     <!-- Reset Token Field (Hidden by default) -->
                     <div class="input-field hidden" id="fgResetTokenIn">
@@ -530,6 +587,27 @@
                         <input type="email" id="emailReg" required placeholder="Email Address">
                     </div>
 
+                    <!-- Real-time Password Requirements Indicator (Directly above password input) -->
+                    <div id="passwordRequirements" style="display: none; width: 100%; max-width: 380px; margin: 4px 0 8px 0; padding: 2px 4px; transition: all 0.3s ease;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; gap: 4px;">
+                            <span id="req-length" style="display: inline-flex; align-items: center; gap: 3px; font-size: 0.74rem; font-weight: 700; padding: 3px 7px; border-radius: 12px; transition: all 0.25s ease; background: #fef2f2; color: #dc2626; border: 1px solid #fca5a5;">
+                                <span class="req-icon">🔴</span> 8+
+                            </span>
+                            <span id="req-upper" style="display: inline-flex; align-items: center; gap: 3px; font-size: 0.74rem; font-weight: 700; padding: 3px 7px; border-radius: 12px; transition: all 0.25s ease; background: #fef2f2; color: #dc2626; border: 1px solid #fca5a5;">
+                                <span class="req-icon">🔴</span> A-Z
+                            </span>
+                            <span id="req-lower" style="display: inline-flex; align-items: center; gap: 3px; font-size: 0.74rem; font-weight: 700; padding: 3px 7px; border-radius: 12px; transition: all 0.25s ease; background: #fef2f2; color: #dc2626; border: 1px solid #fca5a5;">
+                                <span class="req-icon">🔴</span> a-z
+                            </span>
+                            <span id="req-number" style="display: inline-flex; align-items: center; gap: 3px; font-size: 0.74rem; font-weight: 700; padding: 3px 7px; border-radius: 12px; transition: all 0.25s ease; background: #fef2f2; color: #dc2626; border: 1px solid #fca5a5;">
+                                <span class="req-icon">🔴</span> 0-9
+                            </span>
+                            <span id="req-special" style="display: inline-flex; align-items: center; gap: 3px; font-size: 0.74rem; font-weight: 700; padding: 3px 7px; border-radius: 12px; transition: all 0.25s ease; background: #fef2f2; color: #dc2626; border: 1px solid #fca5a5;">
+                                <span class="req-icon">🔴</span> !@#
+                            </span>
+                        </div>
+                    </div>
+
                     <div class="input-field">
                         <i class="fa-solid fa-lock"></i>
                         <input type="password" id="passwordReg" required placeholder="Password">
@@ -554,10 +632,13 @@
             <div class="panel left-panel">
                 <div class="content">
                     <h3>New here ?</h3>
-                    <p>Create an account to explore high-performance PC hardware, custom gaming rigs, and exclusive deals.</p>
+                    <p>Create an account to explore high-performance PC hardware, custom gaming rigs, and exclusive
+                        deals.</p>
                     <button class="btn transparent" id="sign-up-btn">Sign up</button>
                 </div>
-                <video autoplay loop muted playsinline class="image" style="border-radius: 16px; object-fit: cover; max-height: 280px;" onerror="this.style.display='none'">
+                <video autoplay loop muted playsinline class="image"
+                    style="border-radius: 16px; object-fit: cover; max-height: 280px;"
+                    onerror="this.style.display='none'">
                     <source src="animation/Login.mp4" type="video/mp4">
                 </video>
             </div>
@@ -566,10 +647,13 @@
             <div class="panel right-panel">
                 <div class="content">
                     <h3>One of us ?</h3>
-                    <p>Sign in with your credentials to access your cart, track orders, and manage your hardware profile.</p>
+                    <p>Sign in with your credentials to access your cart, track orders, and manage your hardware
+                        profile.</p>
                     <button class="btn transparent" id="sign-in-btn">Sign in</button>
                 </div>
-                <video autoplay loop muted playsinline class="image" style="border-radius: 16px; object-fit: cover; max-height: 280px;" onerror="this.style.display='none'">
+                <video autoplay loop muted playsinline class="image"
+                    style="border-radius: 16px; object-fit: cover; max-height: 280px;"
+                    onerror="this.style.display='none'">
                     <source src="animation/sign up.mp4" type="video/mp4">
                 </video>
             </div>
@@ -618,10 +702,38 @@
             el.className = "message-box " + (type || "");
         }
 
+        let isSubmittingLogin = false;
+
+        function showWrongPasswordAlert(errMsg) {
+            const container = document.getElementById("wrongPasswordContainer");
+            const video = document.getElementById("wrongPasswordVideo");
+            const textEl = document.getElementById("wrongPasswordText");
+
+            if (textEl) {
+                textEl.textContent = errMsg || "Invalid email or password";
+            }
+
+            if (container) {
+                container.style.display = "block";
+                if (video) {
+                    video.currentTime = 0;
+                    video.play().catch(() => { });
+                }
+            }
+        }
+
+        function hideWrongPasswordAlert() {
+            const wrongContainer = document.getElementById("wrongPasswordContainer");
+            if (wrongContainer) wrongContainer.style.display = "none";
+            const successContainer = document.getElementById("successLoginContainer");
+            if (successContainer) successContainer.style.display = "none";
+            setMessageIn("", "");
+        }
+
         function toggleForgotMode(enable) {
             isForgotMode = enable;
             isResetMode = false;
-            setMessageIn("", "");
+            hideWrongPasswordAlert();
 
             const fgPasswordIn = document.getElementById("fgPasswordIn");
             const fgResetTokenIn = document.getElementById("fgResetTokenIn");
@@ -637,7 +749,7 @@
                 fgPasswordIn.classList.add("hidden");
                 fgResetTokenIn.classList.add("hidden");
                 btnSubmitIn.value = "Send Token";
-                linkForgot.style.display = "none";
+                if (linkForgot) linkForgot.style.display = "none";
                 rowBackToLogin.style.display = "block";
             } else {
                 titleSignIn.textContent = "Sign in";
@@ -645,7 +757,7 @@
                 fgPasswordIn.classList.remove("hidden");
                 fgResetTokenIn.classList.add("hidden");
                 btnSubmitIn.value = "Login";
-                linkForgot.style.display = "block";
+                if (linkForgot) linkForgot.style.display = "block";
                 rowBackToLogin.style.display = "none";
             }
         }
@@ -735,12 +847,24 @@
 
             // C. LOGIN MODE (POST /users/login)
             else {
+                if (isSubmittingLogin) return;
+
                 if (!email || !password) {
                     setMessageIn("Email and password are required.", "error");
                     return;
                 }
 
-                setMessageIn("Authenticating...", "loading");
+                hideWrongPasswordAlert();
+
+                const btnSubmitIn = document.getElementById("btnSubmitIn");
+                isSubmittingLogin = true;
+                if (btnSubmitIn) {
+                    btnSubmitIn.disabled = true;
+                    btnSubmitIn.value = "Authenticating...";
+                }
+
+                setMessageIn("Authenticating credentials...", "loading");
+
                 try {
                     const res = await fetch(`${API_URL}/users/login`, {
                         method: "POST",
@@ -749,29 +873,74 @@
                     });
                     const data = await res.json();
 
-                    if (!res.ok) throw new Error(data.message || `Login failed (${res.status})`);
+                    if (!res.ok) {
+                        throw new Error(data.message || "Password incorrect — Try again");
+                    }
 
-                    if (!data.token) throw new Error("Authentication failed: Server did not return a valid session token.");
+                    if (!data.token) {
+                        throw new Error("Authentication failed: Server did not return a valid session token.");
+                    }
 
-                    // Save JWT token & User details into localStorage BEFORE redirecting
+                    // Save JWT token & User details into localStorage
                     localStorage.setItem("token", data.token);
                     localStorage.setItem("user", JSON.stringify(data.user || {}));
 
-                    setMessageIn("Login successful! Redirecting...", "success");
+                    setMessageIn("Login successful! Loading...", "success");
 
-                    setTimeout(() => {
-                        const u = data.user || {};
-                        const isAdmin = (u.isadmin === true || u.isadmin === "true" || u.isAdmin === true || u.role === "admin");
-                        if (isAdmin) {
-                            window.location.href = "admin.html";
-                        } else {
-                            window.location.href = "home.html";
-                        }
-                    }, 500);
+                    // Trigger white screen transition & play correct password animation
+                    playLoginSuccessAnimation(data.user);
 
                 } catch (err) {
-                    setMessageIn(`Login failed: ${err.message}`, "error");
+                    isSubmittingLogin = false;
+                    if (btnSubmitIn) {
+                        btnSubmitIn.disabled = false;
+                        btnSubmitIn.value = "Login";
+                    }
+                    showWrongPasswordAlert(err.message);
                 }
+            }
+        }
+
+        function playLoginSuccessAnimation(user) {
+            hideWrongPasswordAlert();
+
+            const container = document.getElementById("successLoginContainer");
+            const video = document.getElementById("correctPasswordVideo");
+
+            const doRedirect = () => {
+                const u = user || {};
+                const isAdmin = (u.isadmin === true || u.isadmin === "true" || u.isAdmin === true || u.role === "admin");
+                if (isAdmin) {
+                    window.location.href = "admin.html";
+                } else {
+                    window.location.href = "home.html";
+                }
+            };
+
+            if (container && video) {
+                container.style.display = "block";
+                video.currentTime = 0;
+
+                let hasRedirected = false;
+                const safeRedirect = () => {
+                    if (!hasRedirected) {
+                        hasRedirected = true;
+                        doRedirect();
+                    }
+                };
+
+                video.onended = safeRedirect;
+
+                const playPromise = video.play();
+                if (playPromise !== undefined) {
+                    playPromise.catch(() => {
+                        setTimeout(safeRedirect, 1500);
+                    });
+                }
+
+                setTimeout(safeRedirect, 2600);
+            } else {
+                doRedirect();
             }
         }
 
@@ -888,8 +1057,59 @@
             }
         }
 
-        // Auto-redirect if already logged in
+        function validatePasswordRequirements(val) {
+            const container = document.getElementById("passwordRequirements");
+            if (!container) return;
+
+            if (!val || val.length === 0) {
+                container.style.display = "none";
+                return;
+            }
+
+            container.style.display = "block";
+
+            const checks = {
+                "req-length": val.length >= 8,
+                "req-upper": /[A-Z]/.test(val),
+                "req-lower": /[a-z]/.test(val),
+                "req-number": /[0-9]/.test(val),
+                "req-special": /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~`]/.test(val)
+            };
+
+            for (const [id, isValid] of Object.entries(checks)) {
+                const el = document.getElementById(id);
+                if (!el) continue;
+
+                const iconEl = el.querySelector(".req-icon");
+                if (isValid) {
+                    if (iconEl) iconEl.textContent = "🟢";
+                    el.style.background = "#f0fdf4";
+                    el.style.color = "#15803d";
+                    el.style.borderColor = "#86efac";
+                    el.style.transform = "scale(1.04)";
+                } else {
+                    if (iconEl) iconEl.textContent = "🔴";
+                    el.style.background = "#fef2f2";
+                    el.style.color = "#dc2626";
+                    el.style.borderColor = "#fca5a5";
+                    el.style.transform = "scale(1)";
+                }
+            }
+        }
+
+        // Auto-redirect if already logged in & reset alert on typing
         window.addEventListener("DOMContentLoaded", () => {
+            const pwdInput = document.getElementById("password");
+            const emailInput = document.getElementById("email");
+            const pwdRegInput = document.getElementById("passwordReg");
+
+            pwdInput?.addEventListener("input", hideWrongPasswordAlert);
+            emailInput?.addEventListener("input", hideWrongPasswordAlert);
+
+            pwdRegInput?.addEventListener("input", (e) => {
+                validatePasswordRequirements(e.target.value);
+            });
+
             const token = localStorage.getItem("token");
             if (token) {
                 try {
@@ -900,7 +1120,7 @@
                     } else {
                         window.location.href = "home.html";
                     }
-                } catch (_) {}
+                } catch (_) { }
             }
         });
     </script>
