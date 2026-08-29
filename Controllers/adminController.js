@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import bcrypt from "bcrypt";
 import Order from "../models/Ordermodel.js";
 import User from "../models/Usermodel.js";
 import Product from "../models/Productmodel.js";
@@ -675,6 +676,84 @@ export const getDashboardStatistics = async (req, res) => {
         });
     } catch (error) {
         console.error("getDashboardStatistics error:", error.message);
+        return res.status(500).json({
+            message: "Internal server error",
+            error: error.message,
+        });
+    }
+};
+
+// Create New Admin User - Authenticated Admin Only
+export const createAdmin = async (req, res) => {
+    try {
+        const { email, firstname, lastname, password } = req.body;
+
+        // 1. Validate email
+        if (!email || typeof email !== "string") {
+            return res.status(400).json({
+                message: "Email is required",
+            });
+        }
+        const cleanEmail = email.trim().toLowerCase();
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(cleanEmail)) {
+            return res.status(400).json({
+                message: "Please enter a valid email address",
+            });
+        }
+
+        // 2. Validate first and last name
+        if (!firstname || typeof firstname !== "string" || firstname.trim().length < 2) {
+            return res.status(400).json({
+                message: "First name must be at least 2 characters",
+            });
+        }
+        if (!lastname || typeof lastname !== "string" || lastname.trim().length < 2) {
+            return res.status(400).json({
+                message: "Last name must be at least 2 characters",
+            });
+        }
+
+        // 3. Validate password
+        if (!password || typeof password !== "string" || password.length < 8) {
+            return res.status(400).json({
+                message: "Password must be at least 8 characters long",
+            });
+        }
+
+        // 4. Check whether email already exists
+        const existingUser = await User.findOne({ email: cleanEmail });
+        if (existingUser) {
+            return res.status(409).json({
+                message: "A user with this email address already exists",
+            });
+        }
+
+        // 5. Hash password with bcrypt
+        const saltRounds = 12;
+        const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+        // 6. Create admin user
+        const newAdmin = await User.create({
+            email: cleanEmail,
+            firstname: firstname.trim(),
+            lastname: lastname.trim(),
+            password: hashedPassword,
+            isadmin: true,
+            isemailverified: true
+        });
+
+        // 7. Exclude password from response
+        const adminResponse = newAdmin.toObject();
+        delete adminResponse.password;
+
+        return res.status(201).json({
+            message: "Admin account created successfully",
+            admin: adminResponse,
+        });
+
+    } catch (error) {
+        console.error("createAdmin error:", error.message);
         return res.status(500).json({
             message: "Internal server error",
             error: error.message,

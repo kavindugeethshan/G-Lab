@@ -10,7 +10,8 @@ import {
     getUserDetails,
     blockUser,
     unblockUser,
-    deleteUser
+    deleteUser,
+    createAdmin
 } from "../Controllers/adminController.js";
 
 import { authMiddleware } from "../Middleware/authMiddleware.js";
@@ -33,6 +34,7 @@ adminRouter.get("/orders/search", authMiddleware, adminMiddleware, searchOrders)
 adminRouter.get("/orders/filter", authMiddleware, adminMiddleware, filterOrders);
 adminRouter.get("/orders/:id", authMiddleware, adminMiddleware, getOrderDetails);
 adminRouter.get("/users", authMiddleware, adminMiddleware, getAllUsers);
+adminRouter.post("/create-admin", authMiddleware, adminMiddleware, createAdmin);
 adminRouter.get("/users/:id", authMiddleware, adminMiddleware, getUserDetails);
 adminRouter.patch("/users/:id/block", authMiddleware, adminMiddleware, blockUser);
 adminRouter.patch("/users/:id/unblock", authMiddleware, adminMiddleware, unblockUser);

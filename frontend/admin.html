@@ -798,6 +798,7 @@
             <button id="tab-orders" onclick="switchTab('orders')">📦 Orders Management</button>
             <button id="tab-products" onclick="switchTab('products')">🛒 Product Management</button>
             <button id="tab-users" onclick="switchTab('users')">👥 User Management</button>
+            <button id="tab-admins" onclick="switchTab('admins')">🛡️ Admin Management</button>
             <button id="tab-reviews" onclick="switchTab('reviews')">⭐ Review Management</button>
         </div>
 
@@ -1151,6 +1152,77 @@
             </div>
         </div>
 
+        <!-- SECTION 5: ADMIN MANAGEMENT -->
+        <div id="sec-admins" class="section-card">
+            <h2>🛡️ Admin Management & Account Creation</h2>
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 24px;">
+                Create new authenticated administrator accounts. Admin accounts are granted system-wide control panel access and are protected from deletion.
+            </p>
+
+            <!-- Card 1: Create Admin Form -->
+            <div style="background: #ffffff; border: 1.5px solid #e2e8f0; border-radius: 16px; padding: 24px; margin-bottom: 28px; box-shadow: 0 4px 20px rgba(15, 23, 42, 0.03);">
+                <h3 style="font-size: 1.15rem; color: #0f172a; margin-bottom: 18px; display: flex; align-items: center; gap: 8px;">
+                    ✨ Create New Admin Account
+                </h3>
+                <form id="createAdminForm" onsubmit="handleCreateAdmin(event)">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 16px;">
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label for="adminFirstName">First Name *</label>
+                            <input type="text" id="adminFirstName" required placeholder="e.g. Kasun">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label for="adminLastName">Last Name *</label>
+                            <input type="text" id="adminLastName" required placeholder="e.g. Perera">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label for="adminEmail">Email Address *</label>
+                            <input type="email" id="adminEmail" required placeholder="e.g. admin@glab.lk">
+                        </div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 20px;">
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label for="adminPassword">Password *</label>
+                            <input type="password" id="adminPassword" required minlength="8" placeholder="At least 8 characters">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label for="adminConfirmPassword">Confirm Password *</label>
+                            <input type="password" id="adminConfirmPassword" required minlength="8" placeholder="Repeat password">
+                        </div>
+                    </div>
+                    <div style="display: flex; justify-content: flex-end;">
+                        <button type="submit" class="btn btn-primary" style="padding: 12px 24px; font-weight: 700; display: flex; align-items: center; gap: 8px;">
+                            🛡️ Create Admin Account
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Card 2: Admin Accounts List -->
+            <div>
+                <h3 style="font-size: 1.15rem; color: #0f172a; margin-bottom: 16px;">📋 Active Administrator Accounts</h3>
+                <div class="table-responsive">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Admin ID</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th>Status</th>
+                                <th>Joined Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminsTableBody">
+                            <tr>
+                                <td colspan="7" style="text-align: center; color: var(--text-muted);">Loading admin accounts...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
         <!-- SECTION 5: REVIEW MANAGEMENT -->
         <div id="sec-reviews" class="section-card">
             <h2>⭐ Product Reviews & Moderation</h2>
@@ -1286,6 +1358,7 @@
             if (tabId === 'orders') loadAllOrders();
             if (tabId === 'products') loadProducts();
             if (tabId === 'users') loadAllUsers();
+            if (tabId === 'admins') loadAdminUsers();
             if (tabId === 'reviews') loadAllReviews();
         }
 
@@ -2085,6 +2158,86 @@
         }
 
         // Expose functions to window for inline HTML onclick handlers
+        // 6. ADMIN MANAGEMENT & CREATION
+        async function handleCreateAdmin(e) {
+            e.preventDefault();
+            const firstname = document.getElementById("adminFirstName").value.trim();
+            const lastname = document.getElementById("adminLastName").value.trim();
+            const email = document.getElementById("adminEmail").value.trim();
+            const password = document.getElementById("adminPassword").value;
+            const confirmPassword = document.getElementById("adminConfirmPassword").value;
+
+            if (password !== confirmPassword) {
+                setMessage("Passwords do not match. Please check and re-enter.", "error");
+                return;
+            }
+
+            setMessage("Creating new administrator account...", "loading");
+
+            try {
+                const res = await fetch(`${API_URL}/admin/create-admin`, {
+                    method: "POST",
+                    headers: getHeaders(),
+                    body: JSON.stringify({ firstname, lastname, email, password })
+                });
+
+                const data = await res.json();
+                if (!res.ok) {
+                    throw new Error(data.message || "Failed to create admin account");
+                }
+
+                setMessage(`🎉 ${data.message || 'Admin account created successfully'}!`, "success");
+                document.getElementById("createAdminForm").reset();
+                loadAdminUsers();
+                loadAllUsers();
+
+            } catch (err) {
+                console.error("handleCreateAdmin error:", err);
+                setMessage(`Admin creation failed: ${err.message}`, "error");
+            }
+        }
+
+        async function loadAdminUsers() {
+            try {
+                const res = await fetch(`${API_URL}/admin/users`, { headers: getHeaders() });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.message || "Failed to fetch users");
+
+                const allUsers = data.users || [];
+                const admins = allUsers.filter(u => u.isadmin);
+                const tbody = document.getElementById("adminsTableBody");
+
+                if (!tbody) return;
+
+                if (!admins || admins.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--text-muted);">No admin accounts found.</td></tr>`;
+                    return;
+                }
+
+                tbody.innerHTML = admins.map(u => {
+                    const fullName = `${u.firstname || ''} ${u.lastname || ''}`.trim() || '—';
+                    const joinedDate = u.createdAt ? new Date(u.createdAt).toLocaleDateString() : '—';
+                    return `
+                        <tr>
+                            <td style="font-family: monospace; font-size: 0.82rem;">${u._id}</td>
+                            <td><strong>${fullName}</strong></td>
+                            <td>${u.email || '—'}</td>
+                            <td><span class="user-badge badge-admin">Administrator</span></td>
+                            <td><span class="user-badge badge-active">Protected</span></td>
+                            <td>${joinedDate}</td>
+                            <td>
+                                <button class="btn btn-outline" style="padding: 4px 10px; font-size: 0.75rem;" onclick="viewUserDetails('${u._id}')">Details</button>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+            } catch (err) {
+                console.error("loadAdminUsers error:", err);
+                const tbody = document.getElementById("adminsTableBody");
+                if (tbody) tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--error-color);">Error loading admins: ${err.message}</td></tr>`;
+            }
+        }
+
         window.switchTab = switchTab;
         window.loadDashboardStatistics = loadDashboardStatistics;
         window.loadAllOrders = loadAllOrders;
@@ -2097,6 +2250,8 @@
         window.adminUpdateProduct = adminUpdateProduct;
         window.adminDeleteProduct = adminDeleteProduct;
         window.loadAllUsers = loadAllUsers;
+        window.loadAdminUsers = loadAdminUsers;
+        window.handleCreateAdmin = handleCreateAdmin;
         window.viewUserDetails = viewUserDetails;
         window.closeUserModal = closeUserModal;
         window.blockUser = blockUser;

@@ -361,6 +361,12 @@ export const deleteOwnAccount = async (req, res) => {
       });
     }
 
+    if (user.isadmin) {
+      return res.status(403).json({
+        message: "Admin accounts cannot be deleted",
+      });
+    }
+
     await User.findByIdAndDelete(req.user.userId);
 
     res.status(200).json({
