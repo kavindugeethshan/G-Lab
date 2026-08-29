@@ -1201,6 +1201,21 @@
             }
         }
 
+        function updateCartBadge(count) {
+            const num = Number(count) || 0;
+            const badge = document.getElementById("navCartCount") || document.getElementById("cartCountBadge");
+            if (badge) {
+                badge.textContent = num;
+                if (num > 0) {
+                    badge.style.display = "inline-flex";
+                } else {
+                    badge.style.display = "none";
+                }
+            }
+            localStorage.setItem("cartCount", num);
+            localStorage.setItem("cartUpdated", Date.now());
+        }
+
         // 1. SHOPPING CART LOGIC
         async function loadCart() {
             try {
@@ -1213,10 +1228,10 @@
                     throw new Error(data.message || `Failed to fetch cart (${response.status})`);
                 }
 
-                const navCount = document.getElementById("navCartCount");
-                if (navCount) {
-                    navCount.textContent = data.totalQuantity || data.itemCount || 0;
-                }
+                const totalQuantity = data.totalQuantity !== undefined
+                    ? data.totalQuantity
+                    : (data.items || []).reduce((s, i) => s + (Number(i.quantity) || 1), 0);
+                updateCartBadge(totalQuantity);
 
                 renderCart(data);
 
@@ -1239,6 +1254,7 @@
             const totalQuantity = cartData.totalQuantity !== undefined ? cartData.totalQuantity : items.reduce((s, i) => s + i.quantity, 0);
 
             if (!items || items.length === 0) {
+                updateCartBadge(0);
                 cartContent.innerHTML = `
                     <div class="empty-cart-state">
                         <div class="empty-cart-icon">🛒</div>
@@ -1251,6 +1267,8 @@
                 cartMetricsBar.style.display = "none";
                 return;
             }
+
+            updateCartBadge(totalQuantity);
 
             // Update Metrics Bar
             document.getElementById("metricItemCount").textContent = itemCount;
@@ -1801,6 +1819,18 @@
         window.addEventListener("DOMContentLoaded", function () {
             loadCart();
             loadMyOrders();
+        });
+
+        window.addEventListener("pageshow", () => {
+            if (localStorage.getItem("token")) loadCart();
+        });
+        window.addEventListener("focus", () => {
+            if (localStorage.getItem("token")) loadCart();
+        });
+        window.addEventListener("storage", (e) => {
+            if (e.key === "cartCount" || e.key === "cartUpdated") {
+                if (localStorage.getItem("token")) loadCart();
+            }
         });
     </script>
 </body>

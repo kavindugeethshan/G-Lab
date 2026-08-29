@@ -1094,10 +1094,21 @@
                 }).catch(() => {});
         }
 
-        async function loadCartCount(cartData) {
+        function updateCartBadge(count) {
+            const num = Number(count) || 0;
             const badge = document.getElementById("cartCountBadge") || document.getElementById("navCartCount");
-            if (!badge) return;
+            if (badge) {
+                badge.textContent = num;
+                if (num > 0) {
+                    badge.style.display = "inline-flex";
+                } else {
+                    badge.style.display = "none";
+                }
+            }
+            localStorage.setItem("cartCount", num);
+        }
 
+        async function loadCartCount(cartData) {
             if (cartData) {
                 let count = 0;
                 if (cartData.totalQuantity !== undefined) {
@@ -1109,11 +1120,15 @@
                 } else if (Array.isArray(cartData.items)) {
                     count = cartData.items.reduce((sum, item) => sum + (Number(item.quantity) || 1), 0);
                 }
-                badge.textContent = count;
+                updateCartBadge(count);
                 return;
             }
 
-            if (!token) return;
+            const activeToken = localStorage.getItem("token");
+            if (!activeToken) {
+                updateCartBadge(0);
+                return;
+            }
             try {
                 const res = await fetch(`${API_URL}/cart`, {
                     headers: getHeaders()
@@ -1130,7 +1145,7 @@
                     } else if (data.cart && Array.isArray(data.cart.items)) {
                         count = data.cart.items.reduce((sum, item) => sum + (Number(item.quantity) || 1), 0);
                     }
-                    badge.textContent = count;
+                    updateCartBadge(count);
                 }
             } catch (_) {}
         }
@@ -1345,6 +1360,18 @@
         window.addEventListener("DOMContentLoaded", () => {
             loadProductDetail();
             if (token) loadCartCount();
+        });
+
+        window.addEventListener("pageshow", () => {
+            if (localStorage.getItem("token")) loadCartCount();
+        });
+        window.addEventListener("focus", () => {
+            if (localStorage.getItem("token")) loadCartCount();
+        });
+        window.addEventListener("storage", (e) => {
+            if (e.key === "cartCount" || e.key === "cartUpdated") {
+                if (localStorage.getItem("token")) loadCartCount();
+            }
         });
     </script>
 </body>
