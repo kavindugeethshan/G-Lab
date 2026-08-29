@@ -276,7 +276,12 @@ export const getallProducts = async (req, res) => {
 
     // Pagination
     const currentPage = Number(page) || 1;
-    const itemsPerPage = Number(limit) || 10;
+    let itemsPerPage = 10;
+    if (limit === "0" || limit === "all" || limit === "1000") {
+      itemsPerPage = 10000;
+    } else if (Number(limit) > 0) {
+      itemsPerPage = Number(limit);
+    }
     const skip = (currentPage - 1) * itemsPerPage;
 
     const filter = { isActive: { $ne: false } };
