@@ -58,6 +58,17 @@ app.use("/cart", cartRouter);
 app.use("/order", orderRouter);
 app.use("/payments", paymentRouter);
 
+// 404 Not Found Middleware (Custom 404 HTML Page & JSON Fallback)
+app.use((req, res) => {
+  if (req.accepts("html")) {
+    return res.status(404).sendFile("404.html", { root: "frontend" });
+  }
+  return res.status(404).json({
+    message: "Resource not found",
+    error: "Not Found"
+  });
+});
+
 const PORT = process.env.PORT || 3001;
 server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

@@ -925,7 +925,23 @@
 
             } catch (err) {
                 console.error("loadProductDetail error:", err);
-                document.getElementById("productDetailContainer").innerHTML = `<p style="color: var(--error-color); text-align: center;">Error loading product: ${err.message}</p>`;
+                document.getElementById("productDetailContainer").innerHTML = `
+                    <div style="text-align: center; padding: 40px 24px; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 24px; max-width: 600px; margin: 40px auto; box-shadow: 0 10px 30px rgba(15, 23, 42, 0.04);">
+                        <div style="width: 280px; height: 190px; margin: 0 auto 16px auto;">
+                            <video autoplay loop muted playsinline preload="auto" style="width: 100%; height: 100%; object-fit: contain;">
+                                <source src="animation/error-404.webm" type="video/webm">
+                                <source src="animation/Error%20404.webm" type="video/webm">
+                                <source src="animation/caveman-404.webm" type="video/webm">
+                            </video>
+                        </div>
+                        <h2 style="font-family: 'Outfit', sans-serif; color: #0f172a; font-weight: 800; font-size: 1.6rem; margin-bottom: 8px;">Product Not Found</h2>
+                        <p style="color: #64748b; font-size: 0.95rem; margin-bottom: 24px; max-width: 440px; margin-left: auto; margin-right: auto; line-height: 1.5;">The product you are looking for does not exist or may have been removed from our catalog.</p>
+                        <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+                            <button class="btn btn-outline" onclick="history.back()" style="padding: 10px 20px; font-weight: 700;">⬅️ Go Back</button>
+                            <a href="products.html" class="btn btn-primary" style="padding: 10px 20px; font-weight: 700; text-decoration: none;">🛒 Browse Products</a>
+                        </div>
+                    </div>
+                `;
             }
         }
 
