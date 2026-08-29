@@ -501,7 +501,28 @@
                     <!-- Email Field -->
                     <div class="input-field" id="fgEmailIn">
                         <i class="fa-solid fa-envelope"></i>
-                        <input type="email" id="email" required placeholder="Email Address">
+                        <input type="email" id="email" placeholder="Email Address">
+                    </div>
+
+                    <!-- Real-time Reset Password Requirements Indicator (Shown during Reset Mode) -->
+                    <div id="resetPasswordRequirements" style="display: none; width: 100%; max-width: 380px; margin: 4px 0 8px 0; padding: 2px 4px; transition: all 0.3s ease;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; gap: 4px;">
+                            <span id="reset-req-length" style="display: inline-flex; align-items: center; gap: 3px; font-size: 0.74rem; font-weight: 700; padding: 3px 7px; border-radius: 12px; transition: all 0.25s ease; background: #fef2f2; color: #dc2626; border: 1px solid #fca5a5;">
+                                <span class="req-icon">🔴</span> 8+
+                            </span>
+                            <span id="reset-req-upper" style="display: inline-flex; align-items: center; gap: 3px; font-size: 0.74rem; font-weight: 700; padding: 3px 7px; border-radius: 12px; transition: all 0.25s ease; background: #fef2f2; color: #dc2626; border: 1px solid #fca5a5;">
+                                <span class="req-icon">🔴</span> A-Z
+                            </span>
+                            <span id="reset-req-lower" style="display: inline-flex; align-items: center; gap: 3px; font-size: 0.74rem; font-weight: 700; padding: 3px 7px; border-radius: 12px; transition: all 0.25s ease; background: #fef2f2; color: #dc2626; border: 1px solid #fca5a5;">
+                                <span class="req-icon">🔴</span> a-z
+                            </span>
+                            <span id="reset-req-number" style="display: inline-flex; align-items: center; gap: 3px; font-size: 0.74rem; font-weight: 700; padding: 3px 7px; border-radius: 12px; transition: all 0.25s ease; background: #fef2f2; color: #dc2626; border: 1px solid #fca5a5;">
+                                <span class="req-icon">🔴</span> 0-9
+                            </span>
+                            <span id="reset-req-special" style="display: inline-flex; align-items: center; gap: 3px; font-size: 0.74rem; font-weight: 700; padding: 3px 7px; border-radius: 12px; transition: all 0.25s ease; background: #fef2f2; color: #dc2626; border: 1px solid #fca5a5;">
+                                <span class="req-icon">🔴</span> !@#
+                            </span>
+                        </div>
                     </div>
 
                     <!-- Password Field -->
@@ -565,6 +586,15 @@
                     </div>
 
                     <div id="messageIn" class="message-box"></div>
+
+                    <!-- Inline Resend / Verify Animation Box -->
+                    <div id="resetAnimContainer" style="display: none; width: 100%; max-width: 380px; margin: 10px auto; text-align: center; transition: all 0.3s ease;">
+                        <div style="width: 160px; height: 110px; margin: 0 auto;">
+                            <video id="resetAnimVideo" autoplay loop muted playsinline preload="auto" style="width: 100%; height: 100%; object-fit: contain;">
+                                <source id="resetAnimVideoSource" src="animation/resend.webm" type="video/webm">
+                            </video>
+                        </div>
+                    </div>
                 </form>
 
                 <!-- 2. Sign Up Form -->
@@ -622,6 +652,39 @@
 
                     <div id="messageUp" class="message-box"></div>
                 </form>
+
+                <!-- 3. Email OTP Verification View (Shown after Sign Up) -->
+                <div id="otpVerificationView" style="display: none; width: 100%; max-width: 380px; text-align: center; margin: 0 auto; animation: fadeIn 0.4s ease;">
+                    <div style="width: 170px; height: 125px; margin: 0 auto 8px auto;">
+                        <video id="authOtpVideo" autoplay loop muted playsinline preload="auto" style="width: 100%; height: 100%; object-fit: contain;">
+                            <source id="authOtpVideoSource" src="animation/auth.webm" type="video/webm">
+                        </video>
+                    </div>
+                    <h2 class="title" style="font-size: 1.6rem; margin-bottom: 4px;">Verify Email</h2>
+                    <p id="otpSubtitle" class="subtitle" style="font-size: 0.85rem; color: #64748b; line-height: 1.4; margin-bottom: 18px;">
+                        We sent a 6-digit verification code to your email.
+                    </p>
+
+                    <form id="otpForm" onsubmit="handleVerifyOtp(event)">
+                        <div class="input-field" style="margin-bottom: 12px;">
+                            <i class="fa-solid fa-key"></i>
+                            <input type="text" id="otpInput" required maxlength="6" inputmode="numeric" pattern="[0-9]{6}" placeholder="Enter 6-digit OTP" style="letter-spacing: 4px; font-weight: 700; font-size: 1.1rem; text-align: center;" oninput="this.value=this.value.replace(/[^0-9]/g,'')">
+                        </div>
+
+                        <div style="display: flex; gap: 8px; width: 100%; margin-bottom: 10px;">
+                            <button type="submit" id="btnVerifyOtp" class="btn solid" style="flex: 1; margin: 0;">Verify Email</button>
+                            <button type="button" id="btnResendOtp" class="btn transparent" onclick="handleResendOtp(event)" style="padding: 0 14px; font-size: 0.82rem; height: 49px; border-radius: 49px; border: 1.5px solid #2563eb; color: #2563eb; font-weight: 700; cursor: pointer; white-space: nowrap;">Resend Code</button>
+                        </div>
+                    </form>
+
+                    <div id="messageOtp" class="message-box"></div>
+
+                    <div style="margin-top: 12px;">
+                        <a class="forgot-link" style="font-size: 0.82rem; color: #64748b; cursor: pointer;" onclick="cancelOtpVerification()">
+                            <i class="fa-solid fa-arrow-left"></i> Back to Registration
+                        </a>
+                    </div>
+                </div>
 
             </div>
         </div>
@@ -686,7 +749,11 @@
         });
 
         let isForgotMode = false;
+        let isOtpVerifyMode = false;
         let isResetMode = false;
+        let pendingVerificationEmail = "";
+        let pendingResetEmail = "";
+        let pendingResetOtp = "";
 
         function setMessageIn(text, type) {
             const el = document.getElementById("messageIn");
@@ -700,6 +767,46 @@
             if (!text) { el.style.display = "none"; return; }
             el.textContent = text;
             el.className = "message-box " + (type || "");
+        }
+
+        function setMessageOtp(text, type) {
+            const el = document.getElementById("messageOtp");
+            if (!text) { el.style.display = "none"; return; }
+            el.textContent = text;
+            el.className = "message-box " + (type || "");
+        }
+
+        function showOtpVerificationView() {
+            document.getElementById("signUpForm").style.display = "none";
+            const otpView = document.getElementById("otpVerificationView");
+            otpView.style.display = "block";
+            
+            const video = document.getElementById("authOtpVideo");
+            const source = document.getElementById("authOtpVideoSource");
+            if (video && source) {
+                source.src = "animation/auth.webm";
+                video.load();
+                video.currentTime = 0;
+                video.play().catch(() => {});
+            }
+
+            const subtitle = document.getElementById("otpSubtitle");
+            if (subtitle) {
+                subtitle.textContent = `We sent a 6-digit verification code to ${pendingVerificationEmail || 'your email'}.`;
+            }
+            
+            const otpInput = document.getElementById("otpInput");
+            if (otpInput) {
+                otpInput.value = "";
+                otpInput.focus();
+            }
+            setMessageOtp("", "");
+        }
+
+        function cancelOtpVerification() {
+            document.getElementById("otpVerificationView").style.display = "none";
+            document.getElementById("signUpForm").style.display = "flex";
+            setMessageUp("", "");
         }
 
         let isSubmittingLogin = false;
@@ -732,9 +839,11 @@
 
         function toggleForgotMode(enable) {
             isForgotMode = enable;
+            isOtpVerifyMode = false;
             isResetMode = false;
             hideWrongPasswordAlert();
 
+            const fgEmailIn = document.getElementById("fgEmailIn");
             const fgPasswordIn = document.getElementById("fgPasswordIn");
             const fgResetTokenIn = document.getElementById("fgResetTokenIn");
             const rowBackToLogin = document.getElementById("rowBackToLogin");
@@ -743,40 +852,99 @@
             const linkForgot = document.getElementById("linkForgot");
             const titleSignIn = document.getElementById("titleSignIn");
 
+            if (btnSubmitIn) btnSubmitIn.disabled = false;
+
             if (enable) {
-                titleSignIn.textContent = "Reset Password";
-                subHeadingIn.textContent = "Request a password reset token";
+                titleSignIn.textContent = "Forgot Password";
+                subHeadingIn.textContent = "Enter your registered email address";
+                fgEmailIn.classList.remove("hidden");
                 fgPasswordIn.classList.add("hidden");
                 fgResetTokenIn.classList.add("hidden");
-                btnSubmitIn.value = "Send Token";
+                btnSubmitIn.value = "Send Reset Code";
                 if (linkForgot) linkForgot.style.display = "none";
                 rowBackToLogin.style.display = "block";
             } else {
                 titleSignIn.textContent = "Sign in";
                 subHeadingIn.textContent = "Enter your G Lab account credentials";
+                fgEmailIn.classList.remove("hidden");
                 fgPasswordIn.classList.remove("hidden");
                 fgResetTokenIn.classList.add("hidden");
                 btnSubmitIn.value = "Login";
                 if (linkForgot) linkForgot.style.display = "block";
                 rowBackToLogin.style.display = "none";
+                const resetAnimContainer = document.getElementById("resetAnimContainer");
+                if (resetAnimContainer) resetAnimContainer.style.display = "none";
+                pendingResetEmail = "";
+                pendingResetOtp = "";
             }
         }
 
-        function setResetMode() {
+        function setOtpVerifyMode() {
             isForgotMode = false;
-            isResetMode = true;
+            isOtpVerifyMode = true;
+            isResetMode = false;
 
+            const fgEmailIn = document.getElementById("fgEmailIn");
             const fgPasswordIn = document.getElementById("fgPasswordIn");
             const fgResetTokenIn = document.getElementById("fgResetTokenIn");
             const subHeadingIn = document.getElementById("subHeadingSignIn");
             const btnSubmitIn = document.getElementById("btnSubmitIn");
             const titleSignIn = document.getElementById("titleSignIn");
+            const resetTokenInput = document.getElementById("resetToken");
 
-            titleSignIn.textContent = "New Password";
-            subHeadingIn.textContent = "Enter new password & reset token";
-            fgPasswordIn.classList.remove("hidden");
+            titleSignIn.textContent = "Verify Reset Code";
+            subHeadingIn.textContent = `Enter the 6-digit OTP code sent to ${pendingResetEmail}`;
+            fgEmailIn.classList.add("hidden");
+            fgPasswordIn.classList.add("hidden");
             fgResetTokenIn.classList.remove("hidden");
-            btnSubmitIn.value = "Reset Password";
+
+            const animContainer = document.getElementById("resetAnimContainer");
+            const animVideo = document.getElementById("resetAnimVideo");
+            const animSource = document.getElementById("resetAnimVideoSource");
+            if (animContainer) animContainer.style.display = "block";
+            if (animVideo && animSource) {
+                animSource.src = "animation/resend.webm";
+                animVideo.load();
+                animVideo.currentTime = 0;
+                animVideo.play().catch(() => {});
+            }
+
+            if (resetTokenInput) {
+                resetTokenInput.placeholder = "Enter 6-Digit OTP";
+                resetTokenInput.value = "";
+                resetTokenInput.focus();
+            }
+            btnSubmitIn.value = "Verify Code";
+        }
+
+        function setNewPasswordMode() {
+            isForgotMode = false;
+            isOtpVerifyMode = false;
+            isResetMode = true;
+
+            const fgEmailIn = document.getElementById("fgEmailIn");
+            const fgPasswordIn = document.getElementById("fgPasswordIn");
+            const fgResetTokenIn = document.getElementById("fgResetTokenIn");
+            const subHeadingIn = document.getElementById("subHeadingSignIn");
+            const btnSubmitIn = document.getElementById("btnSubmitIn");
+            const titleSignIn = document.getElementById("titleSignIn");
+            const passwordInput = document.getElementById("password");
+            const reqContainer = document.getElementById("resetPasswordRequirements");
+
+            titleSignIn.textContent = "Set New Password";
+            subHeadingIn.textContent = "Enter your new account password";
+            fgEmailIn.classList.add("hidden");
+            fgPasswordIn.classList.remove("hidden");
+            fgResetTokenIn.classList.add("hidden");
+            const resetAnimContainer = document.getElementById("resetAnimContainer");
+            if (resetAnimContainer) resetAnimContainer.style.display = "none";
+            if (reqContainer) reqContainer.style.display = "block";
+            if (passwordInput) {
+                passwordInput.value = "";
+                passwordInput.focus();
+                validatePasswordRequirements("", "reset-req-", "resetPasswordRequirements");
+            }
+            btnSubmitIn.value = "Update Password";
         }
 
         // 1. SIGN IN / FORGOT / RESET SUBMIT HANDLER
@@ -788,14 +956,26 @@
             const password = document.getElementById("password").value;
             const resetToken = document.getElementById("resetToken").value.trim();
 
-            // A. FORGOT PASSWORD MODE (POST /users/forgot-password)
+            // A. FORGOT PASSWORD MODE - Step 1: Send Reset OTP (POST /users/forgot-password)
             if (isForgotMode) {
                 if (!email) {
                     setMessageIn("Please enter your registered email address.", "error");
                     return;
                 }
 
-                setMessageIn("Requesting password reset token...", "loading");
+                const btnSubmitIn = document.getElementById("btnSubmitIn");
+                btnSubmitIn.disabled = true;
+                btnSubmitIn.value = "Sending Code...";
+
+                const animContainer = document.getElementById("resetAnimContainer");
+                const animVideo = document.getElementById("resetAnimVideo");
+                if (animContainer) animContainer.style.display = "block";
+                if (animVideo) {
+                    animVideo.currentTime = 0;
+                    animVideo.play().catch(() => {});
+                }
+
+                setMessageIn("Sending password reset code...", "loading");
                 try {
                     const res = await fetch(`${API_URL}/users/forgot-password`, {
                         method: "POST",
@@ -804,44 +984,131 @@
                     });
                     const data = await res.json();
 
-                    if (!res.ok) throw new Error(data.message || "Failed to request reset token");
+                    if (!res.ok) throw new Error(data.message || "Failed to send reset code");
 
-                    const tokenStr = data.token ? `Token: ${data.token}` : '';
-                    setMessageIn(`Reset token generated! ${tokenStr}`, "success");
-
-                    if (data.token) {
-                        document.getElementById("resetToken").value = data.token;
-                    }
-                    setTimeout(() => setResetMode(), 1800);
+                    pendingResetEmail = email;
+                    setMessageIn("Password reset code sent to your email!", "success");
+                    setTimeout(() => {
+                        btnSubmitIn.disabled = false;
+                        setOtpVerifyMode();
+                    }, 1200);
 
                 } catch (err) {
-                    setMessageIn(`Reset request failed: ${err.message}`, "error");
+                    setMessageIn(err.message || "Failed to send reset code", "error");
+                    btnSubmitIn.disabled = false;
+                    btnSubmitIn.value = "Send Reset Code";
                 }
             }
 
-            // B. RESET PASSWORD MODE (POST /users/reset-password/:token)
-            else if (isResetMode) {
-                if (!resetToken || !password) {
-                    setMessageIn("Reset token and new password are required.", "error");
+            // B. VERIFY OTP MODE - Step 2: Verify 6-Digit Code (POST /users/verify-reset-otp)
+            else if (isOtpVerifyMode) {
+                if (!resetToken) {
+                    setMessageIn("Please enter the 6-digit OTP code.", "error");
                     return;
                 }
 
-                setMessageIn("Resetting password...", "loading");
+                const btnSubmitIn = document.getElementById("btnSubmitIn");
+                btnSubmitIn.disabled = true;
+                btnSubmitIn.value = "Verifying...";
+
+                const animContainer = document.getElementById("resetAnimContainer");
+                const animVideo = document.getElementById("resetAnimVideo");
+                const animSource = document.getElementById("resetAnimVideoSource");
+
+                setMessageIn("Verifying reset code...", "loading");
                 try {
-                    const res = await fetch(`${API_URL}/users/reset-password/${resetToken}`, {
+                    const res = await fetch(`${API_URL}/users/verify-reset-otp`, {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ password })
+                        body: JSON.stringify({
+                            email: pendingResetEmail,
+                            otp: resetToken
+                        })
                     });
                     const data = await res.json();
 
-                    if (!res.ok) throw new Error(data.message || "Password reset failed");
+                    if (!res.ok) throw new Error(data.message || "Invalid OTP code");
 
-                    setMessageIn("Password reset successfully! Please log in with your new password.", "success");
-                    setTimeout(() => toggleForgotMode(false), 1800);
+                    // Play Correct Password animation on valid OTP!
+                    if (animContainer) animContainer.style.display = "block";
+                    if (animVideo && animSource) {
+                        animSource.src = "animation/correct-password.webm";
+                        animVideo.load();
+                        animVideo.currentTime = 0;
+                        animVideo.play().catch(() => {});
+                    }
+
+                    pendingResetOtp = resetToken;
+                    setMessageIn("OTP verified successfully! Now enter your new password.", "success");
+                    setTimeout(() => {
+                        btnSubmitIn.disabled = false;
+                        setNewPasswordMode();
+                    }, 1800);
 
                 } catch (err) {
-                    setMessageIn(`Reset failed: ${err.message}`, "error");
+                    // Play Auth Failed animation on invalid OTP!
+                    if (animContainer) animContainer.style.display = "block";
+                    if (animVideo && animSource) {
+                        animSource.src = "animation/auth-failed.webm";
+                        animVideo.load();
+                        animVideo.currentTime = 0;
+                        animVideo.play().catch(() => {});
+                    }
+
+                    setMessageIn(err.message || "Invalid or expired OTP", "error");
+                    btnSubmitIn.disabled = false;
+                    btnSubmitIn.value = "Verify Code";
+                }
+            }
+
+            // C. RESET PASSWORD MODE - Step 3: Set New Password (POST /users/reset-password)
+            else if (isResetMode) {
+                if (!password) {
+                    setMessageIn("Please enter your new password.", "error");
+                    return;
+                }
+
+                const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+                if (!passwordRegex.test(password)) {
+                    setMessageIn("Password must be at least 8 characters long and contain uppercase, lowercase, and a number.", "error");
+                    return;
+                }
+
+                const btnSubmitIn = document.getElementById("btnSubmitIn");
+                btnSubmitIn.disabled = true;
+                btnSubmitIn.value = "Updating...";
+
+                setMessageIn("Updating password...", "loading");
+                try {
+                    const res = await fetch(`${API_URL}/users/reset-password`, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            email: pendingResetEmail,
+                            otp: pendingResetOtp,
+                            newPassword: password
+                        })
+                    });
+                    const data = await res.json();
+
+                    if (!res.ok) throw new Error(data.message || "Password update failed");
+
+                    setMessageIn("🎉 Password reset successfully! Please sign in with your new password.", "success");
+
+                    const reqContainer = document.getElementById("resetPasswordRequirements");
+                    if (reqContainer) reqContainer.style.display = "none";
+
+                    setTimeout(() => {
+                        btnSubmitIn.disabled = false;
+                        const emailInput = document.getElementById("email");
+                        if (emailInput) emailInput.value = pendingResetEmail;
+                        toggleForgotMode(false);
+                    }, 2000);
+
+                } catch (err) {
+                    setMessageIn(err.message || "Failed to update password", "error");
+                    btnSubmitIn.disabled = false;
+                    btnSubmitIn.value = "Update Password";
                 }
             }
 
@@ -1039,11 +1306,13 @@
                     }
                 }
 
-                setMessageUp("Account created successfully! Switching to sign in...", "success");
+                setMessageUp("Account created! Verification code sent.", "success");
+                pendingVerificationEmail = email;
                 document.getElementById("signUpForm").reset();
+                
                 setTimeout(() => {
-                    container.classList.remove("sign-up-mode");
-                }, 1800);
+                    showOtpVerificationView();
+                }, 1000);
 
             } catch (err) {
                 let errText = err.message || "Registration failed.";
@@ -1057,8 +1326,185 @@
             }
         }
 
-        function validatePasswordRequirements(val) {
-            const container = document.getElementById("passwordRequirements");
+        // 3. OTP VERIFICATION HANDLER (POST /users/verify-email)
+        async function handleVerifyOtp(event) {
+            event.preventDefault();
+            setMessageOtp("", "");
+
+            const otp = document.getElementById("otpInput").value.trim();
+
+            if (!otp) {
+                setMessageOtp("Please enter the 6-digit verification code.", "error");
+                return;
+            }
+
+            if (otp.length !== 6 || !/^\d{6}$/.test(otp)) {
+                setMessageOtp("OTP must be exactly 6 digits.", "error");
+                return;
+            }
+
+            if (!pendingVerificationEmail) {
+                setMessageOtp("Registration session expired. Please register again.", "error");
+                return;
+            }
+
+            const btnVerifyOtp = document.getElementById("btnVerifyOtp");
+            btnVerifyOtp.disabled = true;
+            btnVerifyOtp.textContent = "Verifying...";
+            setMessageOtp("Verifying code...", "loading");
+
+            try {
+                const res = await fetch(`${API_URL}/users/verify-email`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        email: pendingVerificationEmail,
+                        otp: otp
+                    })
+                });
+
+                let data = null;
+                try {
+                    data = await res.json();
+                } catch (_) {}
+
+                if (!res.ok) {
+                    if (res.status === 400) {
+                        throw new Error((data && data.message) || "Invalid OTP code.");
+                    } else if (res.status === 404) {
+                        throw new Error((data && data.message) || "User not found.");
+                    } else {
+                        throw new Error((data && data.message) || `Verification failed (${res.status}).`);
+                    }
+                }
+
+                // Play Auth Success animation!
+                const video = document.getElementById("authOtpVideo");
+                const source = document.getElementById("authOtpVideoSource");
+                if (video && source) {
+                    source.src = "animation/auth-success.webm";
+                    video.load();
+                    video.currentTime = 0;
+                    video.play().catch(() => {});
+                }
+
+                setMessageOtp("🎉 Email verified successfully! Switching to sign in...", "success");
+
+                setTimeout(() => {
+                    document.getElementById("otpVerificationView").style.display = "none";
+                    document.getElementById("signUpForm").style.display = "flex";
+                    container.classList.remove("sign-up-mode");
+
+                    const loginEmailField = document.getElementById("email");
+                    if (loginEmailField) loginEmailField.value = pendingVerificationEmail;
+
+                    setMessageIn("Email verified successfully! Please sign in with your password.", "success");
+                    pendingVerificationEmail = "";
+                }, 2400);
+
+            } catch (err) {
+                // Play Auth Failed animation!
+                const video = document.getElementById("authOtpVideo");
+                const source = document.getElementById("authOtpVideoSource");
+                if (video && source) {
+                    source.src = "animation/auth-failed.webm";
+                    video.load();
+                    video.currentTime = 0;
+                    video.play().catch(() => {});
+                }
+
+                let errText = err.message || "Verification failed.";
+                if (err.name === "TypeError" || errText.includes("Failed to fetch")) {
+                    errText = "Network error: Unable to connect to server.";
+                }
+                setMessageOtp(errText, "error");
+            } finally {
+                btnVerifyOtp.disabled = false;
+                btnVerifyOtp.textContent = "Verify Email";
+            }
+        }
+
+        // 4. RESEND OTP HANDLER (POST /users/resend-otp)
+        async function handleResendOtp(event) {
+            if (event) event.preventDefault();
+            setMessageOtp("", "");
+
+            if (!pendingVerificationEmail) {
+                setMessageOtp("Registration session expired. Please register again.", "error");
+                return;
+            }
+
+            // Play Resend animation!
+            const video = document.getElementById("authOtpVideo");
+            const source = document.getElementById("authOtpVideoSource");
+            if (video && source) {
+                source.src = "animation/resend.webm";
+                video.load();
+                video.currentTime = 0;
+                video.play().catch(() => {});
+            }
+
+            const btnResendOtp = document.getElementById("btnResendOtp");
+            btnResendOtp.disabled = true;
+            btnResendOtp.textContent = "Sending...";
+            setMessageOtp("Sending new verification code...", "loading");
+
+            try {
+                const res = await fetch(`${API_URL}/users/resend-otp`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        email: pendingVerificationEmail
+                    })
+                });
+
+                let data = null;
+                try {
+                    data = await res.json();
+                } catch (_) {}
+
+                if (!res.ok) {
+                    throw new Error((data && data.message) || `Failed to resend code (${res.status}).`);
+                }
+
+                setMessageOtp("A new 6-digit code has been sent to your email!", "success");
+
+                // Return to main auth video after resend animation (2.5s)
+                setTimeout(() => {
+                    if (video && source && source.src.includes("resend.webm")) {
+                        source.src = "animation/auth.webm";
+                        video.load();
+                        video.currentTime = 0;
+                        video.play().catch(() => {});
+                    }
+                }, 2500);
+
+                // Cooldown 15 seconds
+                let count = 15;
+                const timer = setInterval(() => {
+                    count--;
+                    if (count <= 0) {
+                        clearInterval(timer);
+                        btnResendOtp.disabled = false;
+                        btnResendOtp.textContent = "Resend Code";
+                    } else {
+                        btnResendOtp.textContent = `Resend (${count}s)`;
+                    }
+                }, 1000);
+
+            } catch (err) {
+                let errText = err.message || "Resend failed.";
+                if (err.name === "TypeError" || errText.includes("Failed to fetch")) {
+                    errText = "Network error: Unable to connect to server.";
+                }
+                setMessageOtp(errText, "error");
+                btnResendOtp.disabled = false;
+                btnResendOtp.textContent = "Resend Code";
+            }
+        }
+
+        function validatePasswordRequirements(val, prefix = "req-", containerId = "passwordRequirements") {
+            const container = document.getElementById(containerId);
             if (!container) return;
 
             if (!val || val.length === 0) {
@@ -1069,11 +1515,11 @@
             container.style.display = "block";
 
             const checks = {
-                "req-length": val.length >= 8,
-                "req-upper": /[A-Z]/.test(val),
-                "req-lower": /[a-z]/.test(val),
-                "req-number": /[0-9]/.test(val),
-                "req-special": /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~`]/.test(val)
+                [prefix + "length"]: val.length >= 8,
+                [prefix + "upper"]: /[A-Z]/.test(val),
+                [prefix + "lower"]: /[a-z]/.test(val),
+                [prefix + "number"]: /[0-9]/.test(val),
+                [prefix + "special"]: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~`]/.test(val)
             };
 
             for (const [id, isValid] of Object.entries(checks)) {
@@ -1103,7 +1549,13 @@
             const emailInput = document.getElementById("email");
             const pwdRegInput = document.getElementById("passwordReg");
 
-            pwdInput?.addEventListener("input", hideWrongPasswordAlert);
+            pwdInput?.addEventListener("input", (e) => {
+                hideWrongPasswordAlert();
+                if (isResetMode) {
+                    validatePasswordRequirements(e.target.value, "reset-req-", "resetPasswordRequirements");
+                }
+            });
+
             emailInput?.addEventListener("input", hideWrongPasswordAlert);
 
             pwdRegInput?.addEventListener("input", (e) => {

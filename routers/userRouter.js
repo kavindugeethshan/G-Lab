@@ -1,5 +1,5 @@
 import express from "express";
-import { createUser, loginUser, getprofile, updateprofule, changePassword, deleteOwnAccount, updateAddress } from "../Controllers/userController.js";
+import { createUser, verifyEmail, resendOTP, loginUser, getprofile, updateprofule, changePassword, deleteOwnAccount, updateAddress, forgotPassword, verifyResetOtp, resetPassword } from "../Controllers/userController.js";
 import { authMiddleware } from "../Middleware/authMiddleware.js";
 
 const userRouter = express.Router();
@@ -7,7 +7,12 @@ const userRouter = express.Router();
 
 // Public routes
 userRouter.post("/create", createUser);
+userRouter.post("/verify-email", verifyEmail);
+userRouter.post("/resend-otp", resendOTP);
 userRouter.post("/login", loginUser);
+userRouter.post("/forgot-password", forgotPassword);
+userRouter.post("/verify-reset-otp", verifyResetOtp);
+userRouter.post("/reset-password", resetPassword);
 
 
 // Authentication middleware

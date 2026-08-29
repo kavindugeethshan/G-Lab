@@ -1,6 +1,20 @@
 import User from "../models/Usermodel.js";
+import PendingUser from "../models/PendingUserModel.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import nodemailer from "nodemailer";
+import PasswordReset from "../models/PasswordResetModel.js";
+
+
+// Helper to get fresh Nodemailer transporter with clean credentials
+const getTransporter = () => {
+  const user = process.env.EMAIL_USER;
+  const pass = process.env.EMAIL_PASS ? process.env.EMAIL_PASS.replace(/\s+/g, '') : '';
+  return nodemailer.createTransport({
+    service: "gmail",
+    auth: { user, pass },
+  });
+};
 
 // Create user function
 export const createUser = async (req, res) => {
@@ -73,7 +87,7 @@ export const createUser = async (req, res) => {
       });
     }
 
-    // Check whether the email already exists in the database
+    // Check whether the email already exists in the main User collection
     const existingUser = await User.findOne({
       email: cleanEmail,
     });
@@ -84,25 +98,38 @@ export const createUser = async (req, res) => {
       });
     }
 
-    // Hash the password before saving it to the database
+    // Hash the password before saving
     const saltRounds = 12;
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-    // Create the user
-    const createdUser = await User.create({
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    const otpExpires = new Date(Date.now() + 10 * 60 * 1000);
+
+    // Save registration in PendingUser collection (overwrite previous pending registration if any)
+    await PendingUser.findOneAndDelete({ email: cleanEmail });
+    await PendingUser.create({
       email: cleanEmail,
       firstname: firstname.trim(),
       lastname: lastname.trim(),
       password: hashedPassword,
       Image,
+      emailverificationotp: otp,
+      emailverificationotpexpires: otpExpires,
     });
 
-    // Do not return the hashed password to the frontend
-    const userResponse = createdUser.toObject();
-    delete userResponse.password;
+    const transporter = getTransporter();
+    await transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to: cleanEmail,
+      subject: "G-Lab Email Verification",
+      text: `Your G-Lab verification code is: ${otp}. This code expires in 10 minutes.`,
+    });
+    console.log(`✉️ OTP Email sent successfully to pending user: ${cleanEmail}`);
 
-    // Return the newly created user
-    res.status(201).json(userResponse);
+    res.status(201).json({
+      message: "Verification code sent to your email.",
+      email: cleanEmail
+    });
   } catch (err) {
     // Handle unexpected server/database errors
     res.status(500).json({
@@ -436,6 +463,300 @@ export const updateAddress = async (req, res) => {
   } catch (err) {
     res.status(500).json({
       message: err.message,
+    });
+  }
+};
+
+//--------------------------------------------------------------------------------
+// Resend OTP for Pending User
+export const resendOTP = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).json({
+        message: "Email is required",
+      });
+    }
+
+    const cleanEmail = email.trim().toLowerCase();
+
+    // Check if user is already verified in main collection
+    const existingUser = await User.findOne({ email: cleanEmail });
+    if (existingUser) {
+      return res.status(400).json({
+        message: "Email is already verified",
+      });
+    }
+
+    const pendingUser = await PendingUser.findOne({ email: cleanEmail });
+    if (!pendingUser) {
+      return res.status(404).json({
+        message: "Pending registration not found. Please sign up again.",
+      });
+    }
+
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    const otpExpires = new Date(Date.now() + 10 * 60 * 1000);
+
+    pendingUser.emailverificationotp = otp;
+    pendingUser.emailverificationotpexpires = otpExpires;
+    await pendingUser.save();
+
+    const transporter = getTransporter();
+    await transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to: cleanEmail,
+      subject: "G-Lab Email Verification - Resend",
+      text: `Your G-Lab verification code is: ${otp}. This code expires in 10 minutes.`,
+    });
+
+    res.status(200).json({
+      message: "OTP resent successfully",
+    });
+  } catch (err) {
+    res.status(500).json({
+      message: err.message,
+    });
+  }
+};
+
+//--------------------------------------------------------------------------------
+// Verify Email & Create User in main collection ONLY upon OTP match
+export const verifyEmail = async (req, res) => {
+  try {
+    const { email, otp } = req.body;
+
+    if (!email || !otp) {
+      return res.status(400).json({
+        message: "Email and OTP are required",
+      });
+    }
+
+    const cleanEmail = email.trim().toLowerCase();
+
+    // Search in PendingUser model
+    const pendingUser = await PendingUser.findOne({ email: cleanEmail });
+
+    if (!pendingUser) {
+      // Check if user already exists in main collection
+      const verifiedUser = await User.findOne({ email: cleanEmail });
+      if (verifiedUser) {
+        return res.status(400).json({
+          message: "Email is already verified",
+        });
+      }
+      return res.status(404).json({
+        message: "Pending registration not found or expired. Please sign up again.",
+      });
+    }
+
+    if (new Date() > pendingUser.emailverificationotpexpires) {
+      return res.status(400).json({
+        message: "OTP has expired",
+      });
+    }
+
+    if (pendingUser.emailverificationotp !== otp.toString().trim()) {
+      return res.status(400).json({
+        message: "Invalid OTP",
+      });
+    }
+
+    // ONLY NOW create the real User document in main collection
+    const createdUser = await User.create({
+      email: pendingUser.email,
+      firstname: pendingUser.firstname,
+      lastname: pendingUser.lastname,
+      password: pendingUser.password, // Already hashed
+      Image: pendingUser.Image,
+      isemailverified: true,
+    });
+
+    // Delete temporary registration from PendingUser collection
+    await PendingUser.deleteOne({ _id: pendingUser._id });
+
+    const userResponse = createdUser.toObject();
+    delete userResponse.password;
+
+    return res.status(200).json({
+      message: "Email verified successfully! Your account has been created.",
+      user: userResponse
+    });
+  } catch (err) {
+    return res.status(500).json({
+      message: err.message,
+    });
+  }
+};
+
+//--------------------------------------------------------------------------------
+// FORGOT PASSWORD - Step 1: Send Reset OTP
+export const forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+    const cleanEmail = email?.trim().toLowerCase();
+
+    if (!cleanEmail) {
+      return res.status(400).json({
+        message: "Email is required",
+      });
+    }
+
+    const user = await User.findOne({ email: cleanEmail });
+
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found",
+      });
+    }
+
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
+
+    await PasswordReset.findOneAndDelete({
+      email: cleanEmail,
+    });
+
+    await PasswordReset.create({
+      email: cleanEmail,
+      otp,
+      expiresAt,
+      verified: false,
+    });
+
+    const transporter = getTransporter();
+
+    // Send email asynchronously in background to ensure fast response
+    transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to: cleanEmail,
+      subject: "G-Lab Password Reset",
+      text: `Your G-Lab password reset code is: ${otp}. This code expires in 10 minutes.`,
+    }).catch(err => console.error("Forgot password email send error:", err));
+
+    return res.status(200).json({
+      message: "Password reset code sent to your email.",
+    });
+
+  } catch (error) {
+    console.error("Forgot password error:", error);
+
+    return res.status(500).json({
+      message: "Failed to send password reset code.",
+    });
+  }
+};
+
+//--------------------------------------------------------------------------------
+// FORGOT PASSWORD - Step 2: Verify Reset OTP
+export const verifyResetOtp = async (req, res) => {
+  try {
+    const { email, otp } = req.body;
+    const cleanEmail = email?.trim().toLowerCase();
+
+    if (!cleanEmail || !otp) {
+      return res.status(400).json({
+        message: "Email and OTP code are required",
+      });
+    }
+
+    const resetRecord = await PasswordReset.findOne({ email: cleanEmail });
+
+    if (!resetRecord) {
+      return res.status(404).json({
+        message: "Reset request not found or expired. Please request a new code.",
+      });
+    }
+
+    if (new Date() > resetRecord.expiresAt) {
+      return res.status(400).json({
+        message: "OTP has expired. Please request a new code.",
+      });
+    }
+
+    if (resetRecord.otp !== otp.toString().trim()) {
+      return res.status(400).json({
+        message: "Invalid OTP code",
+      });
+    }
+
+    resetRecord.verified = true;
+    await resetRecord.save();
+
+    return res.status(200).json({
+      message: "OTP verified successfully. You can now enter your new password.",
+    });
+  } catch (error) {
+    console.error("Verify reset OTP error:", error);
+    return res.status(500).json({
+      message: "Failed to verify OTP.",
+    });
+  }
+};
+
+//--------------------------------------------------------------------------------
+// FORGOT PASSWORD - Step 3: Reset Password
+export const resetPassword = async (req, res) => {
+  try {
+    const { email, otp, newPassword } = req.body;
+    const cleanEmail = email?.trim().toLowerCase();
+
+    if (!cleanEmail || !otp || !newPassword) {
+      return res.status(400).json({
+        message: "Email, OTP, and new password are required",
+      });
+    }
+
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+    if (!passwordRegex.test(newPassword)) {
+      return res.status(400).json({
+        message: "Password must be at least 8 characters long and contain uppercase, lowercase, and a number",
+      });
+    }
+
+    const resetRecord = await PasswordReset.findOne({ email: cleanEmail });
+
+    if (!resetRecord) {
+      return res.status(404).json({
+        message: "Reset request not found. Please request a new code.",
+      });
+    }
+
+    if (new Date() > resetRecord.expiresAt) {
+      return res.status(400).json({
+        message: "Reset session expired. Please request a new code.",
+      });
+    }
+
+    if (!resetRecord.verified || resetRecord.otp !== otp.toString().trim()) {
+      return res.status(400).json({
+        message: "Please verify your OTP before resetting password.",
+      });
+    }
+
+    const user = await User.findOne({ email: cleanEmail });
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found",
+      });
+    }
+
+    const saltRounds = 12;
+    const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
+    user.password = hashedPassword;
+    await user.save();
+
+    // Delete the reset record so it cannot be reused
+    await PasswordReset.deleteOne({ _id: resetRecord._id });
+
+    return res.status(200).json({
+      message: "Password reset successfully! Please log in with your new password.",
+    });
+  } catch (error) {
+    console.error("Reset password error:", error);
+    return res.status(500).json({
+      message: "Failed to reset password.",
     });
   }
 };

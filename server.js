@@ -1,12 +1,11 @@
+import "dotenv/config";
 import express from "express";
 import { Server } from "socket.io";
 import http from "http";
 import dns from "dns";
 import mongoose from "mongoose";
 import cors from "cors";
-import dotenv from "dotenv";
 
-dotenv.config();
 dns.setServers(["8.8.8.8", "1.1.1.1"]);
 
 import userRouter from "./routers/userRouter.js";

@@ -47,6 +47,14 @@ const userschema = new mongoose.Schema(
       default: false,
       required: true
     },
+    //otp verification time
+    emailverificationotp: {
+      type: String
+    },
+
+    emailverificationotpexpires: {
+      type: Date
+    },
 
     Image: {
       type: String
