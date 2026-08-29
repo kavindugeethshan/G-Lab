@@ -540,11 +540,6 @@
                         <input type="password" id="confirmPassword" required placeholder="Confirm Password">
                     </div>
 
-                    <div class="input-field">
-                        <i class="fa-solid fa-image"></i>
-                        <input type="text" id="image" placeholder="Avatar URL (Optional)">
-                    </div>
-
                     <input type="submit" id="btnSubmitUp" value="Sign up" class="btn solid">
 
                     <div id="messageUp" class="message-box"></div>
@@ -790,7 +785,6 @@
             const email = document.getElementById("emailReg").value.trim().toLowerCase();
             const password = document.getElementById("passwordReg").value;
             const confirmPassword = document.getElementById("confirmPassword").value;
-            const Image = document.getElementById("image").value.trim();
 
             if (!firstname) {
                 setMessageUp("First name is required.", "error");
@@ -848,8 +842,7 @@
                         firstname,
                         lastname,
                         email,
-                        password,
-                        ...(Image ? { Image } : {})
+                        password
                     })
                 });
 

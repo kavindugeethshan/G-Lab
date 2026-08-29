@@ -1904,9 +1904,13 @@
             if (token && currentUser) {
                 const name = currentUser.firstname ? `${currentUser.firstname}` : 'Account';
                 const isAdmin = currentUser.isadmin;
+                const userImg = currentUser.Image || currentUser.image;
+                const avatarHtml = userImg
+                    ? `<img src="${userImg}" alt="Avatar" style="width: 26px; height: 26px; border-radius: 50%; object-fit: cover; border: 1.5px solid var(--accent-color);" onerror="this.onerror=null; this.outerHTML='<i class=\\'fa-solid fa-user\\'></i>';">`
+                    : `<i class="fa-solid fa-user"></i>`;
 
                 let html = `
-                    <span class="user-greeting"><i class="fa-solid fa-user"></i> Hi, ${name}</span>
+                    <span class="user-greeting" style="display: inline-flex; align-items: center; gap: 6px;">${avatarHtml} Hi, ${name}</span>
                     <a href="cart.html" class="btn btn-outline">
                         <i class="fa-solid fa-cart-shopping"></i> Cart <span id="cartCountBadge" class="badge">0</span>
                     </a>
@@ -2147,6 +2151,17 @@
 
         window.addEventListener("DOMContentLoaded", () => {
             updateHeaderAuthDisplay();
+            if (token) {
+                fetch(`${API_URL}/users/profile`, { headers: { "Authorization": `Bearer ${token}` } })
+                    .then(r => r.ok ? r.json() : null)
+                    .then(data => {
+                        if (data && (data.user || data.email)) {
+                            currentUser = data.user || data;
+                            localStorage.setItem("user", JSON.stringify(currentUser));
+                            updateHeaderAuthDisplay();
+                        }
+                    }).catch(() => {});
+            }
             loadFeaturedProducts();
             if (token) loadCartCount();
 

@@ -401,7 +401,14 @@
     <div class="page-container">
         <div class="profile-card">
             <div class="profile-header">
-                <img id="userAvatar" class="avatar" src="https://via.placeholder.com/95?text=User" alt="User Avatar" onerror="this.src='https://via.placeholder.com/95?text=User'">
+                <div style="position: relative; display: inline-block;">
+                    <img id="userAvatar" class="avatar" src="https://via.placeholder.com/95?text=User" alt="User Avatar" onerror="this.src='https://via.placeholder.com/95?text=User'">
+                    <button type="button" onclick="document.getElementById('quickAvatarInput').click()" style="position: absolute; bottom: 12px; right: 0; background: var(--accent-gradient); color: white; border: none; border-radius: 50%; width: 32px; height: 32px; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.2);" title="Upload Profile Picture">
+                        <i class="fa-solid fa-camera" style="font-size: 0.85rem;"></i>
+                    </button>
+                </div>
+                <input type="file" id="quickAvatarInput" accept="image/*" style="display: none;">
+                <div id="uploadProgress" style="font-size: 0.82rem; color: var(--accent-color); font-weight: 600; margin-top: 4px; display: none;">Uploading image...</div>
                 <h2 id="userName">Loading profile...</h2>
                 <span class="badge-role" id="userRole">Customer</span>
             </div>
@@ -502,8 +509,18 @@
         </div>
     </footer>
 
-    <script src="api-config.js"></script>
-    <script>
+    <script type="importmap">
+    {
+      "imports": {
+        "firebase/app": "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js",
+        "firebase/storage": "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js"
+      }
+    }
+    </script>
+    <script type="module">
+        import { storage } from "./firebase.js";
+        import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+
         const API_URL = window.API_URL || (
             (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
                 ? 'http://localhost:3001'
@@ -555,12 +572,74 @@
             }
         }
 
+        // Quick profile image upload handler
+        document.getElementById("quickAvatarInput")?.addEventListener("change", async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            if (!file.type.startsWith("image/")) {
+                alert("Please select a valid image file (PNG, JPG, WEBP).");
+                e.target.value = "";
+                return;
+            }
+
+            const progressEl = document.getElementById("uploadProgress");
+            if (progressEl) {
+                progressEl.textContent = "Uploading image to Firebase Storage...";
+                progressEl.style.display = "block";
+            }
+
+            try {
+                const timestamp = Date.now();
+                const randomStr = Math.random().toString(36).substring(2, 9);
+                const extension = file.name.split('.').pop() || 'jpg';
+                const uniqueFileName = `${timestamp}_${randomStr}.${extension}`;
+                const storageRef = ref(storage, `profiles/${uniqueFileName}`);
+
+                const snapshot = await uploadBytes(storageRef, file);
+                const imageUrl = await getDownloadURL(snapshot.ref);
+
+                if (progressEl) progressEl.textContent = "Saving profile picture...";
+
+                const res = await fetch(`${API_URL}/users/profile`, {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ Image: imageUrl })
+                });
+
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.message || "Failed to update profile image");
+
+                const updatedUser = data.user || data;
+                if (updatedUser) {
+                    localStorage.setItem("user", JSON.stringify(updatedUser));
+                }
+
+                document.getElementById("userAvatar").src = imageUrl;
+                if (progressEl) {
+                    progressEl.textContent = "Profile picture updated successfully! ✓";
+                    setTimeout(() => { progressEl.style.display = "none"; }, 3000);
+                }
+
+            } catch (err) {
+                console.error("Quick avatar upload error:", err);
+                alert(`Upload failed: ${err.message}`);
+                if (progressEl) progressEl.style.display = "none";
+            } finally {
+                e.target.value = "";
+            }
+        });
+
         function logout() {
             localStorage.removeItem("token");
             localStorage.removeItem("user");
             window.location.href = "login.html";
         }
 
+        window.logout = logout;
         window.addEventListener("DOMContentLoaded", fetchProfile);
     </script>
 </body>

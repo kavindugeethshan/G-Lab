@@ -411,8 +411,14 @@
                         <input type="email" id="email" required>
                     </div>
                     <div class="form-group">
-                        <label for="image">Avatar Image URL</label>
-                        <input type="url" id="image" placeholder="https://example.com/avatar.jpg">
+                        <label>Profile Picture</label>
+                        <div style="display: flex; align-items: center; gap: 16px; margin-top: 8px;">
+                            <img id="avatarPreview" src="https://via.placeholder.com/70?text=Avatar" alt="Avatar Preview" style="width: 70px; height: 70px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent-color); background: #f1f5f9;" onerror="this.src='https://via.placeholder.com/70?text=Avatar'">
+                            <div style="flex: 1;">
+                                <input type="file" id="profileImageInput" accept="image/*" style="padding: 8px;">
+                                <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 4px;">Choose an image file from your device to upload to Firebase Storage.</div>
+                            </div>
+                        </div>
                     </div>
                     <button type="submit" class="btn btn-primary" style="width: 100%;">Save Personal Details</button>
                 </form>
@@ -541,8 +547,18 @@
         </div>
     </footer>
 
-    <script src="api-config.js"></script>
-    <script>
+    <script type="importmap">
+    {
+      "imports": {
+        "firebase/app": "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js",
+        "firebase/storage": "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js"
+      }
+    }
+    </script>
+    <script type="module">
+        import { storage } from "./firebase.js";
+        import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+
         const API_URL = window.API_URL || (
             (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
                 ? 'http://localhost:3001'
@@ -569,6 +585,20 @@
             }
         }
 
+        // Live preview on file selection
+        document.getElementById("profileImageInput")?.addEventListener("change", (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                if (!file.type.startsWith("image/")) {
+                    setMessage("Please select a valid image file (PNG, JPG, WEBP).", "error");
+                    e.target.value = "";
+                    return;
+                }
+                const previewUrl = URL.createObjectURL(file);
+                document.getElementById("avatarPreview").src = previewUrl;
+            }
+        });
+
         async function loadCurrentUserData() {
             try {
                 const res = await fetch(`${API_URL}/users/profile`, { headers: getHeaders() });
@@ -579,7 +609,11 @@
                 document.getElementById("firstname").value = u.firstname || "";
                 document.getElementById("lastname").value = u.lastname || "";
                 document.getElementById("email").value = u.email || "";
-                document.getElementById("image").value = u.Image || u.image || "";
+
+                const userImg = u.Image || u.image;
+                if (userImg) {
+                    document.getElementById("avatarPreview").src = userImg;
+                }
 
                 const addr = u.address || {};
                 document.getElementById("addressLine").value = addr.addressLine || "";
@@ -595,14 +629,49 @@
 
         async function updateProfileInfo(e) {
             e.preventDefault();
-            const body = {
-                firstname: document.getElementById("firstname").value.trim(),
-                lastname: document.getElementById("lastname").value.trim(),
-                email: document.getElementById("email").value.trim().toLowerCase(),
-                Image: document.getElementById("image").value.trim()
-            };
 
-            setMessage("Updating profile information...", "loading");
+            const firstname = document.getElementById("firstname").value.trim();
+            const lastname = document.getElementById("lastname").value.trim();
+            const email = document.getElementById("email").value.trim().toLowerCase();
+
+            if (!firstname || !lastname || !email) {
+                setMessage("Please fill in all required fields.", "error");
+                return;
+            }
+
+            const fileInput = document.getElementById("profileImageInput");
+            const file = fileInput.files[0];
+            let imageUrl = null;
+
+            if (file) {
+                if (!file.type.startsWith("image/")) {
+                    setMessage("Selected file is not an image.", "error");
+                    return;
+                }
+
+                try {
+                    setMessage("Uploading profile picture to Firebase Storage...", "loading");
+                    const timestamp = Date.now();
+                    const randomStr = Math.random().toString(36).substring(2, 9);
+                    const extension = file.name.split('.').pop() || 'jpg';
+                    const uniqueFileName = `${timestamp}_${randomStr}.${extension}`;
+                    const storageRef = ref(storage, `profiles/${uniqueFileName}`);
+
+                    const snapshot = await uploadBytes(storageRef, file);
+                    imageUrl = await getDownloadURL(snapshot.ref);
+                } catch (uploadErr) {
+                    console.error("Firebase upload error:", uploadErr);
+                    setMessage(`Image upload failed: ${uploadErr.message}`, "error");
+                    return;
+                }
+            }
+
+            const body = { firstname, lastname, email };
+            if (imageUrl) {
+                body.Image = imageUrl;
+            }
+
+            setMessage("Saving personal details...", "loading");
             try {
                 const res = await fetch(`${API_URL}/users/profile`, {
                     method: "PUT",
@@ -613,7 +682,15 @@
                 if (!res.ok) throw new Error(data.message || "Update failed");
 
                 setMessage("Personal profile updated successfully!", "success");
-                if (data.user) localStorage.setItem("user", JSON.stringify(data.user));
+                const updatedUser = data.user || data;
+                if (updatedUser) {
+                    localStorage.setItem("user", JSON.stringify(updatedUser));
+                    const newPic = updatedUser.Image || updatedUser.image;
+                    if (newPic) {
+                        document.getElementById("avatarPreview").src = newPic;
+                    }
+                }
+                fileInput.value = "";
 
             } catch (err) {
                 console.error("updateProfile error:", err);
@@ -701,6 +778,11 @@
                 setMessage(`Account deletion failed: ${err.message}`, "error");
             }
         }
+
+        window.updateProfileInfo = updateProfileInfo;
+        window.updateAddressInfo = updateAddressInfo;
+        window.changeUserPassword = changeUserPassword;
+        window.deleteAccount = deleteAccount;
 
         window.addEventListener("DOMContentLoaded", loadCurrentUserData);
     </script>
