@@ -1105,6 +1105,7 @@
             padding: 80px 20px;
             max-width: 1280px;
             margin: 0 auto;
+            scroll-margin-top: 100px;
         }
 
         .why-grid {
@@ -2191,6 +2192,38 @@
                     console.log("Autoplay policy handling:", err);
                 });
             }
+
+            // Precise Smooth Scroll for Why G LAB anchor links
+            function scrollToWhyGlab() {
+                const target = document.getElementById("whyGlab");
+                if (target) {
+                    const headerOffset = 90;
+                    const elementPosition = target.getBoundingClientRect().top;
+                    const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+                    window.scrollTo({
+                        top: offsetPosition,
+                        behavior: "smooth"
+                    });
+                }
+            }
+
+            if (window.location.hash === "#whyGlab") {
+                setTimeout(scrollToWhyGlab, 300);
+            }
+
+            document.querySelectorAll('a[href*="whyGlab"]').forEach(link => {
+                link.addEventListener("click", function(e) {
+                    const href = this.getAttribute("href");
+                    if (href === "#whyGlab" || href.endsWith("#whyGlab")) {
+                        const isCurrentPageHome = window.location.pathname.endsWith("home.html") || window.location.pathname.endsWith("index.html") || window.location.pathname === "/";
+                        if (isCurrentPageHome) {
+                            e.preventDefault();
+                            scrollToWhyGlab();
+                            history.pushState(null, null, "#whyGlab");
+                        }
+                    }
+                });
+            });
         });
     </script>
 </body>
