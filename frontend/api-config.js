@@ -18,8 +18,8 @@
                 : `${protocol}//${hostname}:3001`;
         }
 
-        // Production / Cloudflare Tunnel
-        return 'https://trademarks-fifteen-imposed-savings.trycloudflare.com';
+        // Production / Deployed application
+        return window.location.origin;
     }
 
     window.API_URL = getApiUrl();
