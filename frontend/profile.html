@@ -362,19 +362,100 @@
             header {
                 padding: 14px 20px;
             }
-            .profile-card {
-                padding: 24px 18px;
+        @media (max-width: 870px) {
+            header {
+                padding: 10px 16px;
+                flex-wrap: wrap;
+                gap: 10px 8px;
             }
-            .info-grid {
-                grid-template-columns: 1fr;
+
+            .logo-icon {
+                width: 36px;
+                height: 36px;
+                font-size: 1.1rem;
+                border-radius: 10px;
             }
-            .footer-container {
-                grid-template-columns: 1fr;
-                gap: 30px;
+
+            .logo-text h1 {
+                font-size: 1.2rem;
             }
-            .footer-bottom-bar {
-                flex-direction: column;
+
+            .logo-text span {
+                font-size: 0.65rem;
+            }
+
+            .nav-actions {
+                gap: 6px;
+                flex-wrap: wrap;
+                align-items: center;
+            }
+
+            .user-greeting {
+                padding: 4px 10px;
+                font-size: 0.78rem;
+            }
+
+            .nav-actions .btn,
+            .nav-actions button,
+            .nav-actions a.btn {
+                padding: 8px 12px;
+                font-size: 0.8rem;
+                gap: 5px;
+                border-radius: 8px;
+                white-space: nowrap;
+            }
+        }
+
+        @media (max-width: 540px) {
+            header {
+                padding: 8px 12px;
+            }
+
+            .logo-text span {
+                display: none;
+            }
+
+            .nav-actions {
+                width: 100%;
+                justify-content: space-between;
+                padding-top: 8px;
+                border-top: 1px solid var(--border-color, #e2e8f0);
+                margin-top: 2px;
+                gap: 6px 4px;
+            }
+
+            .user-greeting {
+                font-size: 0.74rem;
+                padding: 4px 8px;
+                max-width: 110px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            .nav-actions .btn,
+            .nav-actions button,
+            .nav-actions a.btn {
+                padding: 6px 10px;
+                font-size: 0.78rem;
+                flex: 1 1 auto;
                 text-align: center;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .nav-actions .btn,
+            .nav-actions button,
+            .nav-actions a.btn {
+                padding: 5px 6px;
+                font-size: 0.72rem;
+                gap: 3px;
+            }
+
+            .user-greeting {
+                font-size: 0.7rem;
+                padding: 3px 6px;
             }
         }
     </style>

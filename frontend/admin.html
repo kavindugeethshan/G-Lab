@@ -693,47 +693,151 @@
             color: var(--text-main);
         }
 
+        /* MOBILE RESPONSIVE OVERFLOW & LAYOUT ENHANCEMENTS FOR ADMIN */
+        body {
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1280px;
+            overflow-x: hidden;
+        }
+
+        .admin-tabs {
+            display: flex;
+            overflow-x: auto;
+            white-space: nowrap;
+            -webkit-overflow-scrolling: touch;
+            padding: 6px;
+            gap: 8px;
+            scrollbar-width: thin;
+        }
+
+        .admin-tabs button {
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .chart-box, .chart-container {
+            max-width: 100%;
+            overflow: hidden;
+        }
+
+        .chart-container canvas {
+            max-width: 100% !important;
+        }
+
+        .table-wrapper, .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            display: block;
+            border-radius: 12px;
+        }
+
         /* RESPONSIVE BREAKPOINTS */
         @media (max-width: 768px) {
             header {
-                padding: 12px 16px;
+                padding: 10px 14px;
                 flex-wrap: wrap;
-                gap: 12px;
+                gap: 10px 8px;
+            }
+
+            .logo-title {
+                gap: 8px;
+            }
+
+            .logo-icon {
+                width: 36px;
+                height: 36px;
+                font-size: 1.1rem;
+                border-radius: 10px;
             }
 
             .logo-text h1 {
-                font-size: 1.2rem;
+                font-size: 1.15rem;
+            }
+
+            .logo-text span {
+                font-size: 0.65rem;
             }
 
             .nav-actions {
                 width: 100%;
+                display: flex;
+                align-items: center;
                 justify-content: space-between;
-                flex-wrap: wrap;
-                gap: 8px;
+                padding-top: 6px;
+                border-top: 1px solid var(--border-color, #e2e8f0);
+                margin-top: 2px;
+                gap: 6px;
             }
 
             .user-greeting {
-                display: none;
+                font-size: 0.76rem;
+                padding: 4px 8px;
+                display: inline-block !important;
+                max-width: 120px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
             }
 
             .btn {
-                padding: 8px 12px;
-                font-size: 0.82rem;
+                padding: 7px 11px;
+                font-size: 0.78rem;
+                border-radius: 8px;
+                flex: 1 1 auto;
+                justify-content: center;
             }
 
             .container {
-                padding: 0 14px;
-                margin: 20px auto;
+                padding: 0 12px;
+                margin: 16px auto;
             }
 
-            .section-card {
-                padding: 18px;
+            .section-card, .chart-box, .progress-card {
+                padding: 16px;
+                border-radius: 14px;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+                gap: 12px;
+            }
+
+            .stat-card {
+                padding: 12px 14px;
+                gap: 10px;
+            }
+
+            .stat-icon {
+                font-size: 1.6rem;
+            }
+
+            .stat-value {
+                font-size: 1.25rem;
+            }
+
+            .stat-label {
+                font-size: 0.7rem;
+            }
+
+            .charts-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+
+            .chart-container {
+                height: 210px;
             }
 
             .admin-table th,
             .admin-table td {
-                padding: 12px 10px;
-                font-size: 0.82rem;
+                padding: 10px 8px;
+                font-size: 0.78rem;
+                white-space: nowrap;
             }
 
             .admin-tabs {
@@ -742,29 +846,46 @@
             }
 
             .admin-tabs button {
-                padding: 8px 14px;
-                font-size: 0.82rem;
+                padding: 8px 12px;
+                font-size: 0.8rem;
             }
         }
 
         @media (max-width: 480px) {
             header {
-                padding: 10px 12px;
+                padding: 8px 12px;
             }
 
-            .logo-icon {
-                width: 36px;
-                height: 36px;
-                font-size: 1.1rem;
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+            }
+
+            .stat-card {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 12px;
+                gap: 6px;
+            }
+
+            .admin-tabs button {
+                padding: 7px 12px;
+                font-size: 0.78rem;
             }
 
             .modal-content {
-                padding: 18px;
+                padding: 16px;
                 width: 95%;
             }
 
             .table-responsive {
                 -webkit-overflow-scrolling: touch;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
             }
         }
     </style>

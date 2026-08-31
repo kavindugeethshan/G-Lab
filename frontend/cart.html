@@ -927,19 +927,205 @@
             }
         }
 
-        @media (max-width: 600px) {
-            footer.site-footer {
-                padding: 40px 20px 20px 20px;
-            }
+        /* MOBILE RESPONSIVE OVERFLOW & LAYOUT ENHANCEMENTS FOR CART */
+        body {
+            overflow-x: hidden;
+        }
 
-            .footer-container {
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            overflow-x: hidden;
+        }
+
+        .cart-grid-layout {
+            display: grid;
+            grid-template-columns: 1fr 360px;
+            gap: 24px;
+            align-items: start;
+        }
+
+        @media (max-width: 992px) {
+            .cart-grid-layout {
                 grid-template-columns: 1fr;
-                gap: 30px;
+            }
+        }
+
+        .cart-table-wrapper, .order-table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            display: block;
+            border-radius: 12px;
+        }
+
+        .empty-cart-card {
+            padding: 30px 16px !important;
+            text-align: center;
+        }
+
+        @media (max-width: 870px) {
+            header {
+                padding: 10px 16px;
+                flex-wrap: wrap;
+                gap: 10px 8px;
             }
 
-            .footer-bottom-bar {
-                flex-direction: column;
+            .logo-icon {
+                width: 36px;
+                height: 36px;
+                font-size: 1.1rem;
+                border-radius: 10px;
+            }
+
+            .logo-text h1 {
+                font-size: 1.2rem;
+            }
+
+            .logo-text span {
+                font-size: 0.65rem;
+            }
+
+            .nav-actions {
+                gap: 6px;
+                flex-wrap: wrap;
+                align-items: center;
+            }
+
+            .user-greeting {
+                padding: 4px 10px;
+                font-size: 0.78rem;
+            }
+
+            .nav-actions .btn,
+            .nav-actions button,
+            .nav-actions a.btn {
+                padding: 8px 12px;
+                font-size: 0.8rem;
+                gap: 5px;
+                border-radius: 8px;
+                white-space: nowrap;
+            }
+
+            .container {
+                padding: 0 12px;
+                margin: 16px auto;
+            }
+
+            .section-card {
+                padding: 16px;
+                border-radius: 14px;
+                margin-bottom: 20px;
+            }
+
+            .section-card h2, .section-card h3 {
+                font-size: 1.15rem;
+                margin-bottom: 16px;
+            }
+
+            .metrics-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
+
+            .metric-box {
+                padding: 12px 14px;
+            }
+
+            .metric-val {
+                font-size: 1.15rem;
+            }
+
+            .metric-label {
+                font-size: 0.7rem;
+            }
+
+            .cart-summary {
+                padding: 16px;
+                border-radius: 14px;
+            }
+
+            .cart-table th, .cart-table td {
+                padding: 10px 8px;
+                font-size: 0.8rem;
+                white-space: nowrap;
+            }
+
+            .order-card {
+                padding: 14px !important;
+            }
+
+            .order-header-flex {
+                flex-direction: column !important;
+                align-items: flex-start !important;
+                gap: 8px !important;
+            }
+        }
+
+        @media (max-width: 540px) {
+            header {
+                padding: 8px 12px;
+            }
+
+            .logo-text span {
+                display: none;
+            }
+
+            .nav-actions {
+                width: 100%;
+                justify-content: space-between;
+                padding-top: 8px;
+                border-top: 1px solid var(--border-color, #e2e8f0);
+                margin-top: 2px;
+                gap: 6px 4px;
+            }
+
+            .user-greeting {
+                font-size: 0.74rem;
+                padding: 4px 8px;
+                max-width: 110px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            .nav-actions .btn,
+            .nav-actions button,
+            .nav-actions a.btn {
+                padding: 6px 10px;
+                font-size: 0.78rem;
+                flex: 1 1 auto;
                 text-align: center;
+                justify-content: center;
+            }
+
+            .metrics-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 8px;
+            }
+
+            .section-card {
+                padding: 12px;
+            }
+
+            .cart-table th, .cart-table td {
+                padding: 8px 6px;
+                font-size: 0.76rem;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .nav-actions .btn,
+            .nav-actions button,
+            .nav-actions a.btn {
+                padding: 5px 6px;
+                font-size: 0.72rem;
+                gap: 3px;
+            }
+
+            .user-greeting {
+                font-size: 0.7rem;
+                padding: 3px 6px;
             }
         }
     </style>

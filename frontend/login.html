@@ -352,114 +352,216 @@
             pointer-events: all;
         }
 
+        /* Additional CSS for OTP & Password Requirements & Mobile Usability */
+        .otp-verification-container {
+            display: none;
+            width: 100%;
+            max-width: 380px;
+            text-align: center;
+            margin: 0 auto;
+            padding: 10px 0;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .otp-video-box {
+            width: 150px;
+            height: 100px;
+            margin: 0 auto 8px auto;
+        }
+
+        .otp-input-field {
+            margin-bottom: 12px;
+            border: 2px solid #5995fd;
+            box-shadow: 0 0 12px rgba(89, 149, 253, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .otp-input-field:focus-within {
+            border-color: #2563eb;
+            box-shadow: 0 0 16px rgba(37, 99, 235, 0.35);
+        }
+
+        .otp-actions-container {
+            display: flex;
+            gap: 10px;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .otp-actions-container #btnVerifyOtp {
+            flex: 1;
+            margin: 0;
+            min-width: 120px;
+        }
+
+        .otp-actions-container #btnResendOtp {
+            padding: 0 16px;
+            font-size: 0.82rem;
+            height: 49px;
+            border-radius: 49px;
+            border: 1.5px solid #2563eb;
+            color: #2563eb;
+            font-weight: 700;
+            cursor: pointer;
+            white-space: nowrap;
+            margin: 0;
+        }
+
+        .req-badges-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 6px 4px;
+        }
+
         /* Responsive Breakpoints */
         @media (max-width: 870px) {
             .container {
-                min-height: 800px;
-                height: 100vh;
+                min-height: 100vh;
+                height: auto;
+                overflow-y: auto;
+                overflow-x: hidden;
+                padding-bottom: 2rem;
+            }
+
+            .container::before {
+                width: 1200px;
+                height: 1200px;
+                transform: translateX(-50%);
+                left: 50%;
+                bottom: 82%;
+                top: initial;
+                right: initial;
+                z-index: 1;
+                transition: 1s ease-in-out;
+            }
+
+            .container.sign-up-mode::before {
+                transform: translateX(-50%);
+                bottom: 82%;
+                left: 50%;
+                right: initial;
+            }
+
+            .forms-container {
+                position: relative;
+                height: auto;
+                min-height: 100vh;
+                z-index: 10;
             }
 
             .signin-signup {
                 width: 100%;
-                top: 95%;
-                transform: translate(-50%, -100%);
-                transition: 1s 0.8s ease-in-out;
+                top: 0 !important;
+                left: 0 !important;
+                transform: none !important;
+                position: relative;
+                z-index: 10;
+                padding: 110px 0 30px 0;
             }
 
-            .signin-signup,
             .container.sign-up-mode .signin-signup {
-                left: 50%;
+                top: 0 !important;
+                left: 0 !important;
+                transform: none !important;
             }
 
             .panels-container {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 120px;
                 grid-template-columns: 1fr;
-                grid-template-rows: 1fr 2fr 1fr;
+                grid-template-rows: 1fr;
+                z-index: 100 !important;
+                pointer-events: auto !important;
             }
 
             .panel {
-                flex-direction: row;
-                justify-content: space-around;
-                align-items: center;
-                padding: 2.5rem 8%;
                 grid-column: 1/2;
-            }
-
-            .right-panel {
-                grid-row: 3/4;
+                grid-row: 1/2;
+                padding: 42px 15px 10px 15px;
+                align-items: center;
+                justify-content: center;
+                flex-direction: row;
             }
 
             .left-panel {
-                grid-row: 1/2;
+                display: flex !important;
+                z-index: 105 !important;
+                pointer-events: auto !important;
             }
 
-            .image {
-                width: 200px;
-                transition: transform 0.9s ease-in-out;
-                transition-delay: 0.6s;
+            .right-panel {
+                display: none !important;
+                z-index: 1 !important;
+                pointer-events: none !important;
+            }
+
+            .container.sign-up-mode .left-panel {
+                display: none !important;
+                z-index: 1 !important;
+                pointer-events: none !important;
+            }
+
+            .container.sign-up-mode .right-panel {
+                display: flex !important;
+                z-index: 105 !important;
+                pointer-events: auto !important;
             }
 
             .panel .content {
-                padding-right: 15%;
-                transition: transform 0.9s ease-in-out;
-                transition-delay: 0.8s;
+                padding: 0;
+                text-align: center;
+                pointer-events: auto !important;
+            }
+
+            .panel button, #sign-up-btn, #sign-in-btn {
+                pointer-events: auto !important;
+                z-index: 106 !important;
+                position: relative;
+                cursor: pointer !important;
             }
 
             .panel h3 {
-                font-size: 1.2rem;
+                font-size: 1.1rem;
+                color: #ffffff;
+                margin-bottom: 4px;
             }
 
             .panel p {
-                font-size: 0.7rem;
-                padding: 0.5rem 0;
+                display: none;
             }
 
-            .btn.transparent {
-                width: 110px;
-                height: 35px;
-                font-size: 0.7rem;
+            .image {
+                display: none;
             }
 
-            .container::before {
-                width: 1500px;
-                height: 1500px;
-                transform: translateX(-50%);
-                left: 30%;
-                bottom: 68%;
-                right: initial;
-                top: initial;
-                transition: 2s ease-in-out;
+            .right-panel .content {
+                transform: translateY(-200px);
             }
 
-            .container.sign-up-mode::before {
-                transform: translate(-50%, 100%);
-                bottom: 32%;
-                right: initial;
+            .container.sign-up-mode .left-panel .content {
+                transform: translateY(-200px);
             }
 
-            .container.sign-up-mode .right-panel .image,
             .container.sign-up-mode .right-panel .content {
                 transform: translateY(0px);
-            }
-
-            .container.sign-up-mode .left-panel .image,
-            .container.sign-up-mode .left-panel .content {
-                transform: translateY(-300px);
-            }
-
-            .right-panel .image,
-            .right-panel .content {
-                transform: translateY(300px);
-            }
-
-            .container.sign-up-mode .signin-signup {
-                top: 5%;
-                transform: translate(-50%, 0);
             }
         }
 
         @media (max-width: 570px) {
             form {
-                padding: 0 1.5rem;
+                padding: 0 1rem;
+            }
+
+            .btn-back-home {
+                top: 12px;
+                left: 12px;
+                font-size: 0.78rem;
+                padding: 6px 12px;
             }
 
             .image {
@@ -478,6 +580,56 @@
             .container.sign-up-mode::before {
                 bottom: 28%;
                 left: 50%;
+            }
+
+            #wrongPasswordContainer > div,
+            #successLoginContainer > div {
+                flex-direction: column !important;
+                text-align: center !important;
+                gap: 8px !important;
+            }
+
+            #wrongPasswordVideo, #correctPasswordVideo {
+                width: 110px !important;
+                height: 85px !important;
+            }
+        }
+
+        @media (max-width: 400px) {
+            form {
+                padding: 0 0.6rem;
+            }
+
+            .title {
+                font-size: 1.8rem;
+            }
+
+            .subtitle {
+                font-size: 0.8rem;
+            }
+
+            .input-field {
+                height: 50px;
+                border-radius: 50px;
+            }
+
+            .input-field i {
+                line-height: 50px;
+                font-size: 1rem;
+            }
+
+            .input-field input {
+                font-size: 0.95rem;
+            }
+
+            .otp-actions-container {
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .otp-actions-container #btnVerifyOtp,
+            .otp-actions-container #btnResendOtp {
+                width: 100% !important;
             }
         }
     </style>
@@ -506,7 +658,7 @@
 
                     <!-- Real-time Reset Password Requirements Indicator (Shown during Reset Mode) -->
                     <div id="resetPasswordRequirements" style="display: none; width: 100%; max-width: 380px; margin: 4px 0 8px 0; padding: 2px 4px; transition: all 0.3s ease;">
-                        <div style="display: flex; align-items: center; justify-content: space-between; gap: 4px;">
+                        <div class="req-badges-wrapper">
                             <span id="reset-req-length" style="display: inline-flex; align-items: center; gap: 3px; font-size: 0.74rem; font-weight: 700; padding: 3px 7px; border-radius: 12px; transition: all 0.25s ease; background: #fef2f2; color: #dc2626; border: 1px solid #fca5a5;">
                                 <span class="req-icon">🔴</span> 8+
                             </span>
@@ -587,6 +739,11 @@
 
                     <div id="messageIn" class="message-box"></div>
 
+                    <div id="rowSignUpSwitch" style="margin-top: 14px; text-align: center;">
+                        <span style="font-size: 0.85rem; color: #64748b;">Don't have an account? </span>
+                        <a onclick="document.querySelector('#mainContainer').classList.add('sign-up-mode')" style="font-size: 0.85rem; color: #2563eb; font-weight: 700; cursor: pointer; text-decoration: underline;">Sign up</a>
+                    </div>
+
                     <!-- Inline Resend / Verify Animation Box -->
                     <div id="resetAnimContainer" style="display: none; width: 100%; max-width: 380px; margin: 10px auto; text-align: center; transition: all 0.3s ease;">
                         <div style="width: 160px; height: 110px; margin: 0 auto;">
@@ -619,7 +776,7 @@
 
                     <!-- Real-time Password Requirements Indicator (Directly above password input) -->
                     <div id="passwordRequirements" style="display: none; width: 100%; max-width: 380px; margin: 4px 0 8px 0; padding: 2px 4px; transition: all 0.3s ease;">
-                        <div style="display: flex; align-items: center; justify-content: space-between; gap: 4px;">
+                        <div class="req-badges-wrapper">
                             <span id="req-length" style="display: inline-flex; align-items: center; gap: 3px; font-size: 0.74rem; font-weight: 700; padding: 3px 7px; border-radius: 12px; transition: all 0.25s ease; background: #fef2f2; color: #dc2626; border: 1px solid #fca5a5;">
                                 <span class="req-icon">🔴</span> 8+
                             </span>
@@ -651,11 +808,16 @@
                     <input type="submit" id="btnSubmitUp" value="Sign up" class="btn solid">
 
                     <div id="messageUp" class="message-box"></div>
+
+                    <div id="rowSignInSwitch" style="margin-top: 14px; text-align: center;">
+                        <span style="font-size: 0.85rem; color: #64748b;">Already have an account? </span>
+                        <a onclick="document.querySelector('#mainContainer').classList.remove('sign-up-mode')" style="font-size: 0.85rem; color: #2563eb; font-weight: 700; cursor: pointer; text-decoration: underline;">Sign in</a>
+                    </div>
                 </form>
 
                 <!-- 3. Email OTP Verification View (Shown after Sign Up) -->
-                <div id="otpVerificationView" style="display: none; width: 100%; max-width: 380px; text-align: center; margin: 0 auto; animation: fadeIn 0.4s ease;">
-                    <div style="width: 170px; height: 125px; margin: 0 auto 8px auto;">
+                <div id="otpVerificationView" class="otp-verification-container">
+                    <div class="otp-video-box">
                         <video id="authOtpVideo" autoplay loop muted playsinline preload="auto" style="width: 100%; height: 100%; object-fit: contain;">
                             <source id="authOtpVideoSource" src="animation/auth.webm" type="video/webm">
                         </video>
@@ -666,21 +828,21 @@
                     </p>
 
                     <form id="otpForm" onsubmit="handleVerifyOtp(event)">
-                        <div class="input-field" style="margin-bottom: 12px;">
+                        <div class="input-field otp-input-field">
                             <i class="fa-solid fa-key"></i>
                             <input type="text" id="otpInput" required maxlength="6" inputmode="numeric" pattern="[0-9]{6}" placeholder="Enter 6-digit OTP" style="letter-spacing: 4px; font-weight: 700; font-size: 1.1rem; text-align: center;" oninput="this.value=this.value.replace(/[^0-9]/g,'')">
                         </div>
 
-                        <div style="display: flex; gap: 8px; width: 100%; margin-bottom: 10px;">
-                            <button type="submit" id="btnVerifyOtp" class="btn solid" style="flex: 1; margin: 0;">Verify Email</button>
-                            <button type="button" id="btnResendOtp" class="btn transparent" onclick="handleResendOtp(event)" style="padding: 0 14px; font-size: 0.82rem; height: 49px; border-radius: 49px; border: 1.5px solid #2563eb; color: #2563eb; font-weight: 700; cursor: pointer; white-space: nowrap;">Resend Code</button>
+                        <div class="otp-actions-container">
+                            <button type="submit" id="btnVerifyOtp" class="btn solid">Verify Email</button>
+                            <button type="button" id="btnResendOtp" class="btn transparent" onclick="handleResendOtp(event)">Resend Code</button>
                         </div>
                     </form>
 
                     <div id="messageOtp" class="message-box"></div>
 
                     <div style="margin-top: 12px;">
-                        <a class="forgot-link" style="font-size: 0.82rem; color: #64748b; cursor: pointer;" onclick="cancelOtpVerification()">
+                        <a class="forgot-link" style="font-size: 0.82rem; color: #64748b; cursor: pointer; text-align: center; display: inline-block;" onclick="cancelOtpVerification()">
                             <i class="fa-solid fa-arrow-left"></i> Back to Registration
                         </a>
                     </div>
@@ -697,7 +859,7 @@
                     <h3>New here ?</h3>
                     <p>Create an account to explore high-performance PC hardware, custom gaming rigs, and exclusive
                         deals.</p>
-                    <button class="btn transparent" id="sign-up-btn">Sign up</button>
+                    <button type="button" class="btn transparent" id="sign-up-btn" onclick="document.querySelector('#mainContainer').classList.add('sign-up-mode');">Sign up</button>
                 </div>
                 <video autoplay loop muted playsinline class="image"
                     style="border-radius: 16px; object-fit: cover; max-height: 280px;"
@@ -712,7 +874,7 @@
                     <h3>One of us ?</h3>
                     <p>Sign in with your credentials to access your cart, track orders, and manage your hardware
                         profile.</p>
-                    <button class="btn transparent" id="sign-in-btn">Sign in</button>
+                    <button type="button" class="btn transparent" id="sign-in-btn" onclick="document.querySelector('#mainContainer').classList.remove('sign-up-mode');">Sign in</button>
                 </div>
                 <video autoplay loop muted playsinline class="image"
                     style="border-radius: 16px; object-fit: cover; max-height: 280px;"
