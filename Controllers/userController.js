@@ -2,25 +2,37 @@ import User from "../models/Usermodel.js";
 import PendingUser from "../models/PendingUserModel.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import nodemailer from "nodemailer";
+import { Resend } from "resend";
 import PasswordReset from "../models/PasswordResetModel.js";
 
 
-// Helper to get fresh Nodemailer transporter with clean credentials
-const getTransporter = () => {
-  const user = process.env.EMAIL_USER;
-  const pass = process.env.EMAIL_PASS ? process.env.EMAIL_PASS.replace(/\s+/g, '') : '';
-  return nodemailer.createTransport({
-    host: "smtp.gmail.com",
-    port: 587,
-    secure: false,
-    auth: { user, pass },
-    requireTLS: true,
-    family: 4,
-    connectionTimeout: 10000,
-    greetingTimeout: 10000,
-    socketTimeout: 10000,
+// Helper to get fresh Resend client
+const getResendClient = () => {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) {
+    console.warn("⚠️ RESEND_API_KEY is not set in environment variables");
+  }
+  return new Resend(apiKey);
+};
+
+// Helper function to send email via Resend HTTP API
+const sendEmailViaResend = async ({ to, subject, text }) => {
+  const resend = getResendClient();
+  const from = process.env.RESEND_FROM_EMAIL || "G-Lab <onboarding@resend.dev>";
+
+  const { data, error } = await resend.emails.send({
+    from,
+    to,
+    subject,
+    text,
   });
+
+  if (error) {
+    console.error("❌ Resend API error:", error);
+    throw new Error(error.message || "Failed to send email via Resend");
+  }
+
+  return data;
 };
 
 // Create user function
@@ -140,26 +152,17 @@ export const createUser = async (req, res) => {
 
     console.log("[REGISTER] 7 - pending user created");
 
-    // Create email transporter
-    console.log("[REGISTER] 8 - creating email transporter");
+    // Create email transporter & Send OTP email in background
+    console.log("[REGISTER] 8 - sending OTP email via Resend");
 
-    const transporter = getTransporter();
-
-    console.log("[REGISTER] 9 - email transporter created");
-
-    // Send OTP email in background
-    console.log("[REGISTER] 10 - starting OTP email send");
-
-    transporter
-      .sendMail({
-        from: process.env.EMAIL_USER,
-        to: cleanEmail,
-        subject: "G-Lab Email Verification",
-        text: `Your G-Lab verification code is: ${otp}. This code expires in 10 minutes.`,
-      })
-      .then(() => {
+    sendEmailViaResend({
+      to: cleanEmail,
+      subject: "G-Lab Email Verification",
+      text: `Your G-Lab verification code is: ${otp}. This code expires in 10 minutes.`,
+    })
+      .then((data) => {
         console.log(
-          `[REGISTER] 11 - OTP email sent successfully to ${cleanEmail}`
+          `[REGISTER] 11 - OTP email sent successfully to ${cleanEmail} (ID: ${data?.id})`
         );
       })
       .catch((emailError) => {
@@ -551,12 +554,12 @@ export const resendOTP = async (req, res) => {
     pendingUser.emailverificationotpexpires = otpExpires;
     await pendingUser.save();
 
-    const transporter = getTransporter();
-    await transporter.sendMail({
-      from: process.env.EMAIL_USER,
+    sendEmailViaResend({
       to: cleanEmail,
       subject: "G-Lab Email Verification - Resend",
       text: `Your G-Lab verification code is: ${otp}. This code expires in 10 minutes.`,
+    }).catch((emailError) => {
+      console.error("[RESEND_OTP] Resend email send error:", emailError);
     });
 
     res.status(200).json({
@@ -673,11 +676,8 @@ export const forgotPassword = async (req, res) => {
       verified: false,
     });
 
-    const transporter = getTransporter();
-
     // Send email asynchronously in background to ensure fast response
-    transporter.sendMail({
-      from: process.env.EMAIL_USER,
+    sendEmailViaResend({
       to: cleanEmail,
       subject: "G-Lab Password Reset",
       text: `Your G-Lab password reset code is: ${otp}. This code expires in 10 minutes.`,
