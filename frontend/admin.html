@@ -1286,11 +1286,7 @@
     <script type="module">
         import { storage } from "./firebase.js";
         import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-        const API_URL = window.API_URL || (
-            (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
-                ? 'http://localhost:3001'
-                : window.location.origin
-        );
+        const API_URL = window.API_URL;
 
         const token = localStorage.getItem("token");
         let currentUser = null;

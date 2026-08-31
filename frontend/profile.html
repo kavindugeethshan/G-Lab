@@ -509,6 +509,8 @@
         </div>
     </footer>
 
+    <!-- JAVASCRIPT ENGINE -->
+    <script src="api-config.js"></script>
     <script type="importmap">
     {
       "imports": {
@@ -521,11 +523,7 @@
         import { storage } from "./firebase.js";
         import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
-        const API_URL = window.API_URL || (
-            (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
-                ? 'http://localhost:3001'
-                : window.location.origin
-        );
+        const API_URL = window.API_URL;
 
         const token = localStorage.getItem("token");
         if (!token) window.location.href = "login.html";

@@ -19,6 +19,8 @@ const getTransporter = () => {
 // Create user function
 export const createUser = async (req, res) => {
   try {
+    console.log("[REGISTER] 1 - createUser started");
+
     // Get only the fields that a normal user is allowed to send
     const { email, firstname, lastname, password, Image } = req.body;
 
@@ -88,9 +90,11 @@ export const createUser = async (req, res) => {
     }
 
     // Check whether the email already exists in the main User collection
+    console.log("[REGISTER] 2 - checking existing user");
     const existingUser = await User.findOne({
       email: cleanEmail,
     });
+    console.log("[REGISTER] 3 - existing user check completed");
 
     if (existingUser) {
       return res.status(409).json({
@@ -100,12 +104,15 @@ export const createUser = async (req, res) => {
 
     // Hash the password before saving
     const saltRounds = 12;
+    console.log("[REGISTER] 4 - starting password hash");
     const hashedPassword = await bcrypt.hash(password, saltRounds);
+    console.log("[REGISTER] 5 - password hash completed");
 
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
     const otpExpires = new Date(Date.now() + 10 * 60 * 1000);
 
     // Save registration in PendingUser collection (overwrite previous pending registration if any)
+    console.log("[REGISTER] 6 - creating pending user");
     await PendingUser.findOneAndDelete({ email: cleanEmail });
     await PendingUser.create({
       email: cleanEmail,
@@ -116,20 +123,28 @@ export const createUser = async (req, res) => {
       emailverificationotp: otp,
       emailverificationotpexpires: otpExpires,
     });
+    console.log("[REGISTER] 7 - pending user created");
 
+    console.log("[REGISTER] 8 - creating email transporter");
     const transporter = getTransporter();
+    console.log("[REGISTER] 9 - email transporter created");
+
+    console.log("[REGISTER] 10 - starting OTP email send");
     await transporter.sendMail({
       from: process.env.EMAIL_USER,
       to: cleanEmail,
       subject: "G-Lab Email Verification",
       text: `Your G-Lab verification code is: ${otp}. This code expires in 10 minutes.`,
     });
+    console.log("[REGISTER] 11 - OTP email sent");
     console.log(`✉️ OTP Email sent successfully to pending user: ${cleanEmail}`);
 
+    console.log("[REGISTER] 12 - sending response");
     res.status(201).json({
       message: "Verification code sent to your email.",
       email: cleanEmail
     });
+    console.log("[REGISTER] 13 - response completed");
   } catch (err) {
     // Handle unexpected server/database errors
     res.status(500).json({

@@ -726,10 +726,7 @@
     <!-- G-Lab API Configuration -->
     <script src="api-config.js"></script>
     <script>
-        const API_URL = window.API_URL ||
-            ((window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
-                ? 'http://localhost:3001'
-                : window.location.origin);
+        const API_URL = window.API_URL;
 
         const container = document.querySelector("#mainContainer");
         const sign_in_btn = document.querySelector("#sign-in-btn");
