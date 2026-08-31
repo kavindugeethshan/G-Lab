@@ -28,20 +28,17 @@ export const createUser = async (req, res) => {
   try {
     console.log("[REGISTER] 1 - createUser started");
 
-    // Get only the fields that a normal user is allowed to send
     const { email, firstname, lastname, password, Image } = req.body;
 
-    // Validate email is provided
+    // Validate email
     if (!email || typeof email !== "string") {
       return res.status(400).json({
         message: "Email is required",
       });
     }
 
-    // Remove unnecessary spaces and convert email to lowercase
     const cleanEmail = email.trim().toLowerCase();
 
-    // Check whether the email format is valid
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     if (!emailRegex.test(cleanEmail)) {
@@ -50,42 +47,39 @@ export const createUser = async (req, res) => {
       });
     }
 
-    // Validate first name is provided
+    // Validate first name
     if (!firstname || typeof firstname !== "string") {
       return res.status(400).json({
         message: "First name is required",
       });
     }
 
-    // Check first name length
     if (firstname.trim().length < 2 || firstname.trim().length > 50) {
       return res.status(400).json({
         message: "First name must be between 2 and 50 characters",
       });
     }
 
-    // Validate last name is provided
+    // Validate last name
     if (!lastname || typeof lastname !== "string") {
       return res.status(400).json({
         message: "Last name is required",
       });
     }
 
-    // Check last name length
     if (lastname.trim().length < 2 || lastname.trim().length > 50) {
       return res.status(400).json({
         message: "Last name must be between 2 and 50 characters",
       });
     }
 
-    // Validate password is provided
+    // Validate password
     if (!password || typeof password !== "string") {
       return res.status(400).json({
         message: "Password is required",
       });
     }
 
-    // Check minimum password length
     const passwordRegex =
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
 
@@ -96,11 +90,13 @@ export const createUser = async (req, res) => {
       });
     }
 
-    // Check whether the email already exists in the main User collection
+    // Check existing user
     console.log("[REGISTER] 2 - checking existing user");
+
     const existingUser = await User.findOne({
       email: cleanEmail,
     });
+
     console.log("[REGISTER] 3 - existing user check completed");
 
     if (existingUser) {
@@ -109,18 +105,29 @@ export const createUser = async (req, res) => {
       });
     }
 
-    // Hash the password before saving
+    // Hash password
     const saltRounds = 12;
+
     console.log("[REGISTER] 4 - starting password hash");
+
     const hashedPassword = await bcrypt.hash(password, saltRounds);
+
     console.log("[REGISTER] 5 - password hash completed");
 
+    // Generate OTP
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
-    const otpExpires = new Date(Date.now() + 10 * 60 * 1000);
 
-    // Save registration in PendingUser collection (overwrite previous pending registration if any)
+    const otpExpires = new Date(
+      Date.now() + 10 * 60 * 1000
+    );
+
+    // Save pending user
     console.log("[REGISTER] 6 - creating pending user");
-    await PendingUser.findOneAndDelete({ email: cleanEmail });
+
+    await PendingUser.findOneAndDelete({
+      email: cleanEmail,
+    });
+
     await PendingUser.create({
       email: cleanEmail,
       firstname: firstname.trim(),
@@ -130,31 +137,50 @@ export const createUser = async (req, res) => {
       emailverificationotp: otp,
       emailverificationotpexpires: otpExpires,
     });
+
     console.log("[REGISTER] 7 - pending user created");
 
+    // Create email transporter
     console.log("[REGISTER] 8 - creating email transporter");
+
     const transporter = getTransporter();
+
     console.log("[REGISTER] 9 - email transporter created");
 
+    // Send OTP email in background
     console.log("[REGISTER] 10 - starting OTP email send");
-    await transporter.sendMail({
-      from: process.env.EMAIL_USER,
-      to: cleanEmail,
-      subject: "G-Lab Email Verification",
-      text: `Your G-Lab verification code is: ${otp}. This code expires in 10 minutes.`,
-    });
-    console.log("[REGISTER] 11 - OTP email sent");
-    console.log(`✉️ OTP Email sent successfully to pending user: ${cleanEmail}`);
 
+    transporter
+      .sendMail({
+        from: process.env.EMAIL_USER,
+        to: cleanEmail,
+        subject: "G-Lab Email Verification",
+        text: `Your G-Lab verification code is: ${otp}. This code expires in 10 minutes.`,
+      })
+      .then(() => {
+        console.log(
+          `[REGISTER] 11 - OTP email sent successfully to ${cleanEmail}`
+        );
+      })
+      .catch((emailError) => {
+        console.error(
+          "[REGISTER] OTP email send error:",
+          emailError
+        );
+      });
+
+    // Respond immediately
     console.log("[REGISTER] 12 - sending response");
-    res.status(201).json({
+
+    return res.status(201).json({
       message: "Verification code sent to your email.",
-      email: cleanEmail
+      email: cleanEmail,
     });
-    console.log("[REGISTER] 13 - response completed");
+
   } catch (err) {
-    // Handle unexpected server/database errors
-    res.status(500).json({
+    console.error("[REGISTER] createUser error:", err);
+
+    return res.status(500).json({
       message: err.message,
     });
   }
