@@ -34,7 +34,13 @@ export const authMiddleware = async (req, res, next) => {
       });
     }
 
-    req.user = decoded;
+    req.user = {
+      ...decoded,
+      userId: user._id,
+      email: user.email,
+      isadmin: Boolean(user.isadmin),
+      isblocked: Boolean(user.isblocked),
+    };
 
     next();
   } catch (err) {

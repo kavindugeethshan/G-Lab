@@ -2,38 +2,9 @@ import User from "../models/Usermodel.js";
 import PendingUser from "../models/PendingUserModel.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { Resend } from "resend";
+import { sendEmail, generateOtpEmailHtml } from "../utils/sendEmail.js";
 import PasswordReset from "../models/PasswordResetModel.js";
 
-
-// Helper to get fresh Resend client
-const getResendClient = () => {
-  const apiKey = process.env.RESEND_API_KEY;
-  if (!apiKey) {
-    console.warn("⚠️ RESEND_API_KEY is not set in environment variables");
-  }
-  return new Resend(apiKey);
-};
-
-// Helper function to send email via Resend HTTP API
-const sendEmailViaResend = async ({ to, subject, text }) => {
-  const resend = getResendClient();
-  const from = process.env.RESEND_FROM_EMAIL || "G-Lab <onboarding@resend.dev>";
-
-  const { data, error } = await resend.emails.send({
-    from,
-    to,
-    subject,
-    text,
-  });
-
-  if (error) {
-    console.error("❌ Resend API error:", error);
-    throw new Error(error.message || "Failed to send email via Resend");
-  }
-
-  return data;
-};
 
 // Create user function
 export const createUser = async (req, res) => {
@@ -153,16 +124,21 @@ export const createUser = async (req, res) => {
     console.log("[REGISTER] 7 - pending user created");
 
     // Create email transporter & Send OTP email in background
-    console.log("[REGISTER] 8 - sending OTP email via Resend");
+    console.log("[REGISTER] 8 - sending OTP email");
 
-    sendEmailViaResend({
+    sendEmail({
       to: cleanEmail,
-      subject: "G-Lab Email Verification",
+      subject: "G-Lab Email Verification Code",
       text: `Your G-Lab verification code is: ${otp}. This code expires in 10 minutes.`,
+      html: generateOtpEmailHtml(
+        "Email Verification Code",
+        otp,
+        `Welcome to G-Lab, ${firstname}! Please use the verification code below to complete your registration:`
+      ),
     })
       .then((data) => {
         console.log(
-          `[REGISTER] 11 - OTP email sent successfully to ${cleanEmail} (ID: ${data?.id})`
+          `[REGISTER] 11 - OTP email sent successfully to ${cleanEmail}`
         );
       })
       .catch((emailError) => {
@@ -219,24 +195,28 @@ export const loginUser = async (req, res) => {
 
     // Check whether user exists
     if (!user) {
-      return res.status(401).json({
-        message: "Invalid email or password",
+      return res.status(404).json({
+        message: "This email is not registered. Please register.",
+        errorType: "USER_NOT_FOUND",
+      });
+    }
+
+    // Check if user is blocked
+    if (user.isblocked) {
+      return res.status(403).json({
+        message: "Your account has been blocked. Please contact support.",
+        errorType: "ACCOUNT_BLOCKED",
       });
     }
 
     // Compare entered password with hashed password
     const isPasswordValid = await bcrypt.compare(password, user.password);
 
-    //check if user is blocked
-    if (user.isblocked) {
-      return res.status(403).json({
-        message: "Your account has been blocked",
-      });
-    }
     // Check password
     if (!isPasswordValid) {
       return res.status(401).json({
-        message: "Invalid email or password",
+        message: "Incorrect password. Please try again.",
+        errorType: "WRONG_PASSWORD",
       });
     }
     //create jwt token
@@ -358,7 +338,54 @@ export const updateprofule = async (req, res) => {
     }
 
     const profilePic = image !== undefined ? image : Image;
-    if (profilePic !== undefined) user.Image = profilePic.trim();
+    if (profilePic !== undefined) {
+      if (typeof profilePic !== "string") {
+        return res.status(400).json({
+          message: "Profile image must be a string URL",
+        });
+      }
+
+      const trimmedPic = profilePic.trim();
+      if (trimmedPic) {
+        const lowerPic = trimmedPic.toLowerCase();
+        // Disallow dangerous URI schemes
+        if (
+          lowerPic.startsWith("javascript:") ||
+          lowerPic.startsWith("data:") ||
+          lowerPic.startsWith("vbscript:") ||
+          lowerPic.startsWith("file:")
+        ) {
+          return res.status(400).json({
+            message: "Security Alert: Prohibited or suspicious image URL protocol detected.",
+          });
+        }
+
+        try {
+          const parsed = new URL(trimmedPic);
+          if (parsed.protocol !== "https:" && parsed.protocol !== "http:") {
+            return res.status(400).json({
+              message: "Image URL must use http or https protocol.",
+            });
+          }
+
+          // Disallow dangerous extensions in the path
+          const dangerousExts = /\.(php|phtml|html|htm|js|exe|bat|cmd|sh|py|pl|vbs|svg|cgi|asp|aspx|dll|scr)(\?|$)/i;
+          if (dangerousExts.test(parsed.pathname)) {
+            return res.status(400).json({
+              message: "Security Alert: Dangerous or executable file extension detected in image URL.",
+            });
+          }
+        } catch (_) {
+          return res.status(400).json({
+            message: "Invalid image URL format.",
+          });
+        }
+
+        user.Image = trimmedPic;
+      } else {
+        user.Image = "";
+      }
+    }
 
     await user.save();
     const userResponse = user.toObject();
@@ -554,12 +581,17 @@ export const resendOTP = async (req, res) => {
     pendingUser.emailverificationotpexpires = otpExpires;
     await pendingUser.save();
 
-    sendEmailViaResend({
+    sendEmail({
       to: cleanEmail,
-      subject: "G-Lab Email Verification - Resend",
+      subject: "G-Lab Email Verification Code",
       text: `Your G-Lab verification code is: ${otp}. This code expires in 10 minutes.`,
+      html: generateOtpEmailHtml(
+        "Resent Email Verification Code",
+        otp,
+        "Here is your new verification code to complete your G-Lab email verification:"
+      ),
     }).catch((emailError) => {
-      console.error("[RESEND_OTP] Resend email send error:", emailError);
+      console.error("[RESEND_OTP] Email send error:", emailError);
     });
 
     res.status(200).json({
@@ -658,7 +690,8 @@ export const forgotPassword = async (req, res) => {
 
     if (!user) {
       return res.status(404).json({
-        message: "User not found",
+        message: "This email is not registered. Please register.",
+        errorType: "USER_NOT_FOUND",
       });
     }
 
@@ -677,10 +710,15 @@ export const forgotPassword = async (req, res) => {
     });
 
     // Send email asynchronously in background to ensure fast response
-    sendEmailViaResend({
+    sendEmail({
       to: cleanEmail,
-      subject: "G-Lab Password Reset",
+      subject: "G-Lab Password Reset Code",
       text: `Your G-Lab password reset code is: ${otp}. This code expires in 10 minutes.`,
+      html: generateOtpEmailHtml(
+        "Password Reset Request",
+        otp,
+        "We received a request to reset your G-Lab account password. Use the verification code below to continue:"
+      ),
     }).catch(err => console.error("Forgot password email send error:", err));
 
     return res.status(200).json({

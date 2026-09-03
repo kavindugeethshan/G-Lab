@@ -415,8 +415,8 @@
                         <div style="display: flex; align-items: center; gap: 16px; margin-top: 8px;">
                             <img id="avatarPreview" src="https://via.placeholder.com/70?text=Avatar" alt="Avatar Preview" style="width: 70px; height: 70px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent-color); background: #f1f5f9;" onerror="this.src='https://via.placeholder.com/70?text=Avatar'">
                             <div style="flex: 1;">
-                                <input type="file" id="profileImageInput" accept="image/*" style="padding: 8px;">
-                                <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 4px;">Choose an image file from your device to upload to Firebase Storage.</div>
+                                <input type="file" id="profileImageInput" accept=".jpg, .jpeg, .png, .webp, image/jpeg, image/png, image/webp" style="padding: 8px;">
+                                <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 4px;">Choose a JPG, PNG, or WEBP image (max 5MB) from your device.</div>
                             </div>
                         </div>
                     </div>
@@ -625,6 +625,115 @@
             }
         }
 
+        /**
+         * Security Barrier: Validates image files against spoofing, malicious extensions,
+         * oversized files, and binary signature mismatches (magic numbers).
+         */
+        async function validateImageSecurity(file) {
+            if (!file) {
+                return { valid: false, error: "No file selected." };
+            }
+
+            // 1. File Size Verification (16 Bytes <= Size <= 5MB)
+            const MAX_SIZE = 5 * 1024 * 1024; // 5 MB
+            if (!file.size || file.size < 16) {
+                return { valid: false, error: "Security Warning: The selected file is empty or corrupted." };
+            }
+            if (file.size > MAX_SIZE) {
+                return { valid: false, error: "File size exceeds 5MB limit. Please choose a smaller photo." };
+            }
+
+            // 2. Dangerous File Name and Double Extension Check
+            const fileName = file.name.toLowerCase();
+            const dangerousPatterns = /\.(php|phtml|html|htm|js|exe|bat|cmd|sh|py|pl|vbs|svg|cgi|asp|aspx|dll|jar|scr)(\.|$)/i;
+            if (dangerousPatterns.test(fileName)) {
+                return { valid: false, error: "Security Alert: Prohibited or executable file extension detected. Upload blocked." };
+            }
+
+            // 3. Strict Allowed File Extensions (JPG, JPEG, PNG, WEBP)
+            const ext = fileName.split('.').pop();
+            const allowedExtensions = ["jpg", "jpeg", "png", "webp"];
+            if (!allowedExtensions.includes(ext)) {
+                return { valid: false, error: "Invalid file extension. Only JPG, JPEG, PNG, and WEBP files are allowed." };
+            }
+
+            // 4. Strict Allowed MIME Types
+            const allowedMimes = ["image/jpeg", "image/png", "image/webp"];
+            if (!allowedMimes.includes(file.type.toLowerCase())) {
+                return { valid: false, error: `Invalid file format (${file.type || 'unknown'}). Only JPG, PNG, and WEBP image files are allowed.` };
+            }
+
+            // 5. Deep Binary Header Inspection (Magic Number Verification)
+            try {
+                const headerSlice = await file.slice(0, 16).arrayBuffer();
+                const bytes = new Uint8Array(headerSlice);
+
+                let isRealImage = false;
+
+                // JPEG Magic Number: FF D8 FF
+                if (bytes[0] === 0xFF && bytes[1] === 0xD8 && bytes[2] === 0xFF) {
+                    isRealImage = true;
+                }
+                // PNG Magic Number: 89 50 4E 47 0D 0A 1A 0A
+                else if (bytes[0] === 0x89 && bytes[1] === 0x50 && bytes[2] === 0x4E && bytes[3] === 0x47) {
+                    isRealImage = true;
+                }
+                // WEBP Magic Number: RIFF (52 49 46 46) ... WEBP (57 45 42 50)
+                else if (bytes[0] === 0x52 && bytes[1] === 0x49 && bytes[2] === 0x46 && bytes[3] === 0x46 &&
+                         bytes[8] === 0x57 && bytes[9] === 0x45 && bytes[10] === 0x42 && bytes[11] === 0x50) {
+                    isRealImage = true;
+                }
+
+                if (!isRealImage) {
+                    return { valid: false, error: "Security Alert: File signature mismatch! The file is not a genuine image or has a forged extension." };
+                }
+            } catch (readErr) {
+                return { valid: false, error: "Failed to verify file integrity. Upload rejected." };
+            }
+
+            // 6. Anti-Decompression Bomb & Decode Integrity Check
+            return new Promise((resolve) => {
+                const img = new Image();
+                const objectUrl = URL.createObjectURL(file);
+
+                img.onload = () => {
+                    URL.revokeObjectURL(objectUrl);
+                    if (img.naturalWidth > 6000 || img.naturalHeight > 6000) {
+                        resolve({ valid: false, error: "Image dimensions too large (maximum 6000x6000 px allowed)." });
+                    } else if (img.naturalWidth === 0 || img.naturalHeight === 0) {
+                        resolve({ valid: false, error: "Invalid or zero-dimension image file." });
+                    } else {
+                        resolve({ valid: true });
+                    }
+                };
+
+                img.onerror = () => {
+                    URL.revokeObjectURL(objectUrl);
+                    resolve({ valid: false, error: "Corrupted or non-renderable image file. Upload rejected." });
+                };
+
+                img.src = objectUrl;
+            });
+        }
+
+        // Live preview & validation on file selection
+        document.getElementById("profileImageInput")?.addEventListener("change", async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const validation = await validateImageSecurity(file);
+            if (!validation.valid) {
+                setMessage(validation.error, "error");
+                e.target.value = "";
+                return;
+            }
+
+            // Show immediate safe preview
+            const previewUrl = URL.createObjectURL(file);
+            document.getElementById("avatarPreview").src = previewUrl;
+            setMessage("Image verified as safe and ready to upload.", "success");
+        });
+
         async function updateProfileInfo(e) {
             e.preventDefault();
 
@@ -642,16 +751,19 @@
             let imageUrl = null;
 
             if (file) {
-                if (!file.type.startsWith("image/")) {
-                    setMessage("Selected file is not an image.", "error");
+                // Pre-upload security validation barrier
+                const validation = await validateImageSecurity(file);
+                if (!validation.valid) {
+                    setMessage(validation.error, "error");
+                    fileInput.value = "";
                     return;
                 }
 
                 try {
-                    setMessage("Uploading profile picture to Firebase Storage...", "loading");
+                    setMessage("Verifying security & uploading profile picture...", "loading");
                     const timestamp = Date.now();
                     const randomStr = Math.random().toString(36).substring(2, 9);
-                    const extension = file.name.split('.').pop() || 'jpg';
+                    const extension = file.name.split('.').pop().toLowerCase() || 'jpg';
                     const uniqueFileName = `${timestamp}_${randomStr}.${extension}`;
                     const storageRef = ref(storage, `profiles/${uniqueFileName}`);
 

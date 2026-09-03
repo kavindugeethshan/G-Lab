@@ -4,6 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>G Lab — Login & Signup</title>
     <link rel="icon" type="image/png" href="animation/Favicon.png">
 
@@ -683,20 +686,27 @@
                         <input type="password" id="password" placeholder="Password">
                     </div>
 
-                    <!-- Inline Wrong Password Animation & Alert Box -->
+                    <!-- Forgot Password Link -->
+                    <div id="linkForgotWrapper" style="width: 100%; max-width: 380px; text-align: right; margin: 2px 0 8px 0;">
+                        <a id="linkForgot" class="forgot-link" onclick="toggleForgotMode(true)" style="font-size: 0.84rem; color: #0284c7; cursor: pointer; font-weight: 600; text-decoration: underline;">
+                            Forgot Password?
+                        </a>
+                    </div>
+
+                    <!-- Inline Alert Box for Login Feedback (Unregistered user / Wrong password / Blocked) -->
                     <div id="wrongPasswordContainer" style="display: none; width: 100%; max-width: 440px; margin: 12px 0; transition: all 0.3s ease;">
                         <div style="display: flex; align-items: center; gap: 14px;">
                             <!-- Animation Video Outside the Card on the Left -->
                             <video id="wrongPasswordVideo" autoplay loop muted playsinline style="width: 180px; height: 140px; object-fit: contain; flex-shrink: 0;">
-                                <source src="animation/forgot password red.webm" type="video/webm">
+                                <source id="wrongPasswordVideoSource" src="animation/forgot password red.webm" type="video/webm">
                             </video>
 
-                            <!-- Red Card containing Text & Forgot Link -->
-                            <div style="flex: 1; background: #fff5f5; border: 1px solid #fca5a5; border-radius: 16px; padding: 14px 18px; box-shadow: 0 6px 20px rgba(239, 68, 68, 0.12); text-align: left;">
+                            <!-- Card containing Text & Action Link -->
+                            <div id="wrongPasswordCard" style="flex: 1; background: #fff5f5; border: 1px solid #fca5a5; border-radius: 16px; padding: 14px 18px; box-shadow: 0 6px 20px rgba(239, 68, 68, 0.12); text-align: left;">
                                 <div id="wrongPasswordText" style="font-size: 0.92rem; font-weight: 700; color: #dc2626; line-height: 1.3;">
                                     Invalid email or password
                                 </div>
-                                <a class="forgot-link" onclick="toggleForgotMode(true)" style="font-size: 0.82rem; color: #0284c7; text-decoration: underline; cursor: pointer; font-weight: 600; display: inline-block; margin-top: 6px;">
+                                <a id="wrongPasswordLink" class="forgot-link" onclick="toggleForgotMode(true)" style="font-size: 0.82rem; color: #0284c7; text-decoration: underline; cursor: pointer; font-weight: 600; display: inline-block; margin-top: 6px;">
                                     Forgot Password?
                                 </a>
                             </div>
@@ -913,11 +923,13 @@
         let pendingVerificationEmail = "";
         let pendingResetEmail = "";
         let pendingResetOtp = "";
+        let isSubmittingLogin = false;
 
         function setMessageIn(text, type) {
             const el = document.getElementById("messageIn");
             if (!text) { el.style.display = "none"; return; }
-            el.textContent = text;
+            el.innerHTML = text;
+            el.style.display = "block";
             el.className = "message-box " + (type || "");
         }
 
@@ -968,24 +980,98 @@
             setMessageUp("", "");
         }
 
-        let isSubmittingLogin = false;
+        function switchToSignUpWithEmail(email) {
+            hideWrongPasswordAlert();
+            const container = document.querySelector('#mainContainer');
+            if (container) container.classList.add('sign-up-mode');
+            const emailReg = document.getElementById('emailReg');
+            if (emailReg && email) {
+                emailReg.value = email;
+                emailReg.focus();
+            }
+        }
 
-        function showWrongPasswordAlert(errMsg) {
+        function showLoginAlert(errorType, errMsg, email) {
             const container = document.getElementById("wrongPasswordContainer");
             const video = document.getElementById("wrongPasswordVideo");
+            const videoSource = document.getElementById("wrongPasswordVideoSource");
             const textEl = document.getElementById("wrongPasswordText");
+            const linkEl = document.getElementById("wrongPasswordLink");
+            const cardEl = document.getElementById("wrongPasswordCard");
 
-            if (textEl) {
-                textEl.textContent = errMsg || "Invalid email or password";
-            }
+            if (!container) return;
 
-            if (container) {
-                container.style.display = "block";
-                if (video) {
+            if (errorType === "USER_NOT_FOUND") {
+                if (textEl) {
+                    textEl.textContent = errMsg || "This email is not registered. Please register.";
+                    textEl.style.color = "#dc2626";
+                }
+                if (cardEl) {
+                    cardEl.style.background = "#fff5f5";
+                    cardEl.style.borderColor = "#fca5a5";
+                    cardEl.style.boxShadow = "0 6px 20px rgba(239, 68, 68, 0.12)";
+                }
+                if (video && videoSource) {
+                    videoSource.src = "animation/auth-failed.webm";
+                    video.load();
                     video.currentTime = 0;
-                    video.play().catch(() => { });
+                    video.play().catch(() => {});
+                }
+                if (linkEl) {
+                    linkEl.style.display = "inline-block";
+                    linkEl.textContent = "Click here to Register";
+                    linkEl.style.color = "#2563eb";
+                    linkEl.onclick = () => switchToSignUpWithEmail(email);
+                }
+            } else if (errorType === "ACCOUNT_BLOCKED") {
+                if (textEl) {
+                    textEl.textContent = errMsg || "Your account has been blocked. Please contact support.";
+                    textEl.style.color = "#dc2626";
+                }
+                if (cardEl) {
+                    cardEl.style.background = "#fff5f5";
+                    cardEl.style.borderColor = "#fca5a5";
+                    cardEl.style.boxShadow = "0 6px 20px rgba(239, 68, 68, 0.12)";
+                }
+                if (video && videoSource) {
+                    videoSource.src = "animation/auth-failed.webm";
+                    video.load();
+                    video.currentTime = 0;
+                    video.play().catch(() => {});
+                }
+                if (linkEl) {
+                    linkEl.style.display = "none";
+                }
+            } else {
+                // WRONG_PASSWORD
+                if (textEl) {
+                    textEl.textContent = errMsg || "Incorrect password. Please try again.";
+                    textEl.style.color = "#dc2626";
+                }
+                if (cardEl) {
+                    cardEl.style.background = "#fff5f5";
+                    cardEl.style.borderColor = "#fca5a5";
+                    cardEl.style.boxShadow = "0 6px 20px rgba(239, 68, 68, 0.12)";
+                }
+                if (video && videoSource) {
+                    videoSource.src = "animation/forgot password red.webm";
+                    video.load();
+                    video.currentTime = 0;
+                    video.play().catch(() => {});
+                }
+                if (linkEl) {
+                    linkEl.style.display = "inline-block";
+                    linkEl.textContent = "Forgot Password?";
+                    linkEl.style.color = "#0284c7";
+                    linkEl.onclick = () => toggleForgotMode(true);
                 }
             }
+
+            container.style.display = "block";
+        }
+
+        function showWrongPasswordAlert(errMsg) {
+            showLoginAlert("WRONG_PASSWORD", errMsg);
         }
 
         function hideWrongPasswordAlert() {
@@ -1143,7 +1229,12 @@
                     });
                     const data = await res.json();
 
-                    if (!res.ok) throw new Error(data.message || "Failed to send reset code");
+                    if (!res.ok) {
+                        const err = new Error(data.message || "Failed to send reset code");
+                        err.errorType = data.errorType || (res.status === 404 ? "USER_NOT_FOUND" : "GENERAL");
+                        err.status = res.status;
+                        throw err;
+                    }
 
                     pendingResetEmail = email;
                     setMessageIn("Password reset code sent to your email!", "success");
@@ -1153,7 +1244,15 @@
                     }, 1200);
 
                 } catch (err) {
-                    setMessageIn(err.message || "Failed to send reset code", "error");
+                    if (animContainer) animContainer.style.display = "none";
+                    if (err.errorType === "USER_NOT_FOUND" || err.status === 404) {
+                        setMessageIn(
+                            `This email is not registered. Please register. <a onclick="switchToSignUpWithEmail('${email}')" style="color: #2563eb; font-weight: 700; text-decoration: underline; cursor: pointer; margin-left: 4px;">Sign Up here</a>`,
+                            "error"
+                        );
+                    } else {
+                        setMessageIn(err.message || "Failed to send reset code", "error");
+                    }
                     btnSubmitIn.disabled = false;
                     btnSubmitIn.value = "Send Reset Code";
                 }
@@ -1300,7 +1399,10 @@
                     const data = await res.json();
 
                     if (!res.ok) {
-                        throw new Error(data.message || "Password incorrect — Try again");
+                        const err = new Error(data.message || "Login failed");
+                        err.errorType = data.errorType || (res.status === 404 ? "USER_NOT_FOUND" : "WRONG_PASSWORD");
+                        err.status = res.status;
+                        throw err;
                     }
 
                     if (!data.token) {
@@ -1322,7 +1424,13 @@
                         btnSubmitIn.disabled = false;
                         btnSubmitIn.value = "Login";
                     }
-                    showWrongPasswordAlert(err.message);
+                    const isUserNotFound = err.errorType === "USER_NOT_FOUND" || err.status === 404;
+                    const errorMsg = isUserNotFound
+                        ? (err.message || "This email is not registered. Please register.")
+                        : (err.message || "Invalid credentials");
+
+                    setMessageIn(errorMsg, "error");
+                    showLoginAlert(isUserNotFound ? "USER_NOT_FOUND" : (err.errorType || "WRONG_PASSWORD"), errorMsg, email);
                 }
             }
         }

@@ -4,6 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>G Lab — Admin Dashboard & Control Panel</title>
     <link rel="icon" type="image/png" href="animation/Favicon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1220,7 +1223,7 @@
                     </div>
                     <div class="form-group">
                         <label>Product Image *</label>
-                        <input type="file" id="newImage" accept="image/*" required>
+                        <input type="file" id="newImage" accept=".jpg, .jpeg, .png, .webp, image/jpeg, image/png, image/webp" required>
                     </div>
                     <button type="submit" class="btn btn-primary">Save Product</button>
                 </form>
@@ -1958,6 +1961,57 @@
             }
         }
 
+        /**
+         * Security Barrier: Validates image files against spoofing, malicious extensions,
+         * oversized files, and binary signature mismatches (magic numbers).
+         */
+        async function validateImageSecurity(file) {
+            if (!file) return { valid: false, error: "No file selected." };
+
+            const MAX_SIZE = 5 * 1024 * 1024;
+            if (!file.size || file.size < 16) return { valid: false, error: "Security Warning: The selected file is empty or corrupted." };
+            if (file.size > MAX_SIZE) return { valid: false, error: "File size exceeds 5MB limit. Please choose a smaller photo." };
+
+            const fileName = file.name.toLowerCase();
+            const dangerousPatterns = /\.(php|phtml|html|htm|js|exe|bat|cmd|sh|py|pl|vbs|svg|cgi|asp|aspx|dll|jar|scr)(\.|$)/i;
+            if (dangerousPatterns.test(fileName)) return { valid: false, error: "Security Alert: Prohibited or executable file extension detected." };
+
+            const ext = fileName.split('.').pop();
+            const allowedExtensions = ["jpg", "jpeg", "png", "webp"];
+            if (!allowedExtensions.includes(ext)) return { valid: false, error: "Invalid file extension. Only JPG, JPEG, PNG, and WEBP files are allowed." };
+
+            const allowedMimes = ["image/jpeg", "image/png", "image/webp"];
+            if (!allowedMimes.includes(file.type.toLowerCase())) return { valid: false, error: `Invalid file format (${file.type || 'unknown'}). Only JPG, PNG, and WEBP are permitted.` };
+
+            try {
+                const headerSlice = await file.slice(0, 16).arrayBuffer();
+                const bytes = new Uint8Array(headerSlice);
+                let isReal = false;
+                if (bytes[0] === 0xFF && bytes[1] === 0xD8 && bytes[2] === 0xFF) isReal = true;
+                else if (bytes[0] === 0x89 && bytes[1] === 0x50 && bytes[2] === 0x4E && bytes[3] === 0x47) isReal = true;
+                else if (bytes[0] === 0x52 && bytes[1] === 0x49 && bytes[2] === 0x46 && bytes[3] === 0x46 &&
+                         bytes[8] === 0x57 && bytes[9] === 0x45 && bytes[10] === 0x42 && bytes[11] === 0x50) isReal = true;
+                if (!isReal) return { valid: false, error: "Security Alert: File signature mismatch! The file is not a genuine image." };
+            } catch (err) {
+                return { valid: false, error: "Failed to verify file integrity." };
+            }
+
+            return new Promise((resolve) => {
+                const img = new Image();
+                const objectUrl = URL.createObjectURL(file);
+                img.onload = () => {
+                    URL.revokeObjectURL(objectUrl);
+                    if (img.naturalWidth > 6000 || img.naturalHeight > 6000) resolve({ valid: false, error: "Image dimensions too large (max 6000x6000px)." });
+                    else resolve({ valid: true });
+                };
+                img.onerror = () => {
+                    URL.revokeObjectURL(objectUrl);
+                    resolve({ valid: false, error: "Corrupted or non-renderable image file." });
+                };
+                img.src = objectUrl;
+            });
+        }
+
         document.getElementById("createProductForm").addEventListener("submit", async function (e) {
             e.preventDefault();
 
@@ -1969,13 +2023,21 @@
                 return;
             }
 
+            // Security Barrier Validation
+            const validation = await validateImageSecurity(file);
+            if (!validation.valid) {
+                setMessage(validation.error, "error");
+                fileInput.value = "";
+                return;
+            }
+
             try {
                 // Upload to Firebase Storage in products/ folder with a unique filename
-                setMessage("Uploading image to Firebase Storage...", "loading");
+                setMessage("Verifying security & uploading image...", "loading");
 
                 const timestamp = Date.now();
                 const randomStr = Math.random().toString(36).substring(2, 9);
-                const extension = file.name.split('.').pop() || 'jpg';
+                const extension = file.name.split('.').pop().toLowerCase() || 'jpg';
                 const uniqueFileName = `${timestamp}_${randomStr}.${extension}`;
                 const storageRef = ref(storage, `products/${uniqueFileName}`);
 
