@@ -298,6 +298,8 @@ The project uses the following major dependencies:
 * Nodemailer
 * Resend
 * Nodemon
+* @google/genai
+*
 
 ### 4. Configure Environment Variables
 
