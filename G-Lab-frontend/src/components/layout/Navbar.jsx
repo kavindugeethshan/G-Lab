@@ -35,7 +35,7 @@ export default function Navbar() {
         </div>
       </Link>
 
-      <ul className={`nav-links ${mobileOpen ? 'mobile-open' : ''}`}>
+      <ul className={`nav-links site-nav-links ${mobileOpen ? 'mobile-open' : ''}`}>
         <li>
           <NavLink to="/" end onClick={() => setMobileOpen(false)}>
             Home
@@ -91,7 +91,7 @@ export default function Navbar() {
         )}
       </ul>
 
-      <div className="nav-actions">
+      <div className="nav-actions site-nav-actions">
         {isAuthenticated ? (
           <>
             <Link to="/profile" className="user-greeting" title={`View Profile (${fullName || displayName})`}>

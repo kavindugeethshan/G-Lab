@@ -36,69 +36,7 @@
             flex-direction: column;
         }
 
-        /* HEADER NAVIGATION */
-        header {
-            background-color: #ffffff;
-            border-bottom: 1px solid var(--border-color);
-            padding: 16px 40px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
-        }
 
-        .logo-title {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            text-decoration: none;
-        }
-
-        .logo-icon {
-            width: 42px;
-            height: 42px;
-            background: var(--accent-gradient);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-family: 'Outfit', sans-serif;
-            font-weight: 800;
-            font-size: 1.3rem;
-            color: white;
-            box-shadow: 0 4px 15px var(--accent-glow);
-        }
-
-
-
-        .nav-links {
-            display: flex;
-            align-items: center;
-            gap: 28px;
-            list-style: none;
-        }
-
-        .nav-links a {
-            color: var(--text-muted);
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 0.92rem;
-            transition: all 0.2s ease;
-        }
-
-        .nav-links a:hover,
-        .nav-links a.active {
-            color: var(--accent-color);
-        }
-
-        .nav-actions {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
 
         /* BUTTONS */
         .btn {
@@ -724,9 +662,7 @@
 
         /* TABLET BREAKPOINT (<= 992px) */
         @media (max-width: 992px) {
-            header {
-                padding: 14px 24px;
-            }
+
 
             .shop-layout {
                 display: block;
@@ -750,12 +686,7 @@
 
         /* MOBILE BREAKPOINT (<= 768px) */
         @media (max-width: 768px) {
-            header {
-                padding: 10px 14px !important;
-                flex-direction: column !important;
-                align-items: stretch !important;
-                gap: 10px !important;
-            }
+
 
             .logo-title {
                 justify-content: flex-start;
@@ -765,41 +696,9 @@
                 font-size: 1.25rem;
             }
 
-            .logo-text span {
-                display: none;
-            }
 
-            .nav-links {
-                display: none !important;
-            }
 
-            .nav-actions {
-                display: flex !important;
-                flex-wrap: wrap !important;
-                width: 100% !important;
-                gap: 6px !important;
-                justify-content: space-between !important;
-            }
 
-            .user-greeting {
-                display: none !important;
-            }
-
-            .nav-actions .btn {
-                flex: 1 1 calc(25% - 6px) !important;
-                padding: 8px 4px !important;
-                font-size: 0.78rem !important;
-                justify-content: center !important;
-                text-align: center !important;
-                white-space: nowrap !important;
-                border-radius: 8px !important;
-                gap: 4px !important;
-            }
-
-            .nav-actions .btn-danger {
-                flex: 1 1 calc(25% - 6px) !important;
-                padding: 8px 4px !important;
-            }
 
             .page-container {
                 padding: 14px 12px !important;
