@@ -1,147 +1,888 @@
-# G-Lab
+# G-Lab Backend
 
-A modern full-stack e-commerce web application for browsing, managing, and purchasing computer parts online.
+A modern RESTful backend and real-time API powering the G-Lab computer hardware e-commerce platform.
 
-G-Lab has evolved from a traditional HTML, CSS and JavaScript frontend into a React-based frontend architecture, while maintaining a Node.js and Express.js backend.
+The backend is built with Node.js, Express.js, MongoDB, Socket.IO, PayHere payment integration, Firebase Storage, transactional email services, and Google Gemini AI.
+
+The G-Lab frontend is maintained separately as a React application.
 
 ## Features
 
-* User Registration & Login
-* JWT-based Authentication
-* Email Verification
-* Password Reset
-* Browse Computer Parts
-* Search Products
-* Product Filtering
-* Shopping Cart
-* Product Reviews
-* Secure Checkout
-* PayHere Payment Integration
-* Admin Dashboard
-* Product Management
-* User Management
-* Order Management
-* Firebase Image Storage
-* MongoDB Database
-* Responsive React Interface
+* User registration and email verification
+* JWT-based authentication
+* Password reset with OTP verification
+* Role-based admin authorization
+* Product catalog management
+* Hardware product search and filtering
+* Pagination and price sorting
+* Shopping cart management
+* Order management
+* Order status tracking and history
+* Inventory management
+* Product reviews and ratings
+* PayHere payment integration
+* Firebase image storage
 * Real-time updates using Socket.IO
+* Transactional email notifications
+* Google Gemini AI hardware assistant
+* Admin dashboard and management APIs
+* Rate limiting and server-side validation
+
 
 ## Tech Stack
 
-### Frontend
-
-* React
-* JavaScript
-* CSS
-* React Components
-* Responsive UI
-
-### Backend
+### Runtime and Framework
 
 * Node.js
 * Express.js
-* REST API
-* Socket.IO
+* JavaScript / ES Modules
 
 ### Database
 
 * MongoDB
 * MongoDB Atlas
+* Mongoose
 
-### Authentication & Security
+### Authentication and Security
 
-* JSON Web Token (JWT)
+* JSON Web Tokens (JWT)
 * bcrypt
-* Environment Variables
+* Helmet
+* Express Rate Limit
 * Authentication Middleware
 * Admin Authorization Middleware
+* Environment Variables
 * Server-side Validation
-* Rate Limiting
+* CORS
+
+### Real-Time Communication
+
+* Socket.IO
+
+### Payment
+
+* PayHere Payment Gateway
+* PayHere Sandbox for development and testing
+
+### Email
+
+* Nodemailer
+* SMTP / Gmail
+* Resend API
+
+### AI
+
+* Google Gemini
+* Google GenAI SDK
 
 ### Storage
 
 * Firebase Storage
 
-### Payment
+---
 
-* PayHere Payment Gateway
-* PayHere Sandbox for testing
-
-### DevOps & Deployment
-
-* Docker
-* Git
-* GitHub
-* GitHub Container Registry
-* GitHub Actions
-* Linux
-* Nginx
-* Prometheus
-* Grafana
-
-### Hosting
-
-* Render
-
-## Frontend Migration
-
-G-Lab originally used a traditional HTML, CSS and JavaScript frontend.
-
-The frontend has now been migrated to React to provide a more maintainable component-based architecture.
-
-### Previous Frontend
+## Backend Architecture
 
 ```text
-HTML
-CSS
-JavaScript
-Static Pages
-```
-
-### Current Frontend
-
-```text
-React
- |
- ├── Components
- ├── Layouts
- ├── Pages
- ├── Reusable UI
- └── Application State
-```
-
-The migration separates the frontend into reusable React components and pages while continuing to communicate with the existing Node.js and Express.js REST API.
-
-This makes the frontend easier to maintain, extend and integrate with future features.
-
-## System Architecture
-
-```text
-                        User
-                          |
-                          v
-                   React Frontend
+                    G-Lab Frontend
                           |
                           | REST API
                           v
-                   Node.js Backend
-                   Express.js API
+                 Node.js / Express
                           |
-            +-------------+-------------+
-            |             |             |
-            v             v             v
-      MongoDB Atlas   Firebase      PayHere
-                      Storage       Payment
-            |
-            v
-          Data
+          +---------------+---------------+
+          |               |               |
+          v               v               v
+      MongoDB          Firebase        PayHere
+       Atlas            Storage         Payment
+          |
+          v
+       G-Lab Data
+
+                          |
+                          v
+                     Socket.IO
+                          |
+                          v
+                 Real-Time Updates
 ```
 
-## DevOps Architecture
+The backend provides the API layer between the frontend and external services such as MongoDB, Firebase Storage and PayHere.
 
-G-Lab is also being used as a DevOps and cloud-native home lab project.
+---
 
-The deployment workflow is designed around containerization, CI/CD and Linux-based monitoring.
+## Project Structure
+
+```text
+G-Lab-backend/
+│
+├── ai/
+│   └── agent.js
+│
+├── Controllers/
+│   ├── adminController.js
+│   ├── Cartcontroller.js
+│   ├── OrderController.js
+│   ├── paymentController.js
+│   ├── productcontroller.js
+│   ├── reviewController.js
+│   └── userController.js
+│
+├── Middleware/
+│   ├── adminMiddleware.js
+│   ├── authMiddleware.js
+│   └── rateLimitMiddleware.js
+│
+├── models/
+│   ├── Cartmodel.js
+│   ├── Ordermodel.js
+│   ├── PasswordResetModel.js
+│   ├── Paymentmodel.js
+│   ├── PendingUserModel.js
+│   ├── Productmodel.js
+│   ├── Reviewmodel.js
+│   └── Usermodel.js
+│
+├── routers/
+│   ├── adminRouter.js
+│   ├── aiRouter.js
+│   ├── CartRouters.js
+│   ├── orderRouter.js
+│   ├── PaymentRouter.js
+│   ├── productRouter.js
+│   ├── reviewRouter.js
+│   └── userRouter.js
+│
+├── services/
+│   └── productService.js
+│
+├── utils/
+│   ├── payhere.js
+│   └── sendEmail.js
+│
+├── .github/
+│   └── workflows/
+│       └── docker.yml
+│
+├── .dockerignore
+├── .gitignore
+├── Dockerfile
+├── package.json
+├── server.js
+└── README.md
+```
+
+---
+
+## Authentication
+
+The backend uses JWT-based authentication with role-based authorization.
+
+### Registration Flow
+
+```text
+User
+ |
+ v
+Registration
+ |
+ v
+Pending User
+ |
+ v
+Email OTP
+ |
+ v
+OTP Verification
+ |
+ v
+User Account Created
+```
+
+The registration workflow uses a temporary pending-user record before creating the final user account.
+
+### Login Flow
+
+```text
+User
+ |
+ v
+Login
+ |
+ v
+Credential Verification
+ |
+ v
+JWT Token
+ |
+ v
+Protected API Request
+ |
+ v
+Authentication Middleware
+ |
+ v
+Protected Route
+```
+
+Protected API requests use:
+
+```text
+Authorization: Bearer <JWT_TOKEN>
+```
+
+Administrative routes additionally use the admin authorization middleware.
+
+---
+
+## Product Management
+
+The product API supports computer hardware and related products.
+
+Products can contain information such as:
+
+* Name
+* Description
+* Price
+* Category
+* Brand
+* Stock
+* Images
+* Specifications
+* Warranty
+* Availability
+* Rating information
+
+The product API supports:
+
+* Product listing
+* Product search
+* Category filtering
+* Brand filtering
+* Price filtering
+* Pagination
+* Price sorting
+* Product details
+* Admin product management
+
+Example:
+
+```text
+GET /products
+```
+
+Search:
+
+```text
+GET /products?search=gaming
+```
+
+Category filtering:
+
+```text
+GET /products?category=GPU
+```
+
+Price filtering:
+
+```text
+GET /products?minPrice=50000&maxPrice=110000
+```
+
+Pagination and sorting:
+
+```text
+GET /products?page=1&limit=10&sort=price_asc
+```
+
+---
+
+## Shopping Cart
+
+Authenticated users can manage their shopping cart.
+
+Supported operations include:
+
+* Add products
+* View cart
+* Update quantities
+* Remove products
+* Clear cart
+
+Example:
+
+```text
+POST /cart/add
+GET /cart
+PUT /cart/update/:productId
+DELETE /cart/remove/:productId
+DELETE /cart/clear
+```
+
+---
+
+## Order Management
+
+The backend provides customer and administrator order management.
+
+Customer functionality includes:
+
+* Create orders
+* View order history
+* View individual orders
+* Update eligible order information
+* Cancel eligible orders
+
+Administrative functionality includes:
+
+* View all orders
+* Search orders
+* Filter orders
+* View order details
+* Update order status
+
+Order status is tracked through the order lifecycle and history.
+
+```text
+Pending
+   |
+   v
+Confirmed
+   |
+   v
+Processing
+   |
+   v
+Dispatched
+   |
+   v
+Delivered
+```
+
+Inventory management is integrated with order processing so product stock can be updated according to order status and cancellation workflows.
+
+---
+
+## Reviews and Ratings
+
+The backend provides product review and rating functionality.
+
+Users can:
+
+* View product ratings
+* View product reviews
+* Add reviews
+* Update their own reviews
+* Delete their own reviews
+
+Product rating information is maintained based on submitted reviews.
+
+Example:
+
+```text
+GET /products/:productId/reviews
+POST /products/:productId/reviews
+PUT /reviews/:id
+DELETE /reviews/:id
+```
+
+---
+
+## Payments
+
+G-Lab integrates the PayHere payment gateway.
+
+The backend handles:
+
+* Payment initialization
+* Payment records
+* PayHere transaction parameters
+* Payment verification
+* PayHere notification handling
+* Payment status updates
+
+Typical payment flow:
+
+```text
+Customer
+   |
+   v
+Checkout
+   |
+   v
+G-Lab Backend
+   |
+   v
+PayHere
+   |
+   v
+Payment Processing
+   |
+   v
+PayHere Notification
+   |
+   v
+G-Lab Backend
+   |
+   v
+Payment Status Update
+```
+
+PayHere Sandbox can be used during development and testing.
+
+For production, the payment notification endpoint must be publicly accessible through a secure HTTPS endpoint.
+
+### PayHere Sandbox Payment
+
+G-Lab uses **PayHere Sandbox** for payment testing.
+
+> **Important:** PayHere Sandbox payments work correctly in the local development environment. However, when testing the payment flow through an online/deployed environment, a publicly accessible domain is required for the PayHere callback/IPN flow.
+
+**Local Development**
+
+* PayHere Sandbox works with the local development setup.
+* Backend and frontend can be tested locally during development.
+
+**Online / Deployed Environment**
+
+* A publicly accessible domain is required for PayHere Sandbox callback/IPN communication.
+* The deployed backend URL should be configured correctly in the PayHere integration before testing online payments.
+* PayHere Sandbox is used for testing only and does not process real payments.
+
+---
+
+## Firebase Storage
+
+Firebase Storage is used for application images such as product images.
+
+The backend stores the resulting image URL together with the relevant application data.
+
+Sensitive Firebase configuration values must be supplied through environment variables and must never be committed to the repository.
+
+---
+
+## Email Services
+
+The backend supports transactional email functionality using:
+
+* Nodemailer
+* SMTP / Gmail
+* Resend API
+
+Email functionality is used for workflows such as:
+
+* Registration verification
+* OTP delivery
+* Password recovery
+* Application notifications
+
+Email credentials and API keys must be stored in environment variables.
+
+---
+
+## Socket.IO
+
+Socket.IO provides real-time communication between the backend and connected clients.
+
+The system can broadcast events related to application activity such as:
+
+* Product review updates
+* Order updates
+* Payment updates
+
+This allows the frontend to receive important changes without continuously polling the API.
+
+---
+
+## AI Hardware Assistant
+
+G-Lab includes an AI-powered hardware assistant using Google's Gemini platform.
+
+The AI functionality can assist users with computer hardware related queries and can interact with product information through backend services.
+
+The AI integration is implemented under:
+
+```text
+ai/
+services/
+routers/aiRouter.js
+```
+
+Example endpoint:
+
+```text
+POST /ai/chat
+```
+
+The Gemini API key must be configured through an environment variable.
+
+---
+
+# API Documentation
+
+The backend exposes RESTful APIs under the following main route groups.
+
+## Authentication and User Routes
+
+Base path:
+
+```text
+/users
+```
+
+Common endpoints include:
+
+```text
+POST   /users/create
+POST   /users/verify-email
+POST   /users/resend-otp
+POST   /users/login
+POST   /users/forgot-password
+POST   /users/verify-reset-otp
+POST   /users/reset-password
+
+GET    /users/profile
+PUT    /users/profile
+PUT    /users/address
+PUT    /users/change-password
+DELETE /users/delete-account
+```
+
+---
+
+## Product Routes
+
+Base path:
+
+```text
+/products
+```
+
+```text
+GET /products
+GET /products/:id
+```
+
+Example:
+
+```text
+GET /products?search=gaming
+GET /products?category=GPU
+GET /products?brand=ASUS
+GET /products?minPrice=50000&maxPrice=110000
+GET /products?page=1&limit=10&sort=price_asc
+```
+
+---
+
+## Cart Routes
+
+Base path:
+
+```text
+/cart
+```
+
+```text
+POST   /cart/add
+GET    /cart
+PUT    /cart/update/:productId
+DELETE /cart/remove/:productId
+DELETE /cart/clear
+```
+
+Authentication is required.
+
+---
+
+## Order Routes
+
+Base path:
+
+```text
+/order
+```
+
+```text
+POST  /order
+GET   /order/my-orders
+GET   /order/:id
+PATCH /order/:id/address
+PATCH /order/:id/cancel
+```
+
+Authentication is required.
+
+---
+
+## Review Routes
+
+```text
+GET    /products/:productId/rating
+GET    /products/:productId/reviews
+POST   /products/:productId/reviews
+
+PUT    /reviews/:id
+DELETE /reviews/:id
+```
+
+Authentication is required for creating, updating and deleting reviews.
+
+---
+
+## Payment Routes
+
+Base path:
+
+```text
+/payments
+```
+
+```text
+POST /payments/create
+GET  /payments/:id
+POST /payments/notify
+```
+
+The PayHere notification endpoint is used as a server-to-server payment callback.
+
+---
+
+## Admin Routes
+
+Base path:
+
+```text
+/admin
+```
+
+Administrative functionality includes:
+
+```text
+GET    /admin/dashboard
+GET    /admin/statistics
+
+GET    /admin/users
+GET    /admin/users/:id
+PATCH  /admin/users/:id/block
+PATCH  /admin/users/:id/unblock
+DELETE /admin/users/:id
+
+GET    /admin/orders
+GET    /admin/orders/search
+GET    /admin/orders/filter
+GET    /admin/orders/:id
+PATCH  /admin/orders/:id/status
+
+GET    /admin/reviews
+DELETE /admin/reviews/:id
+
+POST   /admin/products/create
+POST   /admin/products/bulk
+PUT    /admin/products/update/:id
+DELETE /admin/products/:id
+```
+
+Administrative endpoints require authentication and administrator authorization.
+
+---
+
+## AI Routes
+
+Base path:
+
+```text
+/ai
+```
+
+```text
+POST /ai/chat
+```
+
+---
+
+# Environment Variables
+
+Create a `.env` file in the backend root directory.
+
+Example:
+
+```env
+PORT=3001
+NODE_ENV=development
+
+MONGO_URI=your_mongodb_connection_string
+
+JWT_SECRET=your_jwt_secret
+
+FRONTEND_URL=http://localhost:5173
+ALLOWED_ORIGINS=http://localhost:5173
+
+EMAIL_USER=your_email
+EMAIL_PASS=your_email_app_password
+
+RESEND_API_KEY=your_resend_api_key
+RESEND_FROM_EMAIL=your_sender_email
+
+PAYHERE_MERCHANT_ID=your_payhere_merchant_id
+PAYHERE_MERCHANT_SECRET=your_payhere_merchant_secret
+PAYHERE_NOTIFY_URL=http://localhost:3001/payments/notify
+
+GEMINI_API_KEY=your_gemini_api_key
+```
+
+Never commit:
+
+```text
+.env
+```
+
+or any real API keys, passwords, database credentials or payment credentials.
+
+---
+
+# Installation
+
+## Prerequisites
+
+Install:
+
+* Node.js
+* npm
+* Git
+* MongoDB or MongoDB Atlas
+
+Docker is required if you want to run the backend as a container.
+
+## Clone Repository
+
+```bash
+git clone https://github.com/kavindugeethshan/G-Lab-backend.git
+cd G-Lab-backend
+```
+
+## Install Dependencies
+
+```bash
+npm install
+```
+
+## Configure Environment
+
+Create:
+
+```text
+.env
+```
+
+and configure the required environment variables.
+
+## Start Development Server
+
+```bash
+npm start
+```
+
+The backend runs on:
+
+```text
+http://localhost:3001
+```
+
+---
+
+# Postman API Testing
+
+The G-Lab Backend APIs can be tested using Postman.
+
+For protected endpoints:
+
+1. Login using the authentication endpoint.
+2. Copy the returned JWT token.
+3. Open the required request in Postman.
+4. Select Authorization.
+5. Select Bearer Token.
+6. Enter the JWT token.
+7. Send the request.
+
+```text
+Authorization: Bearer <JWT_TOKEN>
+```
+
+Example authentication flow:
+
+```text
+Register
+   |
+   v
+Verify Email
+   |
+   v
+Login
+   |
+   v
+Receive JWT
+   |
+   v
+Use JWT for protected APIs
+```
+
+---
+
+# Security
+
+The backend includes several security mechanisms:
+
+* JWT authentication
+* bcrypt password hashing
+* Protected API routes
+* Admin authorization
+* Rate limiting
+* OTP protection
+* Environment-based secrets
+* CORS configuration
+* Helmet security headers
+* Server-side validation
+* Secure payment verification
+* Production error handling
+
+Real credentials and API keys must never be committed to Git.
+
+---
+
+# Docker
+
+The backend includes a Docker configuration for containerized deployment.
+
+Build the image:
+
+```bash
+docker build -t g-lab-backend:latest .
+```
+
+Run the container:
+
+```bash
+docker run -d \
+  --name g-lab-backend \
+  -p 3001:3001 \
+  --env-file .env \
+  g-lab-backend:latest
+```
+
+The backend API will then be available through:
+
+```text
+http://localhost:3001
+```
+
+---
+
+# DevOps and Deployment
+
+G-Lab is also used as a practical DevOps home lab project.
+
+The deployment workflow is designed around Git, GitHub Actions, Docker, GitHub Container Registry and Linux.
 
 ```text
 Developer
@@ -169,751 +910,125 @@ Linux Server
    |                      |
    v                      v
 Frontend Container    Backend Container
-   |                      |
-   +----------+-----------+
-              |
-              v
-       MongoDB Atlas
-              |
-              v
-          Firebase
-              |
-              v
-           PayHere
+                           |
+                           v
+                      MongoDB Atlas
+                           |
+                           +---- Firebase
+                           |
+                           +---- PayHere
 ```
 
-## Monitoring
+The backend can be deployed as a Docker container on a Linux server.
 
-The Linux deployment environment uses monitoring and observability tools.
+Nginx can be used as a reverse proxy in front of the application.
+
+---
+
+# Monitoring
+
+The G-Lab home lab deployment includes infrastructure monitoring using Prometheus and Grafana.
 
 ```text
 Linux Server
-    |
-    +---- node_exporter
-    |
-    v
+     |
+     v
+node_exporter
+     |
+     v
 Prometheus
-    |
-    v
+     |
+     v
 Grafana
 ```
 
-Prometheus collects system metrics and Grafana is used to visualize the collected metrics through dashboards.
+Prometheus collects system metrics while Grafana provides dashboards for monitoring the Linux environment.
 
-Future observability improvements may include deeper application-level tracing and Linux-level observability technologies.
+Future observability improvements may include:
 
-## Project Structure
-
-```text
-G-Lab/
-│
-├── backend/
-│   ├── models/
-│   ├── controllers/
-│   ├── routers/
-│   ├── middleware/
-│   ├── utils/
-│   └── server.js
-│
-├── frontend-react/
-│   ├── src/
-│   │   ├── components/
-│   │   ├── pages/
-│   │   ├── layouts/
-│   │   └── ...
-│   └── ...
-│
-├── .github/
-│   └── workflows/
-│
-├── Dockerfile
-├── frontend-react/
-│   └── Dockerfile
-│
-├── .dockerignore
-├── package.json
-└── README.md
-```
-
-## Authentication
-
-The application uses JWT-based authentication.
-
-The authentication flow is:
-
-```text
-User
- |
- v
-Login
- |
- v
-Backend verifies credentials
- |
- v
-JWT Token generated
- |
- v
-React Frontend
- |
- v
-Protected API Request
- |
- v
-Authentication Middleware
- |
- v
-Protected API Route
-```
-
-Passwords are securely hashed using bcrypt before being stored in the database.
-
-Admin-only operations are protected using authorization middleware.
-
-## Product Management
-
-Administrators can manage products through the admin functionality.
-
-Supported operations include:
-
-* Create products
-* View products
-* Update products
-* Delete products
-* Manage product information
-* Upload product images
-
-Product images are stored using Firebase Storage, while product information is stored in MongoDB.
-
-## Payment Integration
-
-G-Lab integrates the PayHere payment gateway for online payments.
-
-### PayHere Sandbox
-
-The PayHere Sandbox environment is used for testing the payment flow during development.
-
-For local development, a tunneling service can be used to expose the payment notification endpoint to PayHere because PayHere requires a publicly accessible `notify_url`.
-
-### Production Payment
-
-Production payment integration requires a publicly accessible backend and HTTPS endpoint for receiving payment notifications from PayHere.
-
-The payment flow is:
-
-```text
-Customer
-   |
-   v
-Checkout
-   |
-   v
-G-Lab Backend
-   |
-   v
-PayHere
-   |
-   v
-Payment Processing
-   |
-   v
-notify_url
-   |
-   v
-G-Lab Backend
-   |
-   v
-Payment Status Updated
-```
-
-> Note: PayHere Sandbox is used for testing. Production payments require the appropriate PayHere production configuration and a publicly accessible HTTPS endpoint.
-
-## Database
-
-MongoDB Atlas is used as the application's cloud database.
-
-The database stores information such as:
-
-* Users
-* Products
-* Reviews
-* Orders
-* Payments
-
-## Image Storage
-
-Firebase Storage is used to store product images.
-
-The application stores the image in Firebase Storage and saves the corresponding image URL with the product information in MongoDB.
-
-## Deployment
-
-G-Lab can be deployed using containerized services.
-
-The application has separate frontend and backend Docker configurations.
-
-```text
-GitHub
-   |
-   v
-GitHub Actions
-   |
-   v
-Docker Build
-   |
-   v
-GitHub Container Registry
-   |
-   v
-Linux Server
-   |
-   +---- Frontend Container
-   |
-   +---- Backend Container
-```
-
-Render has also been used for application deployment and testing.
-
-## Container Images
-
-G-Lab container images are published through GitHub Container Registry.
-
-GHCR Package:
-
-https://github.com/kavindugeethshan/G-Lab/pkgs/container/g-lab
-
-## Environment Variables
-
-The application uses environment variables for sensitive configuration.
-
-Example:
-
-```env
-MONGODB_URI=your_mongodb_connection_string
-JWT_SECRET=your_jwt_secret
-FIREBASE_PROJECT_ID=your_project_id
-FIREBASE_STORAGE_BUCKET=your_storage_bucket
-PAYHERE_MERCHANT_ID=your_merchant_id
-PAYHERE_MERCHANT_SECRET=your_merchant_secret
-```
-
-Never commit real secrets or `.env` files to the repository.
-
-## Installation
-
-### Prerequisites
-
-Make sure the following are installed:
-
-* Node.js
-* npm
-* Git
-* Docker
-
-### 1. Clone the Repository
-
-```bash
-git clone https://github.com/kavindugeethshan/G-Lab.git
-```
-
-### 2. Navigate to the Project
-
-```bash
-cd G-Lab
-```
-
-### 3. Install Dependencies
-
-Install the required Node.js dependencies:
-
-```bash
-npm install
-```
-
-Major dependencies include:
-
-* Express.js
-* Mongoose
-* bcrypt
-* JSON Web Token
-* Socket.IO
-* dotenv
-* CORS
-* Firebase
-* Nodemailer
-* Nodemon
-
-### 4. Configure Environment Variables
-
-Create the required `.env` configuration for the backend.
-
-### 5. Start the Backend
-
-For production:
-
-```bash
-npm start
-```
-
-For development:
-
-```bash
-npm run dev
-```
-
-The backend API runs on:
-
-```text
-http://localhost:3001
-```
-
-## API
-
-The G-Lab backend provides RESTful API endpoints for:
-
-* Authentication
-* Users
-* Products
-* Cart
-* Orders
-* Reviews
-* Payments
-* Admin operations
-
-### Base URL
-
-```text
-http://localhost:3001
-```
-
-Protected endpoints require a JWT token:
-
-```text
-Authorization: Bearer <JWT_TOKEN>
-```
-
-The APIs can be tested using Postman.
-
-## Authentication Endpoints
-
-### Create User
-
-```text
-POST /users/create
-```
-
-Example request body:
-
-```json
-{
-  "email": "user@example.com",
-  "firstname": "John",
-  "lastname": "Doe",
-  "password": "your_password"
-}
-```
-
-### Login User
-
-```text
-POST /users/login
-```
-
-Example request body:
-
-```json
-{
-  "email": "user@example.com",
-  "password": "your_password"
-}
-```
-
-## Product Endpoints
-
-### Get All Products
-
-```text
-GET /products
-```
-
-### Search Products
-
-```text
-GET /products?search=gaming
-```
-
-### Filter Products
-
-```text
-GET /products?category=phone
-```
-
-### Filter by Category, Brand and Price
-
-```text
-GET /products?category=GPU&brand=ASUS&minPrice=50000&maxPrice=110000
-```
-
-### Pagination and Price Sorting
-
-```text
-GET /products?page=1&limit=10&sort=price_asc
-```
-
-### Get Product by ID
-
-```text
-GET /products/<PRODUCT_ID>
-```
-
-### Create Product
-
-```text
-POST /admin/products/create
-```
-
-Admin token required.
-
-### Update Product
-
-```text
-PUT /products/update/<PRODUCT_ID>
-```
-
-Admin token required.
-
-### Delete Product
-
-```text
-DELETE /products/delete/<PRODUCT_ID>
-```
-
-Admin token required.
-
-## User Endpoints
-
-### Add Address
-
-```text
-PUT /users/address
-```
-
-Authentication required.
-
-### Get Profile
-
-```text
-GET /users/profile
-```
-
-Authentication required.
-
-### Update Profile
-
-```text
-PUT /users/profile
-```
-
-Authentication required.
-
-### Change Password
-
-```text
-PUT /users/change-password
-```
-
-Authentication required.
-
-## Cart Endpoints
-
-### Add Product to Cart
-
-```text
-POST /cart/add
-```
-
-Authentication required.
-
-### Get Cart
-
-```text
-GET /cart
-```
-
-Authentication required.
-
-## Order Endpoints
-
-### Create Order
-
-```text
-POST /order
-```
-
-Authentication required.
-
-### Get My Orders
-
-```text
-GET /order/my-orders
-```
-
-Authentication required.
-
-### Get Order by ID
-
-```text
-GET /order/<ORDER_ID>
-```
-
-Authentication required.
-
-### Cancel Order
-
-```text
-PATCH /order/orders/<ORDER_ID>/cancel
-```
-
-Authentication required.
-
-## Review Endpoints
-
-### Add Product Review
-
-```text
-POST /products/<PRODUCT_ID>/reviews
-```
-
-Authentication required.
-
-Example:
-
-```json
-{
-  "rating": 5,
-  "comment": "Great product!"
-}
-```
-
-### Update Own Review
-
-```text
-PUT /reviews/<REVIEW_ID>
-```
-
-Authentication required.
-
-### Delete Own Review
-
-```text
-DELETE /reviews/<REVIEW_ID>
-```
-
-Authentication required.
-
-## Admin Endpoints
-
-### Admin Dashboard
-
-```text
-GET /admin/dashboard
-```
-
-Admin token required.
-
-### Get All Users
-
-```text
-GET /admin/users
-```
-
-Admin token required.
-
-### Get User Details
-
-```text
-GET /admin/users/<USER_ID>
-```
-
-Admin token required.
-
-### Block User
-
-```text
-PATCH /admin/users/<USER_ID>/block
-```
-
-Admin token required.
-
-### Unblock User
-
-```text
-PATCH /admin/users/<USER_ID>/unblock
-```
-
-Admin token required.
-
-### Get All Reviews
-
-```text
-GET /admin/reviews
-```
-
-Admin token required.
-
-### Delete Review
-
-```text
-DELETE /admin/reviews/<REVIEW_ID>
-```
-
-Admin token required.
-
-### Get Admin Statistics
-
-```text
-GET /admin/statistics
-```
-
-Admin token required.
-
-## Admin Order Management
-
-### Get All Orders
-
-```text
-GET /admin/orders
-```
-
-Admin token required.
-
-### Get Order by ID
-
-```text
-GET /admin/orders/<ORDER_ID>
-```
-
-Admin token required.
-
-### Search Orders by Order ID
-
-```text
-GET /admin/orders/search?orderId=<ORDER_ID>
-```
-
-Admin token required.
-
-### Search Orders by User ID
-
-```text
-GET /admin/orders/search?userId=<USER_ID>
-```
-
-Admin token required.
-
-### Search Orders by Email
-
-```text
-GET /admin/orders/search?email=user@example.com
-```
-
-Admin token required.
-
-### Filter Orders by Status
-
-```text
-GET /admin/orders/filter?status=Pending
-```
-
-Admin token required.
-
-### Update Order Status
-
-```text
-PATCH /admin/orders/<ORDER_ID>/status
-```
-
-Admin token required.
-
-Example:
-
-```json
-{
-  "status": "Confirmed"
-}
-```
-
-## Postman Testing
-
-The API can be tested locally using Postman.
-
-For protected endpoints:
-
-1. Login and obtain the JWT token.
-2. Open the required request in Postman.
-3. Go to Authorization.
-4. Select Bearer Token.
-5. Enter the JWT token.
-6. Send the request.
-
-```text
-Bearer <JWT_TOKEN>
-```
-
-## Security
-
-The application implements several security mechanisms:
-
-* Password hashing with bcrypt
-* JWT authentication
-* Protected routes
-* Admin authorization
-* Environment-based secrets
-* Server-side validation
-* CORS configuration
-* Authentication rate limiting
-* Secure OTP generation
-* Protected payment validation
-
-## DevOps Goals
-
-The G-Lab project is also being developed as a practical DevOps home lab.
-
-Current and planned areas include:
-
-* Docker containerization
-* GitHub Actions CI/CD
-* Self-hosted Linux runner
-* GitHub Container Registry
-* Linux server deployment
-* Nginx
-* Prometheus
-* Grafana
-* Container monitoring
-* Automated security checks
-* Automated deployment
-
-## Future Improvements
-
-Possible future improvements include:
-
-* Kubernetes deployment
-* OpenTelemetry integration
+* OpenTelemetry
+* Application-level tracing
 * eBPF-based observability
-* Automated testing
+* Advanced logging
+* Container-level monitoring
+
+---
+
+# Frontend Integration
+
+The G-Lab frontend is maintained in a separate repository.
+
+```text
+G-Lab Frontend
+       |
+       | REST API
+       v
+G-Lab Backend
+       |
+       +---- MongoDB
+       +---- Firebase
+       +---- PayHere
+       +---- AI Services
+```
+
+Frontend technology includes React, Vite, Axios and reusable React components.
+
+---
+
+# Related Project
+
+G-Lab consists of separate frontend and backend repositories.
+
+### Frontend
+
+G-Lab Frontend:
+
+```text
+https://github.com/kavindugeethshan/G-Lab-frontend
+```
+
+### Backend
+
+G-Lab Backend:
+
+```text
+https://github.com/kavindugeethshan/G-Lab-backend
+```
+
+---
+
+# Future Improvements
+
+Planned or possible improvements include:
+
+* Automated backend testing
+* Improved API documentation
 * Advanced application logging
 * Redis caching
+* OpenTelemetry integration
+* eBPF-based observability
+* Kubernetes deployment
 * AWS cloud deployment
-* Improved CI/CD automation
-* Kubernetes monitoring
+* Advanced CI/CD security scanning
+* Automated container security scanning
 
-## Current Version
+---
 
-**v1.0.2**
+# Current Version
 
-The project includes the React frontend migration, security improvements, authentication fixes, admin functionality improvements and responsive UI improvements.
+**v1.0.0**
 
-## Author
+Stable backend baseline:
+
+```text
+8e8863c
+```
+
+This version represents the stable backend baseline used for the current G-Lab backend release.
+
+---
+
+# Author
 
 **Kavindu Geethshan**
 
@@ -923,8 +1038,14 @@ University of Colombo School of Computing
 
 GitHub:
 
+```text
 https://github.com/kavindugeethshan
+```
 
-## License
+---
+---
+
+# License
 
 This project is developed for educational and portfolio purposes.
+
