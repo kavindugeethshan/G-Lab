@@ -6,6 +6,7 @@ import './ProductsPage.css';
 
 const CATEGORIES = [
   { label: 'All Categories', value: '' },
+  { label: 'PC Hardware', value: 'Hardware' },
   { label: 'Graphics Cards', value: 'Graphics Cards' },
   { label: 'Processors', value: 'Processors' },
   { label: 'Memory (RAM)', value: 'RAM' },
@@ -69,7 +70,8 @@ export default function ProductsPage() {
       }
 
       setProducts(list);
-      setTotalProducts(data.pagination?.totalProducts || data.total || list.length);
+      const total = Number(data.totalProducts ?? data.pagination?.totalProducts ?? data.total) || list.length;
+      setTotalProducts(total);
     } catch (err) {
       console.warn('Error loading products:', err?.message);
     } finally {
@@ -82,10 +84,41 @@ export default function ProductsPage() {
   }, [fetchProducts]);
 
   useEffect(() => {
+    setCategory(searchParams.get('category') || '');
+    setKeyword(searchParams.get('search') || '');
+    setBrand(searchParams.get('brand') || '');
+    setMinPrice(searchParams.get('minPrice') || '');
+    setMaxPrice(searchParams.get('maxPrice') || '');
+    setSortOption(searchParams.get('sort') || 'newest');
+    const pageFromUrl = Number(searchParams.get('page')) || 1;
+    if (pageFromUrl !== page) {
+      setPage(pageFromUrl);
+    }
+  }, [searchParams]);
+
+  useEffect(() => {
     window.scrollTo(0, 0);
     if (document.documentElement) document.documentElement.scrollTop = 0;
     if (document.body) document.body.scrollTop = 0;
   }, [page]);
+
+  const totalPages = Math.ceil(totalProducts / limit) || 1;
+
+  const handlePageChange = (newPage) => {
+    const targetPage = Math.max(1, Math.min(newPage, totalPages));
+    setPage(targetPage);
+    const p = new URLSearchParams(searchParams);
+    p.set('page', String(targetPage));
+    setSearchParams(p);
+  };
+
+  const getPageNumbers = () => {
+    if (totalPages <= 5) {
+      return Array.from({ length: totalPages }, (_, i) => i + 1);
+    }
+    const start = Math.max(1, Math.min(page - 2, totalPages - 4));
+    return Array.from({ length: 5 }, (_, i) => start + i);
+  };
 
   const applyFilters = () => {
     const newParams = new URLSearchParams();
@@ -124,8 +157,6 @@ export default function ProductsPage() {
     setSearchParams({});
     setMobileFilterOpen(false);
   };
-
-  const totalPages = Math.ceil(totalProducts / limit) || 1;
 
   return (
     <>
@@ -246,45 +277,27 @@ export default function ProductsPage() {
                 type="button"
                 className="btn btn-outline btn-sm"
                 disabled={page <= 1}
-                onClick={() => {
-                  const newPage = page - 1;
-                  setPage(newPage);
-                  const p = new URLSearchParams(searchParams);
-                  p.set('page', String(newPage));
-                  setSearchParams(p);
-                }}
+                onClick={() => handlePageChange(page - 1)}
+                title="Previous page"
               >
                 &laquo; Prev
               </button>
-              {Array.from({ length: totalPages }).slice(0, 5).map((_, i) => {
-                const pgNum = i + 1;
-                return (
-                  <button
-                    key={pgNum}
-                    type="button"
-                    className={`btn ${page === pgNum ? 'btn-primary' : 'btn-outline'} btn-sm`}
-                    onClick={() => {
-                      setPage(pgNum);
-                      const p = new URLSearchParams(searchParams);
-                      p.set('page', String(pgNum));
-                      setSearchParams(p);
-                    }}
-                  >
-                    {pgNum}
-                  </button>
-                );
-              })}
+              {getPageNumbers().map((pgNum) => (
+                <button
+                  key={pgNum}
+                  type="button"
+                  className={`btn ${page === pgNum ? 'btn-primary' : 'btn-outline'} btn-sm`}
+                  onClick={() => handlePageChange(pgNum)}
+                >
+                  {pgNum}
+                </button>
+              ))}
               <button
                 type="button"
                 className="btn btn-outline btn-sm"
                 disabled={page >= totalPages}
-                onClick={() => {
-                  const newPage = page + 1;
-                  setPage(newPage);
-                  const p = new URLSearchParams(searchParams);
-                  p.set('page', String(newPage));
-                  setSearchParams(p);
-                }}
+                onClick={() => handlePageChange(page + 1)}
+                title="Next page"
               >
                 Next &raquo;
               </button>
